@@ -1,0 +1,26 @@
+{
+  "expo": {
+    "name": "Nihongo Path",
+    "slug": "nihongo-path",
+    "version": "1.0.0",
+    "icon": "./public/icon-512.png",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.personal.nihongopath"
+    },
+    "android": {
+      "package": "com.personal.nihongopath",
+      "adaptiveIcon": {
+        "backgroundColor": "#F4EFE5"
+      }
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single",
+      "favicon": "./public/icon-192.png"
+    }
+  }
+}

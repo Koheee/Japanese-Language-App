@@ -1,0 +1,12 @@
+node_modules/
+.expo/
+dist/
+dist-smoke/
+dist-web-smoke/
+web-build/
+coverage/
+*.log
+.DS_Store
+android/
+ios/
+.pnpm-store/

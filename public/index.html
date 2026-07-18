@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#315B4A" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Nihongo Path" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="description" content="An original 25-lesson path for learning beginner Japanese." />
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <link rel="icon" href="./icon-192.png" />
+    <title>Nihongo Path</title>
+    <style id="expo-reset">
+      html, body, #root {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+      }
+      html { background: #e8e0d2; }
+      body {
+        overflow: hidden;
+        background: #f7f3ea;
+        overscroll-behavior: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      #root { display: flex; flex: 1; }
+    </style>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to use Nihongo Path.</noscript>
+    <div id="root"></div>
+    <script>
+      if ('serviceWorker' in navigator && location.protocol === 'https:') {
+        window.addEventListener('load', function () {
+          navigator.serviceWorker.register('./sw.js').catch(function (error) {
+            console.warn('Offline support could not start:', error);
+          });
+        });
+      }
+    </script>
+  </body>
+</html>
