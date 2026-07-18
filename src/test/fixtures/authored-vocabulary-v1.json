@@ -1,0 +1,3854 @@
+[
+  {
+    "lessonId": "lesson-01",
+    "authoredIndex": 0,
+    "id": "l1-v01",
+    "japanese": "わたし",
+    "reading": "watashi",
+    "english": "I; me",
+    "partOfSpeech": "pronoun"
+  },
+  {
+    "lessonId": "lesson-01",
+    "authoredIndex": 1,
+    "id": "l1-v02",
+    "japanese": "ひと",
+    "reading": "hito",
+    "english": "person",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-01",
+    "authoredIndex": 2,
+    "id": "l1-v03",
+    "japanese": "かた",
+    "reading": "kata",
+    "english": "person (respectful)",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-01",
+    "authoredIndex": 3,
+    "id": "l1-v04",
+    "japanese": "みなさん",
+    "reading": "minasan",
+    "english": "everyone",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-01",
+    "authoredIndex": 4,
+    "id": "l1-v05",
+    "japanese": "がくせい",
+    "reading": "gakusei",
+    "english": "student",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-01",
+    "authoredIndex": 5,
+    "id": "l1-v06",
+    "japanese": "せんせい",
+    "reading": "sensei",
+    "english": "teacher; expert addressed with respect",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-01",
+    "authoredIndex": 6,
+    "id": "l1-v07",
+    "japanese": "きょうし",
+    "reading": "kyoushi",
+    "english": "teacher (one’s profession)",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-01",
+    "authoredIndex": 7,
+    "id": "l1-v08",
+    "japanese": "かいしゃいん",
+    "reading": "kaishain",
+    "english": "company employee",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-01",
+    "authoredIndex": 8,
+    "id": "l1-v09",
+    "japanese": "エンジニア",
+    "reading": "enjinia",
+    "english": "engineer",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-01",
+    "authoredIndex": 9,
+    "id": "l1-v10",
+    "japanese": "デザイナー",
+    "reading": "dezainaa",
+    "english": "designer",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-01",
+    "authoredIndex": 10,
+    "id": "l1-v11",
+    "japanese": "スタッフ",
+    "reading": "sutaffu",
+    "english": "staff member",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-01",
+    "authoredIndex": 11,
+    "id": "l1-v12",
+    "japanese": "けんきゅうしゃ",
+    "reading": "kenkyuusha",
+    "english": "researcher",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-01",
+    "authoredIndex": 12,
+    "id": "l1-v13",
+    "japanese": "だいがく",
+    "reading": "daigaku",
+    "english": "university",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-01",
+    "authoredIndex": 13,
+    "id": "l1-v14",
+    "japanese": "スタジオ",
+    "reading": "sutajio",
+    "english": "studio",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-01",
+    "authoredIndex": 14,
+    "id": "l1-v15",
+    "japanese": "にほん",
+    "reading": "Nihon",
+    "english": "Japan",
+    "partOfSpeech": "proper noun"
+  },
+  {
+    "lessonId": "lesson-01",
+    "authoredIndex": 15,
+    "id": "l1-v16",
+    "japanese": "カナダ",
+    "reading": "Kanada",
+    "english": "Canada",
+    "partOfSpeech": "proper noun"
+  },
+  {
+    "lessonId": "lesson-01",
+    "authoredIndex": 16,
+    "id": "l1-v17",
+    "japanese": "シンガポール",
+    "reading": "Shingapooru",
+    "english": "Singapore",
+    "partOfSpeech": "proper noun"
+  },
+  {
+    "lessonId": "lesson-01",
+    "authoredIndex": 17,
+    "id": "l1-v18",
+    "japanese": "〜じん",
+    "reading": "~jin",
+    "english": "person from; nationality suffix",
+    "partOfSpeech": "suffix"
+  },
+  {
+    "lessonId": "lesson-01",
+    "authoredIndex": 18,
+    "id": "l1-v19",
+    "japanese": "だれ",
+    "reading": "dare",
+    "english": "who",
+    "partOfSpeech": "question word"
+  },
+  {
+    "lessonId": "lesson-01",
+    "authoredIndex": 19,
+    "id": "l1-v20",
+    "japanese": "はい",
+    "reading": "hai",
+    "english": "yes",
+    "partOfSpeech": "response"
+  },
+  {
+    "lessonId": "lesson-01",
+    "authoredIndex": 20,
+    "id": "l1-v21",
+    "japanese": "いいえ",
+    "reading": "iie",
+    "english": "no",
+    "partOfSpeech": "response"
+  },
+  {
+    "lessonId": "lesson-01",
+    "authoredIndex": 21,
+    "id": "l1-v22",
+    "japanese": "はじめまして",
+    "reading": "hajimemashite",
+    "english": "How do you do? (first meeting)",
+    "partOfSpeech": "expression"
+  },
+  {
+    "lessonId": "lesson-01",
+    "authoredIndex": 22,
+    "id": "l1-v23",
+    "japanese": "よろしく おねがいします",
+    "reading": "yoroshiku onegai shimasu",
+    "english": "I look forward to knowing/working with you",
+    "partOfSpeech": "expression"
+  },
+  {
+    "lessonId": "lesson-01",
+    "authoredIndex": 23,
+    "id": "l1-v24",
+    "japanese": "こちらは",
+    "reading": "kochira wa",
+    "english": "this person is…",
+    "partOfSpeech": "expression"
+  },
+  {
+    "lessonId": "lesson-02",
+    "authoredIndex": 0,
+    "id": "l2-v01",
+    "japanese": "これ",
+    "reading": "kore",
+    "english": "this one (near me)",
+    "partOfSpeech": "demonstrative"
+  },
+  {
+    "lessonId": "lesson-02",
+    "authoredIndex": 1,
+    "id": "l2-v02",
+    "japanese": "それ",
+    "reading": "sore",
+    "english": "that one (near you)",
+    "partOfSpeech": "demonstrative"
+  },
+  {
+    "lessonId": "lesson-02",
+    "authoredIndex": 2,
+    "id": "l2-v03",
+    "japanese": "あれ",
+    "reading": "are",
+    "english": "that one (over there)",
+    "partOfSpeech": "demonstrative"
+  },
+  {
+    "lessonId": "lesson-02",
+    "authoredIndex": 3,
+    "id": "l2-v04",
+    "japanese": "どれ",
+    "reading": "dore",
+    "english": "which one",
+    "partOfSpeech": "question word"
+  },
+  {
+    "lessonId": "lesson-02",
+    "authoredIndex": 4,
+    "id": "l2-v05",
+    "japanese": "この",
+    "reading": "kono",
+    "english": "this …",
+    "partOfSpeech": "determiner"
+  },
+  {
+    "lessonId": "lesson-02",
+    "authoredIndex": 5,
+    "id": "l2-v06",
+    "japanese": "その",
+    "reading": "sono",
+    "english": "that … near you",
+    "partOfSpeech": "determiner"
+  },
+  {
+    "lessonId": "lesson-02",
+    "authoredIndex": 6,
+    "id": "l2-v07",
+    "japanese": "あの",
+    "reading": "ano",
+    "english": "that … over there",
+    "partOfSpeech": "determiner"
+  },
+  {
+    "lessonId": "lesson-02",
+    "authoredIndex": 7,
+    "id": "l2-v08",
+    "japanese": "ノート",
+    "reading": "nooto",
+    "english": "notebook",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-02",
+    "authoredIndex": 8,
+    "id": "l2-v09",
+    "japanese": "ペン",
+    "reading": "pen",
+    "english": "pen",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-02",
+    "authoredIndex": 9,
+    "id": "l2-v10",
+    "japanese": "えんぴつ",
+    "reading": "enpitsu",
+    "english": "pencil",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-02",
+    "authoredIndex": 10,
+    "id": "l2-v11",
+    "japanese": "けしゴム",
+    "reading": "keshigomu",
+    "english": "eraser",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-02",
+    "authoredIndex": 11,
+    "id": "l2-v12",
+    "japanese": "はさみ",
+    "reading": "hasami",
+    "english": "scissors",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-02",
+    "authoredIndex": 12,
+    "id": "l2-v13",
+    "japanese": "かぎ",
+    "reading": "kagi",
+    "english": "key",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-02",
+    "authoredIndex": 13,
+    "id": "l2-v14",
+    "japanese": "かさ",
+    "reading": "kasa",
+    "english": "umbrella",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-02",
+    "authoredIndex": 14,
+    "id": "l2-v15",
+    "japanese": "かばん",
+    "reading": "kaban",
+    "english": "bag",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-02",
+    "authoredIndex": 15,
+    "id": "l2-v16",
+    "japanese": "じしょ",
+    "reading": "jisho",
+    "english": "dictionary",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-02",
+    "authoredIndex": 16,
+    "id": "l2-v17",
+    "japanese": "だれの",
+    "reading": "dare no",
+    "english": "whose",
+    "partOfSpeech": "question expression"
+  },
+  {
+    "lessonId": "lesson-02",
+    "authoredIndex": 17,
+    "id": "l2-v18",
+    "japanese": "そうです",
+    "reading": "sou desu",
+    "english": "that is right",
+    "partOfSpeech": "expression"
+  },
+  {
+    "lessonId": "lesson-03",
+    "authoredIndex": 0,
+    "id": "l3-v01",
+    "japanese": "ここ",
+    "reading": "koko",
+    "english": "here",
+    "partOfSpeech": "place demonstrative"
+  },
+  {
+    "lessonId": "lesson-03",
+    "authoredIndex": 1,
+    "id": "l3-v02",
+    "japanese": "そこ",
+    "reading": "soko",
+    "english": "there near you",
+    "partOfSpeech": "place demonstrative"
+  },
+  {
+    "lessonId": "lesson-03",
+    "authoredIndex": 2,
+    "id": "l3-v03",
+    "japanese": "あそこ",
+    "reading": "asoko",
+    "english": "over there",
+    "partOfSpeech": "place demonstrative"
+  },
+  {
+    "lessonId": "lesson-03",
+    "authoredIndex": 3,
+    "id": "l3-v04",
+    "japanese": "どこ",
+    "reading": "doko",
+    "english": "where",
+    "partOfSpeech": "question word"
+  },
+  {
+    "lessonId": "lesson-03",
+    "authoredIndex": 4,
+    "id": "l3-v05",
+    "japanese": "こちら",
+    "reading": "kochira",
+    "english": "this way; here (polite)",
+    "partOfSpeech": "direction word"
+  },
+  {
+    "lessonId": "lesson-03",
+    "authoredIndex": 5,
+    "id": "l3-v06",
+    "japanese": "そちら",
+    "reading": "sochira",
+    "english": "that way; there (polite)",
+    "partOfSpeech": "direction word"
+  },
+  {
+    "lessonId": "lesson-03",
+    "authoredIndex": 6,
+    "id": "l3-v07",
+    "japanese": "あちら",
+    "reading": "achira",
+    "english": "over that way; over there (polite)",
+    "partOfSpeech": "direction word"
+  },
+  {
+    "lessonId": "lesson-03",
+    "authoredIndex": 7,
+    "id": "l3-v08",
+    "japanese": "どちら",
+    "reading": "dochira",
+    "english": "which way; where (polite)",
+    "partOfSpeech": "question word"
+  },
+  {
+    "lessonId": "lesson-03",
+    "authoredIndex": 8,
+    "id": "l3-v09",
+    "japanese": "うけつけ",
+    "reading": "uketsuke",
+    "english": "reception desk",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-03",
+    "authoredIndex": 9,
+    "id": "l3-v10",
+    "japanese": "じむしょ",
+    "reading": "jimusho",
+    "english": "office",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-03",
+    "authoredIndex": 10,
+    "id": "l3-v11",
+    "japanese": "きょうしつ",
+    "reading": "kyoushitsu",
+    "english": "classroom",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-03",
+    "authoredIndex": 11,
+    "id": "l3-v12",
+    "japanese": "かいだん",
+    "reading": "kaidan",
+    "english": "stairs",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-03",
+    "authoredIndex": 12,
+    "id": "l3-v13",
+    "japanese": "エレベーター",
+    "reading": "erebeetaa",
+    "english": "elevator",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-03",
+    "authoredIndex": 13,
+    "id": "l3-v14",
+    "japanese": "トイレ",
+    "reading": "toire",
+    "english": "restroom",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-03",
+    "authoredIndex": 14,
+    "id": "l3-v15",
+    "japanese": "カフェ",
+    "reading": "kafe",
+    "english": "café",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-03",
+    "authoredIndex": 15,
+    "id": "l3-v16",
+    "japanese": "ちか",
+    "reading": "chika",
+    "english": "basement; underground",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-03",
+    "authoredIndex": 16,
+    "id": "l3-v17",
+    "japanese": "〜かい",
+    "reading": "~kai",
+    "english": "floor counter",
+    "partOfSpeech": "suffix"
+  },
+  {
+    "lessonId": "lesson-03",
+    "authoredIndex": 17,
+    "id": "l3-v18",
+    "japanese": "なんがい",
+    "reading": "nangai",
+    "english": "what floor",
+    "partOfSpeech": "question expression"
+  },
+  {
+    "lessonId": "lesson-04",
+    "authoredIndex": 0,
+    "id": "l4-v01",
+    "japanese": "おきます",
+    "reading": "okimasu",
+    "english": "get up; wake up",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-04",
+    "authoredIndex": 1,
+    "id": "l4-v02",
+    "japanese": "ねます",
+    "reading": "nemasu",
+    "english": "sleep; go to bed",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-04",
+    "authoredIndex": 2,
+    "id": "l4-v03",
+    "japanese": "はたらきます",
+    "reading": "hatarakimasu",
+    "english": "work",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-04",
+    "authoredIndex": 3,
+    "id": "l4-v04",
+    "japanese": "やすみます",
+    "reading": "yasumimasu",
+    "english": "rest; take time off",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-04",
+    "authoredIndex": 4,
+    "id": "l4-v05",
+    "japanese": "べんきょうします",
+    "reading": "benkyou shimasu",
+    "english": "study",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-04",
+    "authoredIndex": 5,
+    "id": "l4-v06",
+    "japanese": "おわります",
+    "reading": "owarimasu",
+    "english": "finish; end",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-04",
+    "authoredIndex": 6,
+    "id": "l4-v07",
+    "japanese": "いま",
+    "reading": "ima",
+    "english": "now",
+    "partOfSpeech": "time noun"
+  },
+  {
+    "lessonId": "lesson-04",
+    "authoredIndex": 7,
+    "id": "l4-v08",
+    "japanese": "〜じ",
+    "reading": "~ji",
+    "english": "o’clock",
+    "partOfSpeech": "time suffix"
+  },
+  {
+    "lessonId": "lesson-04",
+    "authoredIndex": 8,
+    "id": "l4-v09",
+    "japanese": "〜ふん／ぷん",
+    "reading": "~fun / pun",
+    "english": "minutes",
+    "partOfSpeech": "time suffix"
+  },
+  {
+    "lessonId": "lesson-04",
+    "authoredIndex": 9,
+    "id": "l4-v10",
+    "japanese": "はん",
+    "reading": "han",
+    "english": "half past",
+    "partOfSpeech": "time suffix"
+  },
+  {
+    "lessonId": "lesson-04",
+    "authoredIndex": 10,
+    "id": "l4-v11",
+    "japanese": "ごぜん",
+    "reading": "gozen",
+    "english": "a.m.; morning",
+    "partOfSpeech": "time noun"
+  },
+  {
+    "lessonId": "lesson-04",
+    "authoredIndex": 11,
+    "id": "l4-v12",
+    "japanese": "ごご",
+    "reading": "gogo",
+    "english": "p.m.; afternoon",
+    "partOfSpeech": "time noun"
+  },
+  {
+    "lessonId": "lesson-04",
+    "authoredIndex": 12,
+    "id": "l4-v13",
+    "japanese": "まいあさ",
+    "reading": "maiasa",
+    "english": "every morning",
+    "partOfSpeech": "time noun"
+  },
+  {
+    "lessonId": "lesson-04",
+    "authoredIndex": 13,
+    "id": "l4-v14",
+    "japanese": "まいばん",
+    "reading": "maiban",
+    "english": "every evening",
+    "partOfSpeech": "time noun"
+  },
+  {
+    "lessonId": "lesson-04",
+    "authoredIndex": 14,
+    "id": "l4-v15",
+    "japanese": "きのう",
+    "reading": "kinou",
+    "english": "yesterday",
+    "partOfSpeech": "time noun"
+  },
+  {
+    "lessonId": "lesson-04",
+    "authoredIndex": 15,
+    "id": "l4-v16",
+    "japanese": "あした",
+    "reading": "ashita",
+    "english": "tomorrow",
+    "partOfSpeech": "time noun"
+  },
+  {
+    "lessonId": "lesson-04",
+    "authoredIndex": 16,
+    "id": "l4-v17",
+    "japanese": "へいじつ",
+    "reading": "heijitsu",
+    "english": "weekday",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-04",
+    "authoredIndex": 17,
+    "id": "l4-v18",
+    "japanese": "しゅうまつ",
+    "reading": "shuumatsu",
+    "english": "weekend",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-05",
+    "authoredIndex": 0,
+    "id": "l5-v01",
+    "japanese": "行きます",
+    "reading": "ikimasu",
+    "english": "go",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-05",
+    "authoredIndex": 1,
+    "id": "l5-v02",
+    "japanese": "来ます",
+    "reading": "kimasu",
+    "english": "come",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-05",
+    "authoredIndex": 2,
+    "id": "l5-v03",
+    "japanese": "帰ります",
+    "reading": "kaerimasu",
+    "english": "return; go home",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-05",
+    "authoredIndex": 3,
+    "id": "l5-v04",
+    "japanese": "あるいて",
+    "reading": "aruite",
+    "english": "on foot; walking",
+    "partOfSpeech": "verb form"
+  },
+  {
+    "lessonId": "lesson-05",
+    "authoredIndex": 4,
+    "id": "l5-v05",
+    "japanese": "でんしゃ",
+    "reading": "densha",
+    "english": "train",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-05",
+    "authoredIndex": 5,
+    "id": "l5-v06",
+    "japanese": "ちかてつ",
+    "reading": "chikatetsu",
+    "english": "subway",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-05",
+    "authoredIndex": 6,
+    "id": "l5-v07",
+    "japanese": "バス",
+    "reading": "basu",
+    "english": "bus",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-05",
+    "authoredIndex": 7,
+    "id": "l5-v08",
+    "japanese": "じてんしゃ",
+    "reading": "jitensha",
+    "english": "bicycle",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-05",
+    "authoredIndex": 8,
+    "id": "l5-v09",
+    "japanese": "タクシー",
+    "reading": "takushii",
+    "english": "taxi",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-05",
+    "authoredIndex": 9,
+    "id": "l5-v10",
+    "japanese": "えき",
+    "reading": "eki",
+    "english": "station",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-05",
+    "authoredIndex": 10,
+    "id": "l5-v11",
+    "japanese": "くうこう",
+    "reading": "kuukou",
+    "english": "airport",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-05",
+    "authoredIndex": 11,
+    "id": "l5-v12",
+    "japanese": "はくぶつかん",
+    "reading": "hakubutsukan",
+    "english": "museum",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-05",
+    "authoredIndex": 12,
+    "id": "l5-v13",
+    "japanese": "こうえん",
+    "reading": "kouen",
+    "english": "park",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-05",
+    "authoredIndex": 13,
+    "id": "l5-v14",
+    "japanese": "うち",
+    "reading": "uchi",
+    "english": "home",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-05",
+    "authoredIndex": 14,
+    "id": "l5-v15",
+    "japanese": "ともだち",
+    "reading": "tomodachi",
+    "english": "friend",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-05",
+    "authoredIndex": 15,
+    "id": "l5-v16",
+    "japanese": "ひとりで",
+    "reading": "hitori de",
+    "english": "alone; by oneself",
+    "partOfSpeech": "adverbial expression"
+  },
+  {
+    "lessonId": "lesson-05",
+    "authoredIndex": 16,
+    "id": "l5-v17",
+    "japanese": "らいしゅう",
+    "reading": "raishuu",
+    "english": "next week",
+    "partOfSpeech": "time noun"
+  },
+  {
+    "lessonId": "lesson-05",
+    "authoredIndex": 17,
+    "id": "l5-v18",
+    "japanese": "いつ",
+    "reading": "itsu",
+    "english": "when",
+    "partOfSpeech": "question word"
+  },
+  {
+    "lessonId": "lesson-06",
+    "authoredIndex": 0,
+    "id": "l6-v01",
+    "japanese": "食べます",
+    "reading": "tabemasu",
+    "english": "eat",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-06",
+    "authoredIndex": 1,
+    "id": "l6-v02",
+    "japanese": "飲みます",
+    "reading": "nomimasu",
+    "english": "drink",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-06",
+    "authoredIndex": 2,
+    "id": "l6-v03",
+    "japanese": "見ます",
+    "reading": "mimasu",
+    "english": "see; watch",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-06",
+    "authoredIndex": 3,
+    "id": "l6-v04",
+    "japanese": "読みます",
+    "reading": "yomimasu",
+    "english": "read",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-06",
+    "authoredIndex": 4,
+    "id": "l6-v05",
+    "japanese": "聞きます",
+    "reading": "kikimasu",
+    "english": "listen; ask",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-06",
+    "authoredIndex": 5,
+    "id": "l6-v06",
+    "japanese": "買います",
+    "reading": "kaimasu",
+    "english": "buy",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-06",
+    "authoredIndex": 6,
+    "id": "l6-v07",
+    "japanese": "会います",
+    "reading": "aimasu",
+    "english": "meet",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-06",
+    "authoredIndex": 7,
+    "id": "l6-v08",
+    "japanese": "します",
+    "reading": "shimasu",
+    "english": "do",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-06",
+    "authoredIndex": 8,
+    "id": "l6-v09",
+    "japanese": "あさごはん",
+    "reading": "asagohan",
+    "english": "breakfast",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-06",
+    "authoredIndex": 9,
+    "id": "l6-v10",
+    "japanese": "ひるごはん",
+    "reading": "hirugohan",
+    "english": "lunch",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-06",
+    "authoredIndex": 10,
+    "id": "l6-v11",
+    "japanese": "ばんごはん",
+    "reading": "bangohan",
+    "english": "dinner",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-06",
+    "authoredIndex": 11,
+    "id": "l6-v12",
+    "japanese": "コーヒー",
+    "reading": "koohii",
+    "english": "coffee",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-06",
+    "authoredIndex": 12,
+    "id": "l6-v13",
+    "japanese": "おちゃ",
+    "reading": "ocha",
+    "english": "tea",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-06",
+    "authoredIndex": 13,
+    "id": "l6-v14",
+    "japanese": "えいが",
+    "reading": "eiga",
+    "english": "film; movie",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-06",
+    "authoredIndex": 14,
+    "id": "l6-v15",
+    "japanese": "おんがく",
+    "reading": "ongaku",
+    "english": "music",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-06",
+    "authoredIndex": 15,
+    "id": "l6-v16",
+    "japanese": "としょかん",
+    "reading": "toshokan",
+    "english": "library",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-06",
+    "authoredIndex": 16,
+    "id": "l6-v17",
+    "japanese": "いっしょに",
+    "reading": "issho ni",
+    "english": "together",
+    "partOfSpeech": "adverb"
+  },
+  {
+    "lessonId": "lesson-06",
+    "authoredIndex": 17,
+    "id": "l6-v18",
+    "japanese": "ちょっと",
+    "reading": "chotto",
+    "english": "a little; a moment",
+    "partOfSpeech": "adverb"
+  },
+  {
+    "lessonId": "lesson-07",
+    "authoredIndex": 0,
+    "id": "l7-v01",
+    "japanese": "切ります",
+    "reading": "kirimasu",
+    "english": "cut",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-07",
+    "authoredIndex": 1,
+    "id": "l7-v02",
+    "japanese": "書きます",
+    "reading": "kakimasu",
+    "english": "write; draw",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-07",
+    "authoredIndex": 2,
+    "id": "l7-v03",
+    "japanese": "送ります",
+    "reading": "okurimasu",
+    "english": "send",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-07",
+    "authoredIndex": 3,
+    "id": "l7-v04",
+    "japanese": "あげます",
+    "reading": "agemasu",
+    "english": "give",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-07",
+    "authoredIndex": 4,
+    "id": "l7-v05",
+    "japanese": "もらいます",
+    "reading": "moraimasu",
+    "english": "receive",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-07",
+    "authoredIndex": 5,
+    "id": "l7-v06",
+    "japanese": "かします",
+    "reading": "kashimasu",
+    "english": "lend",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-07",
+    "authoredIndex": 6,
+    "id": "l7-v07",
+    "japanese": "かります",
+    "reading": "karimasu",
+    "english": "borrow",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-07",
+    "authoredIndex": 7,
+    "id": "l7-v08",
+    "japanese": "おしえます",
+    "reading": "oshiemasu",
+    "english": "teach; tell",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-07",
+    "authoredIndex": 8,
+    "id": "l7-v09",
+    "japanese": "紙",
+    "reading": "kami",
+    "english": "paper",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-07",
+    "authoredIndex": 9,
+    "id": "l7-v10",
+    "japanese": "カード",
+    "reading": "kaado",
+    "english": "card",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-07",
+    "authoredIndex": 10,
+    "id": "l7-v11",
+    "japanese": "花",
+    "reading": "hana",
+    "english": "flower",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-07",
+    "authoredIndex": 11,
+    "id": "l7-v12",
+    "japanese": "プレゼント",
+    "reading": "purezento",
+    "english": "present; gift",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-07",
+    "authoredIndex": 12,
+    "id": "l7-v13",
+    "japanese": "写真",
+    "reading": "shashin",
+    "english": "photograph",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-07",
+    "authoredIndex": 13,
+    "id": "l7-v14",
+    "japanese": "メール",
+    "reading": "meeru",
+    "english": "email; message",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-07",
+    "authoredIndex": 14,
+    "id": "l7-v15",
+    "japanese": "英語",
+    "reading": "eigo",
+    "english": "English language",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-07",
+    "authoredIndex": 15,
+    "id": "l7-v16",
+    "japanese": "日本語",
+    "reading": "nihongo",
+    "english": "Japanese language",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-07",
+    "authoredIndex": 16,
+    "id": "l7-v17",
+    "japanese": "もう",
+    "reading": "mou",
+    "english": "already",
+    "partOfSpeech": "adverb"
+  },
+  {
+    "lessonId": "lesson-07",
+    "authoredIndex": 17,
+    "id": "l7-v18",
+    "japanese": "まだ",
+    "reading": "mada",
+    "english": "still; not yet",
+    "partOfSpeech": "adverb"
+  },
+  {
+    "lessonId": "lesson-08",
+    "authoredIndex": 0,
+    "id": "l8-v01",
+    "japanese": "おおきい",
+    "reading": "ookii",
+    "english": "big; large",
+    "partOfSpeech": "い-adjective"
+  },
+  {
+    "lessonId": "lesson-08",
+    "authoredIndex": 1,
+    "id": "l8-v02",
+    "japanese": "ちいさい",
+    "reading": "chiisai",
+    "english": "small",
+    "partOfSpeech": "い-adjective"
+  },
+  {
+    "lessonId": "lesson-08",
+    "authoredIndex": 2,
+    "id": "l8-v03",
+    "japanese": "あたらしい",
+    "reading": "atarashii",
+    "english": "new",
+    "partOfSpeech": "い-adjective"
+  },
+  {
+    "lessonId": "lesson-08",
+    "authoredIndex": 3,
+    "id": "l8-v04",
+    "japanese": "ふるい",
+    "reading": "furui",
+    "english": "old (thing)",
+    "partOfSpeech": "い-adjective"
+  },
+  {
+    "lessonId": "lesson-08",
+    "authoredIndex": 4,
+    "id": "l8-v05",
+    "japanese": "あつい",
+    "reading": "atsui",
+    "english": "hot",
+    "partOfSpeech": "い-adjective"
+  },
+  {
+    "lessonId": "lesson-08",
+    "authoredIndex": 5,
+    "id": "l8-v06",
+    "japanese": "さむい",
+    "reading": "samui",
+    "english": "cold (weather/air)",
+    "partOfSpeech": "い-adjective"
+  },
+  {
+    "lessonId": "lesson-08",
+    "authoredIndex": 6,
+    "id": "l8-v07",
+    "japanese": "おいしい",
+    "reading": "oishii",
+    "english": "delicious",
+    "partOfSpeech": "い-adjective"
+  },
+  {
+    "lessonId": "lesson-08",
+    "authoredIndex": 7,
+    "id": "l8-v08",
+    "japanese": "たかい",
+    "reading": "takai",
+    "english": "expensive; high",
+    "partOfSpeech": "い-adjective"
+  },
+  {
+    "lessonId": "lesson-08",
+    "authoredIndex": 8,
+    "id": "l8-v09",
+    "japanese": "やすい",
+    "reading": "yasui",
+    "english": "inexpensive",
+    "partOfSpeech": "い-adjective"
+  },
+  {
+    "lessonId": "lesson-08",
+    "authoredIndex": 9,
+    "id": "l8-v10",
+    "japanese": "いい",
+    "reading": "ii",
+    "english": "good",
+    "partOfSpeech": "い-adjective"
+  },
+  {
+    "lessonId": "lesson-08",
+    "authoredIndex": 10,
+    "id": "l8-v11",
+    "japanese": "しずか",
+    "reading": "shizuka",
+    "english": "quiet",
+    "partOfSpeech": "な-adjective"
+  },
+  {
+    "lessonId": "lesson-08",
+    "authoredIndex": 11,
+    "id": "l8-v12",
+    "japanese": "にぎやか",
+    "reading": "nigiyaka",
+    "english": "lively; bustling",
+    "partOfSpeech": "な-adjective"
+  },
+  {
+    "lessonId": "lesson-08",
+    "authoredIndex": 12,
+    "id": "l8-v13",
+    "japanese": "きれい",
+    "reading": "kirei",
+    "english": "beautiful; clean",
+    "partOfSpeech": "な-adjective"
+  },
+  {
+    "lessonId": "lesson-08",
+    "authoredIndex": 13,
+    "id": "l8-v14",
+    "japanese": "べんり",
+    "reading": "benri",
+    "english": "convenient",
+    "partOfSpeech": "な-adjective"
+  },
+  {
+    "lessonId": "lesson-08",
+    "authoredIndex": 14,
+    "id": "l8-v15",
+    "japanese": "しんせつ",
+    "reading": "shinsetsu",
+    "english": "kind; helpful",
+    "partOfSpeech": "な-adjective"
+  },
+  {
+    "lessonId": "lesson-08",
+    "authoredIndex": 15,
+    "id": "l8-v16",
+    "japanese": "げんき",
+    "reading": "genki",
+    "english": "healthy; energetic",
+    "partOfSpeech": "な-adjective"
+  },
+  {
+    "lessonId": "lesson-08",
+    "authoredIndex": 16,
+    "id": "l8-v17",
+    "japanese": "とても",
+    "reading": "totemo",
+    "english": "very",
+    "partOfSpeech": "adverb"
+  },
+  {
+    "lessonId": "lesson-08",
+    "authoredIndex": 17,
+    "id": "l8-v18",
+    "japanese": "あまり",
+    "reading": "amari",
+    "english": "not very (with negative)",
+    "partOfSpeech": "adverb"
+  },
+  {
+    "lessonId": "lesson-09",
+    "authoredIndex": 0,
+    "id": "l9-v01",
+    "japanese": "すき",
+    "reading": "suki",
+    "english": "liked; favourite",
+    "partOfSpeech": "な-adjective"
+  },
+  {
+    "lessonId": "lesson-09",
+    "authoredIndex": 1,
+    "id": "l9-v02",
+    "japanese": "きらい",
+    "reading": "kirai",
+    "english": "disliked",
+    "partOfSpeech": "な-adjective"
+  },
+  {
+    "lessonId": "lesson-09",
+    "authoredIndex": 2,
+    "id": "l9-v03",
+    "japanese": "だいすき",
+    "reading": "daisuki",
+    "english": "greatly liked; loved",
+    "partOfSpeech": "な-adjective"
+  },
+  {
+    "lessonId": "lesson-09",
+    "authoredIndex": 3,
+    "id": "l9-v04",
+    "japanese": "じょうず",
+    "reading": "jouzu",
+    "english": "skilful; good at",
+    "partOfSpeech": "な-adjective"
+  },
+  {
+    "lessonId": "lesson-09",
+    "authoredIndex": 4,
+    "id": "l9-v05",
+    "japanese": "へた",
+    "reading": "heta",
+    "english": "unskilful; poor at",
+    "partOfSpeech": "な-adjective"
+  },
+  {
+    "lessonId": "lesson-09",
+    "authoredIndex": 5,
+    "id": "l9-v06",
+    "japanese": "わかります",
+    "reading": "wakarimasu",
+    "english": "understand",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-09",
+    "authoredIndex": 6,
+    "id": "l9-v07",
+    "japanese": "あります",
+    "reading": "arimasu",
+    "english": "have; exist (inanimate)",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-09",
+    "authoredIndex": 7,
+    "id": "l9-v08",
+    "japanese": "おんがく",
+    "reading": "ongaku",
+    "english": "music",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-09",
+    "authoredIndex": 8,
+    "id": "l9-v09",
+    "japanese": "ジャズ",
+    "reading": "jazu",
+    "english": "jazz",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-09",
+    "authoredIndex": 9,
+    "id": "l9-v10",
+    "japanese": "クラシック",
+    "reading": "kurashikku",
+    "english": "classical music",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-09",
+    "authoredIndex": 10,
+    "id": "l9-v11",
+    "japanese": "スポーツ",
+    "reading": "supootsu",
+    "english": "sport; sports",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-09",
+    "authoredIndex": 11,
+    "id": "l9-v12",
+    "japanese": "サッカー",
+    "reading": "sakkaa",
+    "english": "football; soccer",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-09",
+    "authoredIndex": 12,
+    "id": "l9-v13",
+    "japanese": "ダンス",
+    "reading": "dansu",
+    "english": "dance",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-09",
+    "authoredIndex": 13,
+    "id": "l9-v14",
+    "japanese": "りょうり",
+    "reading": "ryouri",
+    "english": "cooking; cuisine",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-09",
+    "authoredIndex": 14,
+    "id": "l9-v15",
+    "japanese": "しゃしん",
+    "reading": "shashin",
+    "english": "photography; photograph",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-09",
+    "authoredIndex": 15,
+    "id": "l9-v16",
+    "japanese": "コンサート",
+    "reading": "konsaato",
+    "english": "concert",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-09",
+    "authoredIndex": 16,
+    "id": "l9-v17",
+    "japanese": "よく",
+    "reading": "yoku",
+    "english": "well; often",
+    "partOfSpeech": "adverb"
+  },
+  {
+    "lessonId": "lesson-09",
+    "authoredIndex": 17,
+    "id": "l9-v18",
+    "japanese": "どうして",
+    "reading": "doushite",
+    "english": "why",
+    "partOfSpeech": "question word"
+  },
+  {
+    "lessonId": "lesson-10",
+    "authoredIndex": 0,
+    "id": "l10-v01",
+    "japanese": "へや",
+    "reading": "heya",
+    "english": "room",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-10",
+    "authoredIndex": 1,
+    "id": "l10-v02",
+    "japanese": "リビング",
+    "reading": "ribingu",
+    "english": "living room",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-10",
+    "authoredIndex": 2,
+    "id": "l10-v03",
+    "japanese": "だいどころ",
+    "reading": "daidokoro",
+    "english": "kitchen",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-10",
+    "authoredIndex": 3,
+    "id": "l10-v04",
+    "japanese": "げんかん",
+    "reading": "genkan",
+    "english": "entryway",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-10",
+    "authoredIndex": 4,
+    "id": "l10-v05",
+    "japanese": "ベランダ",
+    "reading": "beranda",
+    "english": "balcony",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-10",
+    "authoredIndex": 5,
+    "id": "l10-v06",
+    "japanese": "つくえ",
+    "reading": "tsukue",
+    "english": "desk",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-10",
+    "authoredIndex": 6,
+    "id": "l10-v07",
+    "japanese": "たな",
+    "reading": "tana",
+    "english": "shelf",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-10",
+    "authoredIndex": 7,
+    "id": "l10-v08",
+    "japanese": "れいぞうこ",
+    "reading": "reizouko",
+    "english": "refrigerator",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-10",
+    "authoredIndex": 8,
+    "id": "l10-v09",
+    "japanese": "ソファ",
+    "reading": "sofa",
+    "english": "sofa",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-10",
+    "authoredIndex": 9,
+    "id": "l10-v10",
+    "japanese": "かぎ",
+    "reading": "kagi",
+    "english": "key",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-10",
+    "authoredIndex": 10,
+    "id": "l10-v11",
+    "japanese": "うえ",
+    "reading": "ue",
+    "english": "on; above",
+    "partOfSpeech": "position noun"
+  },
+  {
+    "lessonId": "lesson-10",
+    "authoredIndex": 11,
+    "id": "l10-v12",
+    "japanese": "した",
+    "reading": "shita",
+    "english": "under; below",
+    "partOfSpeech": "position noun"
+  },
+  {
+    "lessonId": "lesson-10",
+    "authoredIndex": 12,
+    "id": "l10-v13",
+    "japanese": "なか",
+    "reading": "naka",
+    "english": "inside",
+    "partOfSpeech": "position noun"
+  },
+  {
+    "lessonId": "lesson-10",
+    "authoredIndex": 13,
+    "id": "l10-v14",
+    "japanese": "となり",
+    "reading": "tonari",
+    "english": "next to",
+    "partOfSpeech": "position noun"
+  },
+  {
+    "lessonId": "lesson-10",
+    "authoredIndex": 14,
+    "id": "l10-v15",
+    "japanese": "ねこ",
+    "reading": "neko",
+    "english": "cat",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-10",
+    "authoredIndex": 15,
+    "id": "l10-v16",
+    "japanese": "とり",
+    "reading": "tori",
+    "english": "bird",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-11",
+    "authoredIndex": 0,
+    "id": "l11-v01",
+    "japanese": "ひとつ",
+    "reading": "hitotsu",
+    "english": "one (general object)",
+    "partOfSpeech": "counter"
+  },
+  {
+    "lessonId": "lesson-11",
+    "authoredIndex": 1,
+    "id": "l11-v02",
+    "japanese": "ふたつ",
+    "reading": "futatsu",
+    "english": "two (general objects)",
+    "partOfSpeech": "counter"
+  },
+  {
+    "lessonId": "lesson-11",
+    "authoredIndex": 2,
+    "id": "l11-v03",
+    "japanese": "いくつ",
+    "reading": "ikutsu",
+    "english": "how many; how old",
+    "partOfSpeech": "question counter"
+  },
+  {
+    "lessonId": "lesson-11",
+    "authoredIndex": 3,
+    "id": "l11-v04",
+    "japanese": "ひとり",
+    "reading": "hitori",
+    "english": "one person",
+    "partOfSpeech": "counter"
+  },
+  {
+    "lessonId": "lesson-11",
+    "authoredIndex": 4,
+    "id": "l11-v05",
+    "japanese": "ふたり",
+    "reading": "futari",
+    "english": "two people",
+    "partOfSpeech": "counter"
+  },
+  {
+    "lessonId": "lesson-11",
+    "authoredIndex": 5,
+    "id": "l11-v06",
+    "japanese": "～まい",
+    "reading": "~mai",
+    "english": "counter for flat things",
+    "partOfSpeech": "counter suffix"
+  },
+  {
+    "lessonId": "lesson-11",
+    "authoredIndex": 6,
+    "id": "l11-v07",
+    "japanese": "～ほん",
+    "reading": "~hon",
+    "english": "counter for long cylindrical things",
+    "partOfSpeech": "counter suffix"
+  },
+  {
+    "lessonId": "lesson-11",
+    "authoredIndex": 7,
+    "id": "l11-v08",
+    "japanese": "～だい",
+    "reading": "~dai",
+    "english": "counter for machines and vehicles",
+    "partOfSpeech": "counter suffix"
+  },
+  {
+    "lessonId": "lesson-11",
+    "authoredIndex": 8,
+    "id": "l11-v09",
+    "japanese": "～かい",
+    "reading": "~kai",
+    "english": "times; occurrences",
+    "partOfSpeech": "counter suffix"
+  },
+  {
+    "lessonId": "lesson-11",
+    "authoredIndex": 9,
+    "id": "l11-v10",
+    "japanese": "はがき",
+    "reading": "hagaki",
+    "english": "postcard",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-11",
+    "authoredIndex": 10,
+    "id": "l11-v11",
+    "japanese": "きって",
+    "reading": "kitte",
+    "english": "postage stamp",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-11",
+    "authoredIndex": 11,
+    "id": "l11-v12",
+    "japanese": "にもつ",
+    "reading": "nimotsu",
+    "english": "luggage; parcel",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-11",
+    "authoredIndex": 12,
+    "id": "l11-v13",
+    "japanese": "ふうとう",
+    "reading": "fuutou",
+    "english": "envelope",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-11",
+    "authoredIndex": 13,
+    "id": "l11-v14",
+    "japanese": "どのくらい",
+    "reading": "dono kurai",
+    "english": "how much; how long",
+    "partOfSpeech": "question expression"
+  },
+  {
+    "lessonId": "lesson-11",
+    "authoredIndex": 14,
+    "id": "l11-v15",
+    "japanese": "かかります",
+    "reading": "kakarimasu",
+    "english": "takes (time or money)",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-11",
+    "authoredIndex": 15,
+    "id": "l11-v16",
+    "japanese": "ぜんぶで",
+    "reading": "zenbu de",
+    "english": "in total",
+    "partOfSpeech": "adverb"
+  },
+  {
+    "lessonId": "lesson-12",
+    "authoredIndex": 0,
+    "id": "l12-v01",
+    "japanese": "きせつ",
+    "reading": "kisetsu",
+    "english": "season",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-12",
+    "authoredIndex": 1,
+    "id": "l12-v02",
+    "japanese": "春",
+    "reading": "haru",
+    "english": "spring",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-12",
+    "authoredIndex": 2,
+    "id": "l12-v03",
+    "japanese": "夏",
+    "reading": "natsu",
+    "english": "summer",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-12",
+    "authoredIndex": 3,
+    "id": "l12-v04",
+    "japanese": "秋",
+    "reading": "aki",
+    "english": "autumn",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-12",
+    "authoredIndex": 4,
+    "id": "l12-v05",
+    "japanese": "冬",
+    "reading": "fuyu",
+    "english": "winter",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-12",
+    "authoredIndex": 5,
+    "id": "l12-v06",
+    "japanese": "りょこう",
+    "reading": "ryokou",
+    "english": "trip; travel",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-12",
+    "authoredIndex": 6,
+    "id": "l12-v07",
+    "japanese": "まつり",
+    "reading": "matsuri",
+    "english": "festival",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-12",
+    "authoredIndex": 7,
+    "id": "l12-v08",
+    "japanese": "けしき",
+    "reading": "keshiki",
+    "english": "scenery; view",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-12",
+    "authoredIndex": 8,
+    "id": "l12-v09",
+    "japanese": "ホテル",
+    "reading": "hoteru",
+    "english": "hotel",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-12",
+    "authoredIndex": 9,
+    "id": "l12-v10",
+    "japanese": "すずしい",
+    "reading": "suzushii",
+    "english": "cool (pleasant weather)",
+    "partOfSpeech": "い-adjective"
+  },
+  {
+    "lessonId": "lesson-12",
+    "authoredIndex": 10,
+    "id": "l12-v11",
+    "japanese": "あたたかい",
+    "reading": "atatakai",
+    "english": "warm",
+    "partOfSpeech": "い-adjective"
+  },
+  {
+    "lessonId": "lesson-12",
+    "authoredIndex": 11,
+    "id": "l12-v12",
+    "japanese": "はやい",
+    "reading": "hayai",
+    "english": "fast; early",
+    "partOfSpeech": "い-adjective"
+  },
+  {
+    "lessonId": "lesson-12",
+    "authoredIndex": 12,
+    "id": "l12-v13",
+    "japanese": "こんでいます",
+    "reading": "konde imasu",
+    "english": "is crowded",
+    "partOfSpeech": "verb expression"
+  },
+  {
+    "lessonId": "lesson-12",
+    "authoredIndex": 13,
+    "id": "l12-v14",
+    "japanese": "いちばん",
+    "reading": "ichiban",
+    "english": "most; number one",
+    "partOfSpeech": "adverb"
+  },
+  {
+    "lessonId": "lesson-12",
+    "authoredIndex": 14,
+    "id": "l12-v15",
+    "japanese": "どちら",
+    "reading": "dochira",
+    "english": "which of two",
+    "partOfSpeech": "question word"
+  },
+  {
+    "lessonId": "lesson-12",
+    "authoredIndex": 15,
+    "id": "l12-v16",
+    "japanese": "ずっと",
+    "reading": "zutto",
+    "english": "by far; continuously",
+    "partOfSpeech": "adverb"
+  },
+  {
+    "lessonId": "lesson-13",
+    "authoredIndex": 0,
+    "id": "l13-v01",
+    "japanese": "ほしい",
+    "reading": "hoshii",
+    "english": "wanted; desired",
+    "partOfSpeech": "い-adjective"
+  },
+  {
+    "lessonId": "lesson-13",
+    "authoredIndex": 1,
+    "id": "l13-v02",
+    "japanese": "買い物",
+    "reading": "kaimono",
+    "english": "shopping",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-13",
+    "authoredIndex": 2,
+    "id": "l13-v03",
+    "japanese": "市場",
+    "reading": "ichiba",
+    "english": "market",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-13",
+    "authoredIndex": 3,
+    "id": "l13-v04",
+    "japanese": "やきもの",
+    "reading": "yakimono",
+    "english": "pottery; ceramics",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-13",
+    "authoredIndex": 4,
+    "id": "l13-v05",
+    "japanese": "かばん",
+    "reading": "kaban",
+    "english": "bag",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-13",
+    "authoredIndex": 5,
+    "id": "l13-v06",
+    "japanese": "さいふ",
+    "reading": "saifu",
+    "english": "wallet",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-13",
+    "authoredIndex": 6,
+    "id": "l13-v07",
+    "japanese": "おみやげ",
+    "reading": "omiyage",
+    "english": "souvenir; travel gift",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-13",
+    "authoredIndex": 7,
+    "id": "l13-v08",
+    "japanese": "てづくり",
+    "reading": "tezukuri",
+    "english": "handmade",
+    "partOfSpeech": "noun; の-adjective"
+  },
+  {
+    "lessonId": "lesson-13",
+    "authoredIndex": 8,
+    "id": "l13-v09",
+    "japanese": "さがします",
+    "reading": "sagashimasu",
+    "english": "look for",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-13",
+    "authoredIndex": 9,
+    "id": "l13-v10",
+    "japanese": "見つけます",
+    "reading": "mitsukemasu",
+    "english": "find",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-13",
+    "authoredIndex": 10,
+    "id": "l13-v11",
+    "japanese": "むかえます",
+    "reading": "mukaemasu",
+    "english": "meet; pick up",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-13",
+    "authoredIndex": 11,
+    "id": "l13-v12",
+    "japanese": "のどが かわきます",
+    "reading": "nodo ga kawakimasu",
+    "english": "become thirsty",
+    "partOfSpeech": "expression"
+  },
+  {
+    "lessonId": "lesson-13",
+    "authoredIndex": 12,
+    "id": "l13-v13",
+    "japanese": "おなかが すきます",
+    "reading": "onaka ga sukimasu",
+    "english": "become hungry",
+    "partOfSpeech": "expression"
+  },
+  {
+    "lessonId": "lesson-13",
+    "authoredIndex": 13,
+    "id": "l13-v14",
+    "japanese": "週末",
+    "reading": "shuumatsu",
+    "english": "weekend",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-13",
+    "authoredIndex": 14,
+    "id": "l13-v15",
+    "japanese": "何か",
+    "reading": "nanika",
+    "english": "something; anything",
+    "partOfSpeech": "indefinite pronoun"
+  },
+  {
+    "lessonId": "lesson-13",
+    "authoredIndex": 15,
+    "id": "l13-v16",
+    "japanese": "どこか",
+    "reading": "dokoka",
+    "english": "somewhere; anywhere",
+    "partOfSpeech": "indefinite pronoun"
+  },
+  {
+    "lessonId": "lesson-14",
+    "authoredIndex": 0,
+    "id": "l14-v01",
+    "japanese": "まちます",
+    "reading": "machimasu",
+    "english": "wait",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-14",
+    "authoredIndex": 1,
+    "id": "l14-v02",
+    "japanese": "もちます",
+    "reading": "mochimasu",
+    "english": "hold; carry",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-14",
+    "authoredIndex": 2,
+    "id": "l14-v03",
+    "japanese": "とります",
+    "reading": "torimasu",
+    "english": "take; pick up",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-14",
+    "authoredIndex": 3,
+    "id": "l14-v04",
+    "japanese": "てつだいます",
+    "reading": "tetsudaimasu",
+    "english": "help",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-14",
+    "authoredIndex": 4,
+    "id": "l14-v05",
+    "japanese": "あけます",
+    "reading": "akemasu",
+    "english": "open something",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-14",
+    "authoredIndex": 5,
+    "id": "l14-v06",
+    "japanese": "しめます",
+    "reading": "shimemasu",
+    "english": "close something",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-14",
+    "authoredIndex": 6,
+    "id": "l14-v07",
+    "japanese": "つけます",
+    "reading": "tsukemasu",
+    "english": "turn on; attach",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-14",
+    "authoredIndex": 7,
+    "id": "l14-v08",
+    "japanese": "けします",
+    "reading": "keshimasu",
+    "english": "turn off; erase",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-14",
+    "authoredIndex": 8,
+    "id": "l14-v09",
+    "japanese": "はります",
+    "reading": "harimasu",
+    "english": "stick; put up",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-14",
+    "authoredIndex": 9,
+    "id": "l14-v10",
+    "japanese": "ならべます",
+    "reading": "narabemasu",
+    "english": "arrange; line up",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-14",
+    "authoredIndex": 10,
+    "id": "l14-v11",
+    "japanese": "ポスター",
+    "reading": "posutaa",
+    "english": "poster",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-14",
+    "authoredIndex": 11,
+    "id": "l14-v12",
+    "japanese": "いす",
+    "reading": "isu",
+    "english": "chair",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-14",
+    "authoredIndex": 12,
+    "id": "l14-v13",
+    "japanese": "まど",
+    "reading": "mado",
+    "english": "window",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-14",
+    "authoredIndex": 13,
+    "id": "l14-v14",
+    "japanese": "でんき",
+    "reading": "denki",
+    "english": "electric light; electricity",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-14",
+    "authoredIndex": 14,
+    "id": "l14-v15",
+    "japanese": "まっすぐ",
+    "reading": "massugu",
+    "english": "straight; straight ahead",
+    "partOfSpeech": "adverb"
+  },
+  {
+    "lessonId": "lesson-14",
+    "authoredIndex": 15,
+    "id": "l14-v16",
+    "japanese": "ゆっくり",
+    "reading": "yukkuri",
+    "english": "slowly; at ease",
+    "partOfSpeech": "adverb"
+  },
+  {
+    "lessonId": "lesson-15",
+    "authoredIndex": 0,
+    "id": "l15-v01",
+    "japanese": "つかいます",
+    "reading": "tsukaimasu",
+    "english": "use",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-15",
+    "authoredIndex": 1,
+    "id": "l15-v02",
+    "japanese": "すわります",
+    "reading": "suwarimasu",
+    "english": "sit",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-15",
+    "authoredIndex": 2,
+    "id": "l15-v03",
+    "japanese": "とめます",
+    "reading": "tomemasu",
+    "english": "stop; park something",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-15",
+    "authoredIndex": 3,
+    "id": "l15-v04",
+    "japanese": "入ります",
+    "reading": "hairimasu",
+    "english": "enter",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-15",
+    "authoredIndex": 4,
+    "id": "l15-v05",
+    "japanese": "住みます",
+    "reading": "sumimasu",
+    "english": "live; reside",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-15",
+    "authoredIndex": 5,
+    "id": "l15-v06",
+    "japanese": "働きます",
+    "reading": "hatarakimasu",
+    "english": "work",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-15",
+    "authoredIndex": 6,
+    "id": "l15-v07",
+    "japanese": "知ります",
+    "reading": "shirimasu",
+    "english": "come to know",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-15",
+    "authoredIndex": 7,
+    "id": "l15-v08",
+    "japanese": "会員",
+    "reading": "kaiin",
+    "english": "member",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-15",
+    "authoredIndex": 8,
+    "id": "l15-v09",
+    "japanese": "受付",
+    "reading": "uketsuke",
+    "english": "reception desk",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-15",
+    "authoredIndex": 9,
+    "id": "l15-v10",
+    "japanese": "きそく",
+    "reading": "kisoku",
+    "english": "rule; regulation",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-15",
+    "authoredIndex": 10,
+    "id": "l15-v11",
+    "japanese": "休けい室",
+    "reading": "kyuukeishitsu",
+    "english": "break room",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-15",
+    "authoredIndex": 11,
+    "id": "l15-v12",
+    "japanese": "仕事",
+    "reading": "shigoto",
+    "english": "work; job",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-15",
+    "authoredIndex": 12,
+    "id": "l15-v13",
+    "japanese": "住所",
+    "reading": "juusho",
+    "english": "address",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-15",
+    "authoredIndex": 13,
+    "id": "l15-v14",
+    "japanese": "ちず",
+    "reading": "chizu",
+    "english": "map",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-15",
+    "authoredIndex": 14,
+    "id": "l15-v15",
+    "japanese": "もちろん",
+    "reading": "mochiron",
+    "english": "of course",
+    "partOfSpeech": "adverb"
+  },
+  {
+    "lessonId": "lesson-15",
+    "authoredIndex": 15,
+    "id": "l15-v16",
+    "japanese": "ざんねんですが",
+    "reading": "zannen desu ga",
+    "english": "unfortunately; I am sorry, but",
+    "partOfSpeech": "expression"
+  },
+  {
+    "lessonId": "lesson-16",
+    "authoredIndex": 0,
+    "id": "l16-v01",
+    "japanese": "受付",
+    "reading": "uketsuke",
+    "english": "reception desk",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-16",
+    "authoredIndex": 1,
+    "id": "l16-v02",
+    "japanese": "もうしこみます",
+    "reading": "moushikomimasu",
+    "english": "apply; sign up",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-16",
+    "authoredIndex": 2,
+    "id": "l16-v03",
+    "japanese": "せつめい",
+    "reading": "setsumei",
+    "english": "explanation",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-16",
+    "authoredIndex": 3,
+    "id": "l16-v04",
+    "japanese": "きがえます",
+    "reading": "kigaemasu",
+    "english": "change clothes",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-16",
+    "authoredIndex": 4,
+    "id": "l16-v05",
+    "japanese": "運動します",
+    "reading": "undou shimasu",
+    "english": "exercise",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-16",
+    "authoredIndex": 5,
+    "id": "l16-v06",
+    "japanese": "シャワーを あびます",
+    "reading": "shawaa o abimasu",
+    "english": "take a shower",
+    "partOfSpeech": "expression"
+  },
+  {
+    "lessonId": "lesson-16",
+    "authoredIndex": 6,
+    "id": "l16-v07",
+    "japanese": "きかい",
+    "reading": "kikai",
+    "english": "machine",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-16",
+    "authoredIndex": 7,
+    "id": "l16-v08",
+    "japanese": "ロッカー",
+    "reading": "rokkaa",
+    "english": "locker",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-16",
+    "authoredIndex": 8,
+    "id": "l16-v09",
+    "japanese": "体",
+    "reading": "karada",
+    "english": "body",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-16",
+    "authoredIndex": 9,
+    "id": "l16-v10",
+    "japanese": "うで",
+    "reading": "ude",
+    "english": "arm",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-16",
+    "authoredIndex": 10,
+    "id": "l16-v11",
+    "japanese": "足",
+    "reading": "ashi",
+    "english": "leg; foot",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-16",
+    "authoredIndex": 11,
+    "id": "l16-v12",
+    "japanese": "広い",
+    "reading": "hiroi",
+    "english": "spacious; wide",
+    "partOfSpeech": "い-adjective"
+  },
+  {
+    "lessonId": "lesson-16",
+    "authoredIndex": 12,
+    "id": "l16-v13",
+    "japanese": "明るい",
+    "reading": "akarui",
+    "english": "bright; cheerful",
+    "partOfSpeech": "い-adjective"
+  },
+  {
+    "lessonId": "lesson-16",
+    "authoredIndex": 13,
+    "id": "l16-v14",
+    "japanese": "しんせつ",
+    "reading": "shinsetsu",
+    "english": "kind; helpful",
+    "partOfSpeech": "な-adjective"
+  },
+  {
+    "lessonId": "lesson-16",
+    "authoredIndex": 14,
+    "id": "l16-v15",
+    "japanese": "右",
+    "reading": "migi",
+    "english": "right side",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-16",
+    "authoredIndex": 15,
+    "id": "l16-v16",
+    "japanese": "左",
+    "reading": "hidari",
+    "english": "left side",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-17",
+    "authoredIndex": 0,
+    "id": "l17-v01",
+    "japanese": "くすり",
+    "reading": "kusuri",
+    "english": "medicine",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-17",
+    "authoredIndex": 1,
+    "id": "l17-v02",
+    "japanese": "びょうき",
+    "reading": "byouki",
+    "english": "illness",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-17",
+    "authoredIndex": 2,
+    "id": "l17-v03",
+    "japanese": "ねつ",
+    "reading": "netsu",
+    "english": "fever",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-17",
+    "authoredIndex": 3,
+    "id": "l17-v04",
+    "japanese": "せき",
+    "reading": "seki",
+    "english": "cough",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-17",
+    "authoredIndex": 4,
+    "id": "l17-v05",
+    "japanese": "いたい",
+    "reading": "itai",
+    "english": "painful; sore",
+    "partOfSpeech": "い-adjective"
+  },
+  {
+    "lessonId": "lesson-17",
+    "authoredIndex": 5,
+    "id": "l17-v06",
+    "japanese": "休みます",
+    "reading": "yasumimasu",
+    "english": "rest; take time off",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-17",
+    "authoredIndex": 6,
+    "id": "l17-v07",
+    "japanese": "飲みます",
+    "reading": "nomimasu",
+    "english": "drink; take medicine",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-17",
+    "authoredIndex": 7,
+    "id": "l17-v08",
+    "japanese": "出します",
+    "reading": "dashimasu",
+    "english": "submit; take out; send",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-17",
+    "authoredIndex": 8,
+    "id": "l17-v09",
+    "japanese": "わすれます",
+    "reading": "wasuremasu",
+    "english": "forget",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-17",
+    "authoredIndex": 9,
+    "id": "l17-v10",
+    "japanese": "書類",
+    "reading": "shorui",
+    "english": "document; paperwork",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-17",
+    "authoredIndex": 10,
+    "id": "l17-v11",
+    "japanese": "ほけんしょう",
+    "reading": "hokenshou",
+    "english": "health insurance card",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-17",
+    "authoredIndex": 11,
+    "id": "l17-v12",
+    "japanese": "よやく",
+    "reading": "yoyaku",
+    "english": "appointment; reservation",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-17",
+    "authoredIndex": 12,
+    "id": "l17-v13",
+    "japanese": "しめきり",
+    "reading": "shimekiri",
+    "english": "deadline",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-17",
+    "authoredIndex": 13,
+    "id": "l17-v14",
+    "japanese": "大切",
+    "reading": "taisetsu",
+    "english": "important; precious",
+    "partOfSpeech": "な-adjective"
+  },
+  {
+    "lessonId": "lesson-17",
+    "authoredIndex": 14,
+    "id": "l17-v15",
+    "japanese": "むりを します",
+    "reading": "muri o shimasu",
+    "english": "overexert oneself",
+    "partOfSpeech": "expression"
+  },
+  {
+    "lessonId": "lesson-17",
+    "authoredIndex": 15,
+    "id": "l17-v16",
+    "japanese": "お大事に",
+    "reading": "odaiji ni",
+    "english": "Take care; get well soon",
+    "partOfSpeech": "expression"
+  },
+  {
+    "lessonId": "lesson-18",
+    "authoredIndex": 0,
+    "id": "l18-v01",
+    "japanese": "しゅみ",
+    "reading": "shumi",
+    "english": "hobby",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-18",
+    "authoredIndex": 1,
+    "id": "l18-v02",
+    "japanese": "ひく",
+    "reading": "hiku",
+    "english": "to play a stringed or keyboard instrument",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-18",
+    "authoredIndex": 2,
+    "id": "l18-v03",
+    "japanese": "およぐ",
+    "reading": "oyogu",
+    "english": "to swim",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-18",
+    "authoredIndex": 3,
+    "id": "l18-v04",
+    "japanese": "あつめる",
+    "reading": "atsumeru",
+    "english": "to collect",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-18",
+    "authoredIndex": 4,
+    "id": "l18-v05",
+    "japanese": "なおす",
+    "reading": "naosu",
+    "english": "to repair; fix",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-18",
+    "authoredIndex": 5,
+    "id": "l18-v06",
+    "japanese": "うんてんする",
+    "reading": "unten suru",
+    "english": "to drive",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-18",
+    "authoredIndex": 6,
+    "id": "l18-v07",
+    "japanese": "よやくする",
+    "reading": "yoyaku suru",
+    "english": "to reserve",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-18",
+    "authoredIndex": 7,
+    "id": "l18-v08",
+    "japanese": "さんかする",
+    "reading": "sanka suru",
+    "english": "to participate",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-18",
+    "authoredIndex": 8,
+    "id": "l18-v09",
+    "japanese": "れんしゅうする",
+    "reading": "renshuu suru",
+    "english": "to practice",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-18",
+    "authoredIndex": 9,
+    "id": "l18-v10",
+    "japanese": "りょうり",
+    "reading": "ryouri",
+    "english": "cooking; cuisine",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-18",
+    "authoredIndex": 10,
+    "id": "l18-v11",
+    "japanese": "しゃしん",
+    "reading": "shashin",
+    "english": "photograph",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-18",
+    "authoredIndex": 11,
+    "id": "l18-v12",
+    "japanese": "きって",
+    "reading": "kitte",
+    "english": "postage stamp",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-18",
+    "authoredIndex": 12,
+    "id": "l18-v13",
+    "japanese": "ギター",
+    "reading": "gitaa",
+    "english": "guitar",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-18",
+    "authoredIndex": 13,
+    "id": "l18-v14",
+    "japanese": "でんげん",
+    "reading": "dengen",
+    "english": "power switch; power supply",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-18",
+    "authoredIndex": 14,
+    "id": "l18-v15",
+    "japanese": "こうりゅうかい",
+    "reading": "kouryuukai",
+    "english": "exchange gathering",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-18",
+    "authoredIndex": 15,
+    "id": "l18-v16",
+    "japanese": "じゅんび",
+    "reading": "junbi",
+    "english": "preparation",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-19",
+    "authoredIndex": 0,
+    "id": "l19-v01",
+    "japanese": "けいけん",
+    "reading": "keiken",
+    "english": "experience",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-19",
+    "authoredIndex": 1,
+    "id": "l19-v02",
+    "japanese": "のぼる",
+    "reading": "noboru",
+    "english": "to climb",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-19",
+    "authoredIndex": 2,
+    "id": "l19-v03",
+    "japanese": "とまる",
+    "reading": "tomaru",
+    "english": "to stay overnight",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-19",
+    "authoredIndex": 3,
+    "id": "l19-v04",
+    "japanese": "うえる",
+    "reading": "ueru",
+    "english": "to plant",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-19",
+    "authoredIndex": 4,
+    "id": "l19-v05",
+    "japanese": "かわる",
+    "reading": "kawaru",
+    "english": "to change",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-19",
+    "authoredIndex": 5,
+    "id": "l19-v06",
+    "japanese": "なれる",
+    "reading": "nareru",
+    "english": "to get used to",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-19",
+    "authoredIndex": 6,
+    "id": "l19-v07",
+    "japanese": "うんどうする",
+    "reading": "undou suru",
+    "english": "to exercise",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-19",
+    "authoredIndex": 7,
+    "id": "l19-v08",
+    "japanese": "まつり",
+    "reading": "matsuri",
+    "english": "festival",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-19",
+    "authoredIndex": 8,
+    "id": "l19-v09",
+    "japanese": "おんせん",
+    "reading": "onsen",
+    "english": "hot spring",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-19",
+    "authoredIndex": 9,
+    "id": "l19-v10",
+    "japanese": "かいがん",
+    "reading": "kaigan",
+    "english": "coast; seaside",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-19",
+    "authoredIndex": 10,
+    "id": "l19-v11",
+    "japanese": "もり",
+    "reading": "mori",
+    "english": "forest; woods",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-19",
+    "authoredIndex": 11,
+    "id": "l19-v12",
+    "japanese": "けしき",
+    "reading": "keshiki",
+    "english": "scenery",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-19",
+    "authoredIndex": 12,
+    "id": "l19-v13",
+    "japanese": "さいきん",
+    "reading": "saikin",
+    "english": "recently",
+    "partOfSpeech": "adverb"
+  },
+  {
+    "lessonId": "lesson-19",
+    "authoredIndex": 13,
+    "id": "l19-v14",
+    "japanese": "だんだん",
+    "reading": "dandan",
+    "english": "gradually",
+    "partOfSpeech": "adverb"
+  },
+  {
+    "lessonId": "lesson-19",
+    "authoredIndex": 14,
+    "id": "l19-v15",
+    "japanese": "つよい",
+    "reading": "tsuyoi",
+    "english": "strong",
+    "partOfSpeech": "い-adjective"
+  },
+  {
+    "lessonId": "lesson-19",
+    "authoredIndex": 15,
+    "id": "l19-v16",
+    "japanese": "しずか",
+    "reading": "shizuka",
+    "english": "quiet",
+    "partOfSpeech": "な-adjective"
+  },
+  {
+    "lessonId": "lesson-20",
+    "authoredIndex": 0,
+    "id": "l20-v01",
+    "japanese": "ともだち",
+    "reading": "tomodachi",
+    "english": "friend",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-20",
+    "authoredIndex": 1,
+    "id": "l20-v02",
+    "japanese": "こんど",
+    "reading": "kondo",
+    "english": "next time; this coming",
+    "partOfSpeech": "noun/adverb"
+  },
+  {
+    "lessonId": "lesson-20",
+    "authoredIndex": 2,
+    "id": "l20-v03",
+    "japanese": "よてい",
+    "reading": "yotei",
+    "english": "plan; schedule",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-20",
+    "authoredIndex": 3,
+    "id": "l20-v04",
+    "japanese": "つごう",
+    "reading": "tsugou",
+    "english": "convenience; availability",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-20",
+    "authoredIndex": 4,
+    "id": "l20-v05",
+    "japanese": "ひま",
+    "reading": "hima",
+    "english": "free; not busy",
+    "partOfSpeech": "な-adjective"
+  },
+  {
+    "lessonId": "lesson-20",
+    "authoredIndex": 5,
+    "id": "l20-v06",
+    "japanese": "ほんとう",
+    "reading": "hontou",
+    "english": "really; truth",
+    "partOfSpeech": "noun/adverb"
+  },
+  {
+    "lessonId": "lesson-20",
+    "authoredIndex": 6,
+    "id": "l20-v07",
+    "japanese": "たぶん",
+    "reading": "tabun",
+    "english": "probably",
+    "partOfSpeech": "adverb"
+  },
+  {
+    "lessonId": "lesson-20",
+    "authoredIndex": 7,
+    "id": "l20-v08",
+    "japanese": "もちろん",
+    "reading": "mochiron",
+    "english": "of course",
+    "partOfSpeech": "adverb"
+  },
+  {
+    "lessonId": "lesson-20",
+    "authoredIndex": 8,
+    "id": "l20-v09",
+    "japanese": "まだ",
+    "reading": "mada",
+    "english": "not yet; still",
+    "partOfSpeech": "adverb"
+  },
+  {
+    "lessonId": "lesson-20",
+    "authoredIndex": 9,
+    "id": "l20-v10",
+    "japanese": "もう",
+    "reading": "mou",
+    "english": "already; another",
+    "partOfSpeech": "adverb"
+  },
+  {
+    "lessonId": "lesson-20",
+    "authoredIndex": 10,
+    "id": "l20-v11",
+    "japanese": "さそう",
+    "reading": "sasou",
+    "english": "to invite",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-20",
+    "authoredIndex": 11,
+    "id": "l20-v12",
+    "japanese": "もってくる",
+    "reading": "motte kuru",
+    "english": "to bring",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-20",
+    "authoredIndex": 12,
+    "id": "l20-v13",
+    "japanese": "かえる",
+    "reading": "kaeru",
+    "english": "to go home; return",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-20",
+    "authoredIndex": 13,
+    "id": "l20-v14",
+    "japanese": "ゲーム",
+    "reading": "geemu",
+    "english": "game",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-20",
+    "authoredIndex": 14,
+    "id": "l20-v15",
+    "japanese": "おかし",
+    "reading": "okashi",
+    "english": "snack; sweets",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-20",
+    "authoredIndex": 15,
+    "id": "l20-v16",
+    "japanese": "ざんねん",
+    "reading": "zannen",
+    "english": "unfortunate; a pity",
+    "partOfSpeech": "な-adjective"
+  },
+  {
+    "lessonId": "lesson-21",
+    "authoredIndex": 0,
+    "id": "l21-v01",
+    "japanese": "おもう",
+    "reading": "omou",
+    "english": "to think",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-21",
+    "authoredIndex": 1,
+    "id": "l21-v02",
+    "japanese": "いう",
+    "reading": "iu",
+    "english": "to say",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-21",
+    "authoredIndex": 2,
+    "id": "l21-v03",
+    "japanese": "しらべる",
+    "reading": "shiraberu",
+    "english": "to investigate; look up",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-21",
+    "authoredIndex": 3,
+    "id": "l21-v04",
+    "japanese": "ふえる",
+    "reading": "fueru",
+    "english": "to increase",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-21",
+    "authoredIndex": 4,
+    "id": "l21-v05",
+    "japanese": "へる",
+    "reading": "heru",
+    "english": "to decrease",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-21",
+    "authoredIndex": 5,
+    "id": "l21-v06",
+    "japanese": "へらす",
+    "reading": "herasu",
+    "english": "to reduce something",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-21",
+    "authoredIndex": 6,
+    "id": "l21-v07",
+    "japanese": "けいかく",
+    "reading": "keikaku",
+    "english": "plan; project",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-21",
+    "authoredIndex": 7,
+    "id": "l21-v08",
+    "japanese": "いけん",
+    "reading": "iken",
+    "english": "opinion",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-21",
+    "authoredIndex": 8,
+    "id": "l21-v09",
+    "japanese": "ニュース",
+    "reading": "nyuusu",
+    "english": "news",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-21",
+    "authoredIndex": 9,
+    "id": "l21-v10",
+    "japanese": "かんきょう",
+    "reading": "kankyou",
+    "english": "environment",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-21",
+    "authoredIndex": 10,
+    "id": "l21-v11",
+    "japanese": "ごみ",
+    "reading": "gomi",
+    "english": "rubbish; waste",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-21",
+    "authoredIndex": 11,
+    "id": "l21-v12",
+    "japanese": "こうつう",
+    "reading": "koutsuu",
+    "english": "transportation; traffic",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-21",
+    "authoredIndex": 12,
+    "id": "l21-v13",
+    "japanese": "しょうらい",
+    "reading": "shourai",
+    "english": "future",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-21",
+    "authoredIndex": 13,
+    "id": "l21-v14",
+    "japanese": "たぶん",
+    "reading": "tabun",
+    "english": "probably",
+    "partOfSpeech": "adverb"
+  },
+  {
+    "lessonId": "lesson-21",
+    "authoredIndex": 14,
+    "id": "l21-v15",
+    "japanese": "きっと",
+    "reading": "kitto",
+    "english": "surely; almost certainly",
+    "partOfSpeech": "adverb"
+  },
+  {
+    "lessonId": "lesson-21",
+    "authoredIndex": 15,
+    "id": "l21-v16",
+    "japanese": "わかりやすい",
+    "reading": "wakariyasui",
+    "english": "easy to understand",
+    "partOfSpeech": "い-adjective"
+  },
+  {
+    "lessonId": "lesson-22",
+    "authoredIndex": 0,
+    "id": "l22-v01",
+    "japanese": "きる",
+    "reading": "kiru",
+    "english": "to wear (upper body)",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-22",
+    "authoredIndex": 1,
+    "id": "l22-v02",
+    "japanese": "はく",
+    "reading": "haku",
+    "english": "to wear (lower body or footwear)",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-22",
+    "authoredIndex": 2,
+    "id": "l22-v03",
+    "japanese": "かぶる",
+    "reading": "kaburu",
+    "english": "to wear (on the head)",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-22",
+    "authoredIndex": 3,
+    "id": "l22-v04",
+    "japanese": "つくる",
+    "reading": "tsukuru",
+    "english": "to make",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-22",
+    "authoredIndex": 4,
+    "id": "l22-v05",
+    "japanese": "かりる",
+    "reading": "kariru",
+    "english": "to rent; borrow",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-22",
+    "authoredIndex": 5,
+    "id": "l22-v06",
+    "japanese": "さがす",
+    "reading": "sagasu",
+    "english": "to look for",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-22",
+    "authoredIndex": 6,
+    "id": "l22-v07",
+    "japanese": "しょうかいする",
+    "reading": "shoukai suru",
+    "english": "to introduce",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-22",
+    "authoredIndex": 7,
+    "id": "l22-v08",
+    "japanese": "さくひん",
+    "reading": "sakuhin",
+    "english": "work of art; creation",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-22",
+    "authoredIndex": 8,
+    "id": "l22-v09",
+    "japanese": "さら",
+    "reading": "sara",
+    "english": "plate; dish",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-22",
+    "authoredIndex": 9,
+    "id": "l22-v10",
+    "japanese": "かばん",
+    "reading": "kaban",
+    "english": "bag",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-22",
+    "authoredIndex": 10,
+    "id": "l22-v11",
+    "japanese": "ぼうし",
+    "reading": "boushi",
+    "english": "hat",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-22",
+    "authoredIndex": 11,
+    "id": "l22-v12",
+    "japanese": "めがね",
+    "reading": "megane",
+    "english": "glasses",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-22",
+    "authoredIndex": 12,
+    "id": "l22-v13",
+    "japanese": "まど",
+    "reading": "mado",
+    "english": "window",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-22",
+    "authoredIndex": 13,
+    "id": "l22-v14",
+    "japanese": "やちん",
+    "reading": "yachin",
+    "english": "rent",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-22",
+    "authoredIndex": 14,
+    "id": "l22-v15",
+    "japanese": "おおや",
+    "reading": "ooya",
+    "english": "landlord; landlady",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-22",
+    "authoredIndex": 15,
+    "id": "l22-v16",
+    "japanese": "あかるい",
+    "reading": "akarui",
+    "english": "bright; cheerful",
+    "partOfSpeech": "い-adjective"
+  },
+  {
+    "lessonId": "lesson-22",
+    "authoredIndex": 16,
+    "id": "l22-v17",
+    "japanese": "かるい",
+    "reading": "karui",
+    "english": "light in weight",
+    "partOfSpeech": "い-adjective"
+  },
+  {
+    "lessonId": "lesson-23",
+    "authoredIndex": 0,
+    "id": "l23-v01",
+    "japanese": "おす",
+    "reading": "osu",
+    "english": "to push; press",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-23",
+    "authoredIndex": 1,
+    "id": "l23-v02",
+    "japanese": "ひく",
+    "reading": "hiku",
+    "english": "to pull",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-23",
+    "authoredIndex": 2,
+    "id": "l23-v03",
+    "japanese": "まわす",
+    "reading": "mawasu",
+    "english": "to turn; rotate",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-23",
+    "authoredIndex": 3,
+    "id": "l23-v04",
+    "japanese": "さわる",
+    "reading": "sawaru",
+    "english": "to touch",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-23",
+    "authoredIndex": 4,
+    "id": "l23-v05",
+    "japanese": "うごく",
+    "reading": "ugoku",
+    "english": "to move; operate",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-23",
+    "authoredIndex": 5,
+    "id": "l23-v06",
+    "japanese": "とまる",
+    "reading": "tomaru",
+    "english": "to stop",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-23",
+    "authoredIndex": 6,
+    "id": "l23-v07",
+    "japanese": "まがる",
+    "reading": "magaru",
+    "english": "to turn",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-23",
+    "authoredIndex": 7,
+    "id": "l23-v08",
+    "japanese": "わたる",
+    "reading": "wataru",
+    "english": "to cross",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-23",
+    "authoredIndex": 8,
+    "id": "l23-v09",
+    "japanese": "こしょう",
+    "reading": "koshou",
+    "english": "breakdown; malfunction",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-23",
+    "authoredIndex": 9,
+    "id": "l23-v10",
+    "japanese": "きかい",
+    "reading": "kikai",
+    "english": "machine",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-23",
+    "authoredIndex": 10,
+    "id": "l23-v11",
+    "japanese": "せつめい",
+    "reading": "setsumei",
+    "english": "explanation; instructions",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-23",
+    "authoredIndex": 11,
+    "id": "l23-v12",
+    "japanese": "しんごう",
+    "reading": "shingou",
+    "english": "traffic light",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-23",
+    "authoredIndex": 12,
+    "id": "l23-v13",
+    "japanese": "こうさてん",
+    "reading": "kousaten",
+    "english": "intersection",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-23",
+    "authoredIndex": 13,
+    "id": "l23-v14",
+    "japanese": "かど",
+    "reading": "kado",
+    "english": "corner",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-23",
+    "authoredIndex": 14,
+    "id": "l23-v15",
+    "japanese": "はし",
+    "reading": "hashi",
+    "english": "bridge",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-23",
+    "authoredIndex": 15,
+    "id": "l23-v16",
+    "japanese": "まっすぐ",
+    "reading": "massugu",
+    "english": "straight ahead",
+    "partOfSpeech": "adverb"
+  },
+  {
+    "lessonId": "lesson-23",
+    "authoredIndex": 16,
+    "id": "l23-v17",
+    "japanese": "おと",
+    "reading": "oto",
+    "english": "sound",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-24",
+    "authoredIndex": 0,
+    "id": "l24-v01",
+    "japanese": "てつだう",
+    "reading": "tetsudau",
+    "english": "to help",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-24",
+    "authoredIndex": 1,
+    "id": "l24-v02",
+    "japanese": "はこぶ",
+    "reading": "hakobu",
+    "english": "to carry; transport",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-24",
+    "authoredIndex": 2,
+    "id": "l24-v03",
+    "japanese": "なおす",
+    "reading": "naosu",
+    "english": "to repair; correct",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-24",
+    "authoredIndex": 3,
+    "id": "l24-v04",
+    "japanese": "おくる",
+    "reading": "okuru",
+    "english": "to escort; send",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-24",
+    "authoredIndex": 4,
+    "id": "l24-v05",
+    "japanese": "ひろう",
+    "reading": "hirou",
+    "english": "to pick up",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-24",
+    "authoredIndex": 5,
+    "id": "l24-v06",
+    "japanese": "つれていく",
+    "reading": "tsurete iku",
+    "english": "to take someone along",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-24",
+    "authoredIndex": 6,
+    "id": "l24-v07",
+    "japanese": "つれてくる",
+    "reading": "tsurete kuru",
+    "english": "to bring someone along",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-24",
+    "authoredIndex": 7,
+    "id": "l24-v08",
+    "japanese": "おしえる",
+    "reading": "oshieru",
+    "english": "to teach; tell",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-24",
+    "authoredIndex": 8,
+    "id": "l24-v09",
+    "japanese": "かす",
+    "reading": "kasu",
+    "english": "to lend",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-24",
+    "authoredIndex": 9,
+    "id": "l24-v10",
+    "japanese": "どうぐ",
+    "reading": "dougu",
+    "english": "tool; equipment",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-24",
+    "authoredIndex": 10,
+    "id": "l24-v11",
+    "japanese": "にもつ",
+    "reading": "nimotsu",
+    "english": "luggage; load",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-24",
+    "authoredIndex": 11,
+    "id": "l24-v12",
+    "japanese": "はこ",
+    "reading": "hako",
+    "english": "box",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-24",
+    "authoredIndex": 12,
+    "id": "l24-v13",
+    "japanese": "かんばん",
+    "reading": "kanban",
+    "english": "signboard",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-24",
+    "authoredIndex": 13,
+    "id": "l24-v14",
+    "japanese": "ベンチ",
+    "reading": "benchi",
+    "english": "bench",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-24",
+    "authoredIndex": 14,
+    "id": "l24-v15",
+    "japanese": "うえかた",
+    "reading": "uekata",
+    "english": "way of planting",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-24",
+    "authoredIndex": 15,
+    "id": "l24-v16",
+    "japanese": "おれい",
+    "reading": "orei",
+    "english": "thanks; expression of gratitude",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-24",
+    "authoredIndex": 16,
+    "id": "l24-v17",
+    "japanese": "たすかる",
+    "reading": "tasukaru",
+    "english": "to be helped; be saved",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-25",
+    "authoredIndex": 0,
+    "id": "l25-v01",
+    "japanese": "てんきん",
+    "reading": "tenkin",
+    "english": "job transfer",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-25",
+    "authoredIndex": 1,
+    "id": "l25-v02",
+    "japanese": "ひっこす",
+    "reading": "hikkosu",
+    "english": "to move house",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-25",
+    "authoredIndex": 2,
+    "id": "l25-v03",
+    "japanese": "りゅうがくする",
+    "reading": "ryuugaku suru",
+    "english": "to study abroad",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-25",
+    "authoredIndex": 3,
+    "id": "l25-v04",
+    "japanese": "つづける",
+    "reading": "tsuzukeru",
+    "english": "to continue",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-25",
+    "authoredIndex": 4,
+    "id": "l25-v05",
+    "japanese": "やめる",
+    "reading": "yameru",
+    "english": "to quit; stop",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-25",
+    "authoredIndex": 5,
+    "id": "l25-v06",
+    "japanese": "きめる",
+    "reading": "kimeru",
+    "english": "to decide",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-25",
+    "authoredIndex": 6,
+    "id": "l25-v07",
+    "japanese": "えらぶ",
+    "reading": "erabu",
+    "english": "to choose",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-25",
+    "authoredIndex": 7,
+    "id": "l25-v08",
+    "japanese": "こまる",
+    "reading": "komaru",
+    "english": "to be in trouble",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-25",
+    "authoredIndex": 8,
+    "id": "l25-v09",
+    "japanese": "そうだんする",
+    "reading": "soudan suru",
+    "english": "to consult; discuss a problem",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-25",
+    "authoredIndex": 9,
+    "id": "l25-v10",
+    "japanese": "れんらくする",
+    "reading": "renraku suru",
+    "english": "to contact",
+    "partOfSpeech": "verb"
+  },
+  {
+    "lessonId": "lesson-25",
+    "authoredIndex": 10,
+    "id": "l25-v11",
+    "japanese": "ゆめ",
+    "reading": "yume",
+    "english": "dream; aspiration",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-25",
+    "authoredIndex": 11,
+    "id": "l25-v12",
+    "japanese": "きかい",
+    "reading": "kikai",
+    "english": "opportunity; chance",
+    "partOfSpeech": "noun"
+  },
+  {
+    "lessonId": "lesson-25",
+    "authoredIndex": 12,
+    "id": "l25-v13",
+    "japanese": "べつべつ",
+    "reading": "betsubetsu",
+    "english": "separately",
+    "partOfSpeech": "な-adjective/adverb"
+  },
+  {
+    "lessonId": "lesson-25",
+    "authoredIndex": 13,
+    "id": "l25-v14",
+    "japanese": "かならず",
+    "reading": "kanarazu",
+    "english": "without fail",
+    "partOfSpeech": "adverb"
+  },
+  {
+    "lessonId": "lesson-25",
+    "authoredIndex": 14,
+    "id": "l25-v15",
+    "japanese": "もし",
+    "reading": "moshi",
+    "english": "if; supposing",
+    "partOfSpeech": "adverb"
+  },
+  {
+    "lessonId": "lesson-25",
+    "authoredIndex": 15,
+    "id": "l25-v16",
+    "japanese": "さびしい",
+    "reading": "sabishii",
+    "english": "lonely; sad to be apart",
+    "partOfSpeech": "い-adjective"
+  },
+  {
+    "lessonId": "lesson-25",
+    "authoredIndex": 16,
+    "id": "l25-v17",
+    "japanese": "げんき",
+    "reading": "genki",
+    "english": "well; energetic",
+    "partOfSpeech": "な-adjective"
+  }
+]

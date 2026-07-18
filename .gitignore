@@ -12,3 +12,11 @@ ios/
 .pnpm-store/
 .worktrees/
 .superpowers/
+
+# Private Anki preparation inputs and generated personal vocabulary
+*.apkg
+*.anki2
+*.anki21b
+local-source/
+.local/
+*.personal-vocabulary.json
