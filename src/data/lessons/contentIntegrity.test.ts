@@ -1,6 +1,10 @@
+import { createHash } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
 
+import authoredV1 from '../../test/fixtures/authored-vocabulary-v1.json';
+import { AUTHORED_BASELINE_FINGERPRINT, canonicalizeAuthoredVocabulary } from '../authoredBaseline';
 import { curriculum } from '../curriculum';
+import { isKanaReading } from '../../services/vocabularyText';
 import { lessons } from '.';
 
 describe('complete curriculum', () => {
@@ -23,6 +27,27 @@ describe('complete curriculum', () => {
       ...lesson.exercises.map((item) => item.id),
     ]);
     expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  it('migrates all and only the 428 authored vocabulary readings to kana', () => {
+    const words = lessons.flatMap((lesson) =>
+      lesson.vocabulary.map((word, authoredIndex) => ({
+        lessonId: lesson.id,
+        authoredIndex,
+        id: word.id,
+        japanese: word.japanese,
+        english: word.english,
+        partOfSpeech: word.partOfSpeech,
+        reading: word.reading,
+      })),
+    );
+    expect(words).toHaveLength(428);
+    expect(words.every(({ reading }) => isKanaReading(reading))).toBe(true);
+    expect(words.map(({ reading: _reading, ...word }) => word)).toEqual(
+      authoredV1.map(({ reading: _reading, ...word }) => word),
+    );
+    const hash = createHash('sha256').update(canonicalizeAuthoredVocabulary(lessons), 'utf8').digest('hex');
+    expect(hash).toBe(AUTHORED_BASELINE_FINGERPRINT);
   });
 
   it.each(Array.from({ length: 25 }, (_, index) => index + 1))(
