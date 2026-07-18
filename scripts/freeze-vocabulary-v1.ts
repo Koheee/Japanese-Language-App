@@ -43,7 +43,7 @@ const reviewCards = Object.fromEntries(
       kind: 'vocabulary',
       prompt: word.japanese,
       answer: word.english,
-      supportingText: `${word.reading} Â· ${word.partOfSpeech}`,
+      supportingText: `${word.reading} · ${word.partOfSpeech}`,
       dueAt: frozenAt,
       intervalDays: index % 7,
       repetitions: index % 4,

@@ -1,6 +1,8 @@
 import { createHash } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
 
+import authoredVocabulary from '../test/fixtures/authored-vocabulary-v1.json';
+import studyState from '../test/fixtures/study-state-v1.json';
 import { lessons } from './lessons';
 import {
   AUTHORED_BASELINE_FINGERPRINT,
@@ -23,9 +25,25 @@ describe('authored vocabulary baseline', () => {
     const changed = lessons.map((lesson, lessonIndex) => ({
       ...lesson,
       vocabulary: lesson.vocabulary.map((word, wordIndex) =>
-        lessonIndex === 0 && wordIndex === 0 ? { ...word, japanese: `${word.japanese}åˆ¥` } : word,
+        lessonIndex === 0 && wordIndex === 0 ? { ...word, japanese: `${word.japanese}別` } : word,
       ),
     }));
     expect(sha256(canonicalizeAuthoredVocabulary(changed))).not.toBe(AUTHORED_BASELINE_FINGERPRINT);
+  });
+
+  it('freezes vocabulary review supporting text with a single middle dot', () => {
+    const authoredById = new Map(authoredVocabulary.map((word) => [word.id, word]));
+    const vocabularyCards = Object.values(studyState.reviewCards).filter(
+      (card) => card.kind === 'vocabulary',
+    );
+
+    expect(vocabularyCards).toHaveLength(428);
+    for (const card of vocabularyCards) {
+      const word = authoredById.get(card.id.replace('review-', ''));
+      if (!word) {
+        throw new Error(`Missing authored vocabulary for ${card.id}`);
+      }
+      expect(card.supportingText).toBe(`${word.reading} \u00B7 ${word.partOfSpeech}`);
+    }
   });
 });
