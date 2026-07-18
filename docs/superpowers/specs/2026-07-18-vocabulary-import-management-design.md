@@ -7,7 +7,7 @@
 
 The supplied Anki package contains 1,372 notes arranged into 25 lesson subdecks. Each note has seven fields: source ID, Japanese word, kana reading, romaji, English meaning, category, and picture. The package also contains 1,372 audio files and 1,328 images.
 
-The app currently bundles 428 authored vocabulary items. Normalized, same-lesson comparison finds 82 matches, leaving exactly 1,290 text entries to import. The user chose to preserve the deck's lesson placement, so a word found in another lesson does not suppress its occurrence in the source lesson.
+The app currently bundles 428 authored vocabulary items. Normalized, same-lesson comparison finds 82 source-to-authored matches. The source also contains one same-lesson normalized-headword duplicate in Lesson 10. Applying the approved same-lesson rule keeps the lower numeric source ID and skips the later duplicate, leaving exactly 1,289 text entries to import. The user chose to preserve the deck's lesson placement, so a word found in another lesson does not suppress its occurrence in the source lesson. The real source IDs and headword remain private and are represented only by invented values in public tests.
 
 The app and GitHub Pages site are public, while redistribution rights for the supplied deck's glosses, categories, and lesson arrangement have not been documented. Personal use does not make a public repository private. The safe default is therefore to generate a local, ignored JSON file that the user imports into browser storage on Windows and iPhone. The `.apkg`, generated personal file, romaji, audio, pictures, and Anki markup are never committed or included in the public web bundle. Promoting deck-derived text into the public baseline requires a separate review with documented redistribution permission.
 
@@ -15,8 +15,8 @@ Existing authored readings that are currently romanized are converted to kana as
 
 ## Goals
 
-- Generate exactly 1,290 valid personal records and load them into the user's chosen device while preserving Lessons 1–25.
-- Reach 1,718 effective vocabulary records on a device after the personal import.
+- Generate exactly 1,289 valid personal records and load them into the user's chosen device while preserving Lessons 1–25.
+- Reach 1,717 effective vocabulary records on a clean device with no hidden or custom records after the personal import.
 - Keep the 428-item public authored baseline stable apart from converting readings to kana.
 - Let the user search, add, edit, hide, restore, export, and import vocabulary on Windows and an installed iPhone PWA.
 - Store personal changes locally on each device without a backend.
@@ -50,7 +50,7 @@ The importer selects the unique note type whose ordered field names are exactly 
 10. Clean the category by taking the English portion after `/` when present; otherwise keep the cleaned source category.
 11. Produce a stable ID containing the lesson and numeric source ID, and sort numerically by source ID rather than lexically.
 
-The output includes the 1,290 records, source lesson, stable source ID, format version, authored-baseline version, generation timestamp, and a count/checksum summary. The authored-baseline version is a committed identifier containing a SHA-256 fingerprint of lesson IDs plus ordered authored vocabulary IDs, so moved or reused IDs are detectable. The local verification command must report exactly 1,290 accepted and 82 skipped same-lesson duplicates, with no duplicate IDs. Public CI tests the importer against synthetic fixtures; the source package and generated personal output are not available to CI.
+The output includes the 1,289 records, source lesson, stable source ID, format version, authored-baseline version, generation timestamp, and a count/checksum summary. The authored-baseline version is a committed identifier containing a SHA-256 fingerprint of each lesson ID plus the ordered `(vocabulary ID, normalized Japanese headword)` pairs. Headwords use Unicode NFKC with Unicode whitespace removed before hashing, so moved IDs and semantic reuse of a positional ID are both detectable. The frozen current value is `course-v1-25859789e2a3679f09b1ebe6a5f3e981c3c164bf0b8dec7537cd26a0bf933f03`. The local verification command must report exactly 1,289 accepted and 83 skipped same-lesson duplicates: 82 against the authored baseline and one against an earlier accepted source record. Lesson 10 must retain the lower numeric source ID, skip the later duplicate, and contain 68 accepted records without recording either real ID in a tracked file. Public CI tests the importer against wholly invented synthetic fixtures; the source package and generated personal output are not available to CI.
 
 ## Vocabulary and Persistence Models
 
@@ -135,7 +135,7 @@ A differing authored-baseline version produces a preview warning, not silent fai
 
 Import is an explicit replacement, not a merge. Its affected ID set is the union of old/new device-record IDs and old/new hidden IDs. The next state removes review cards owned by old local records not present in the backup, restores valid incoming associated cards, changes suspension for baseline IDs whose hidden state changed, and reconciles missing cards only for started lessons. Incoming records in unstarted lessons receive no card until that lesson starts. Vocabulary and grammar schedules outside the affected set remain byte-for-byte unchanged.
 
-The same atomic write stores a recovery snapshot containing the previous vocabulary layer, affected review cards, baseline version, and import time. Undo last import survives reload. It is invalidated by the next successful add, edit, hide, restore, import, or undo, preventing it from overwriting later work.
+The same atomic write stores a recovery snapshot containing the previous vocabulary layer, affected review cards, baseline version, and import time. Undo last import survives reload. It is invalidated by the next successful add, edit, hide, restore, import, or undo. A successful review rating also invalidates it when the rated card belongs to the recovery snapshot's affected ID set; unrelated review ratings and lesson progress do not. This prevents Undo from overwriting vocabulary or scheduling work completed after the import.
 
 Export uses Web Share only when both `navigator.share` and `navigator.canShare({ files })` accept the generated file; otherwise it creates a download and revokes the object URL. User-cancelled sharing or picking is not an error. Import resets the file input so the same file can be selected again.
 
@@ -163,7 +163,7 @@ Public Vitest coverage verifies:
 - Backup validation, baseline-version warnings, exact replacement scope, tombstones, recovery invalidation, and malicious/malformed inputs.
 - Failed persistence leaves the prior complete state unchanged after reload.
 
-Local source verification additionally asserts exactly 1,290 generated records, 82 same-lesson skips, expected per-lesson counts, unique IDs, valid lesson mapping, required readings, and absence of romaji, sound tags, image markup, and HTML. The generated file is inspected by `git status` and must remain ignored.
+Local source verification additionally asserts exactly 1,289 generated records, 83 same-lesson skips (82 authored matches plus one source-internal duplicate), expected per-lesson counts, unique IDs, valid lesson mapping, required readings, and absence of romaji, sound tags, image markup, and HTML. The generated file is inspected by `git status` and must remain ignored.
 
 Project-wide verification includes TypeScript, all Vitest tests, and production Expo web export from a clean checkout with no `.apkg` or personal JSON present. Manual acceptance covers Windows and iPhone layout, IME composition, safe areas, persistence, offline reopening after one online load, a 2,000-record search returning within 100 ms on the target Windows PC, backup transfer, repeat file selection, share/download fallbacks, and storage-error messaging.
 
@@ -175,7 +175,7 @@ After vocabulary and grammar acceptance criteria pass, public code changes are p
 
 ## Acceptance Criteria
 
-- Local generation accepts exactly 1,290 records and a device shows 1,718 effective words after import.
+- Local generation accepts exactly 1,289 records and a clean device with no hidden or custom records shows 1,717 effective words after import.
 - A clean public checkout exports successfully without the `.apkg` and contains none of the personal deck text or media.
 - All app reading fields use kana rather than romaji; Latin text may remain only in Japanese surface forms such as genuine abbreviations, never as a reading.
 - Search remains responsive in the largest effective lesson and does not misfire during IME composition.
