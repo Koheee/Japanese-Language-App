@@ -10,6 +10,7 @@ export interface SyntheticCollectionOverrides {
   decorateFirstFields?: boolean;
   blankReadingWord?: string;
   addInventedInternalDuplicate?: boolean;
+  addNumericSourceIdAlias?: boolean;
   includeSameLessonAuthoredDuplicate?: boolean;
   includeSameLessonAuthoredBlankReading?: boolean;
   includeCrossLessonOccurrence?: boolean;
@@ -55,6 +56,10 @@ export const buildSyntheticCollection = (overrides: SyntheticCollectionOverrides
   if (overrides.addInventedInternalDuplicate) {
     notes.push({ id: 3999, noteTypeId: 101, tags: ['lesson01'], fields: ['L01-1', 'ねこ', 'ねこ', 'neko-two', 'cat-two', 'Synthetic / Animal', 'cat-two.png'].join(separator) });
     cards.push({ id: 5999, noteId: 3999, did: 1, odid: 0 });
+  }
+  if (overrides.addNumericSourceIdAlias) {
+    notes.push({ id: 4006, noteTypeId: 101, tags: ['lesson01'], fields: ['L01-02', 'いす', 'いす', 'isu', 'chair', 'Synthetic / Object', 'chair.png'].join(separator) });
+    cards.push({ id: 6006, noteId: 4006, did: 1, odid: 0 });
   }
   if (overrides.includeSameLessonAuthoredDuplicate) {
     notes.push({ id: 4004, noteTypeId: 101, tags: ['lesson01'], fields: ['L01-4', '既存語', 'きぞんご', 'existing', 'existing', 'Synthetic / Other', 'existing.png'].join(separator) });

@@ -72,6 +72,10 @@ describe('personal vocabulary importer', () => {
     expect(file.generation?.skippedEarlierPersonalCount).toBe(1);
   });
 
+  it('rejects invented source-ID aliases that collide after numeric identity normalization', () => {
+    expect(() => build({ addNumericSourceIdAlias: true })).toThrow(/Duplicate stable record identity/);
+  });
+
   it('skips normalized same-lesson authored and earlier personal words but permits cross-lesson words', () => {
     const file = build({ includeSameLessonAuthoredDuplicate: true, includeCrossLessonOccurrence: true });
     expect(file.generation).toMatchObject({ skippedAuthoredCount: 1, skippedEarlierPersonalCount: 0 });

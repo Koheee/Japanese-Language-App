@@ -126,6 +126,20 @@ export const buildPersonalImport = ({
     .filter((note) => note.noteTypeId === matchingNoteTypes[0]!.id)
     .map(candidateFromNote)
     .sort((left, right) => left.lessonNumber - right.lessonNumber || left.sourceNumber - right.sourceNumber || left.note.id - right.note.id);
+  const candidatesByStableIdentity = new Map<string, Candidate>();
+  for (const candidate of selected) {
+    const identity = stableRecordId(candidate.lessonId, candidate.sourceNumber);
+    const previous = candidatesByStableIdentity.get(identity);
+    if (previous) {
+      const cardIds = collection.cards.filter((card) => card.noteId === candidate.note.id).map((card) => card.id);
+      throw new Error(diagnostic(
+        candidate,
+        `Duplicate stable record identity ${identity}; conflictsWithSourceId=${previous.sourceId}; conflictsWithNoteId=${previous.note.id}`,
+        cardIds,
+      ));
+    }
+    candidatesByStableIdentity.set(identity, candidate);
+  }
   const selectedSourceIds = new Set(selected.map(({ sourceId }) => sourceId));
   for (const sourceId of readingOverrides.keys()) {
     if (!selectedSourceIds.has(sourceId)) {
