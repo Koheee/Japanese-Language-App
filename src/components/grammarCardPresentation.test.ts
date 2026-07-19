@@ -159,6 +159,13 @@ describe('grammar card presentation', () => {
 describe('GrammarCard source contract', () => {
   const source = readFileSync(join(import.meta.dirname, 'GrammarCard.tsx'), 'utf8');
 
+  it('forwards the expansion state through the explicit web ARIA alias', () => {
+    const toggleTag = source.match(/<Pressable[\s\S]*?style=\{\[[\s\S]*?styles\.insightToggle[\s\S]*?\}\s*>/)?.[0] ?? '';
+
+    expect(toggleTag).toContain('accessibilityState={insight.toggle.accessibilityState}');
+    expect(toggleTag).toContain('aria-expanded={insight.toggle.accessibilityState.expanded}');
+  });
+
   it('hides the decorative chevron from native and web accessibility trees', () => {
     const chevronTag = source.match(/<Text[^>]*style=\{styles\.insightChevron\}[^>]*>/)?.[0];
 

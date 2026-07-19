@@ -161,6 +161,7 @@ export function LessonDetailScreen({ navigation, route }: Props) {
             accessibilityLabel={`${tab.label} tab`}
             accessibilityRole="tab"
             accessibilityState={{ selected: activeTab === tab.id }}
+            aria-selected={activeTab === tab.id}
             key={tab.id}
             onPress={() => setActiveTab(tab.id)}
             style={[styles.tab, activeTab === tab.id && styles.tabActive]}

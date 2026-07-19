@@ -180,6 +180,7 @@ export function VocabularyManagerScreen({ navigation, route }: Props) {
                 accessibilityLabel={`Active words, ${lists.active.length}`}
                 accessibilityRole="tab"
                 accessibilityState={{ selected: ui.view === 'active' }}
+                aria-selected={ui.view === 'active'}
                 onPress={() => dispatch({ type: 'set-view', view: 'active' })}
                 style={[styles.tab, ui.view === 'active' && styles.tabActive]}
               >
@@ -192,6 +193,7 @@ export function VocabularyManagerScreen({ navigation, route }: Props) {
                 accessibilityLabel={`Hidden words, ${lists.hidden.length}`}
                 accessibilityRole="tab"
                 accessibilityState={{ selected: ui.view === 'hidden' }}
+                aria-selected={ui.view === 'hidden'}
                 onPress={() => dispatch({ type: 'set-view', view: 'hidden' })}
                 style={[styles.tab, ui.view === 'hidden' && styles.tabActive]}
               >

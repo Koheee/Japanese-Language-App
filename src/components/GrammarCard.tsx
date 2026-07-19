@@ -44,6 +44,7 @@ export function GrammarCard({ point, index }: { point: GrammarPoint; index: numb
         accessibilityLabel={insight.toggle.accessibilityLabel}
         accessibilityHint={insight.toggle.accessibilityHint}
         accessibilityState={insight.toggle.accessibilityState}
+        aria-expanded={insight.toggle.accessibilityState.expanded}
         onPress={() => setInsightState((current) => toggleGrammarInsight(current))}
         onFocus={() => setInsightState((current) => setGrammarInsightFocused(current, true))}
         onBlur={() => setInsightState((current) => setGrammarInsightFocused(current, false))}

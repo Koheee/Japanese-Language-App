@@ -79,7 +79,19 @@ export function ReviewScreen() {
         <Text style={styles.progressLabel}>{card.kind === 'vocabulary' ? 'WORD' : 'GRAMMAR'} · LESSON {card.lessonId.slice(-2)}</Text>
       </View>
 
-      <Pressable onPress={() => setRevealed(true)} style={[styles.card, revealed && styles.cardRevealed]}>
+      <Pressable
+        accessibilityHint={revealed
+          ? 'Choose a rating below to schedule this card.'
+          : 'Shows the answer so you can rate your recall.'}
+        accessibilityLabel={revealed
+          ? `Answer revealed for ${card.prompt}`
+          : `Reveal answer for ${card.prompt}`}
+        accessibilityRole="button"
+        accessibilityState={{ expanded: revealed }}
+        aria-expanded={revealed}
+        onPress={() => setRevealed(true)}
+        style={[styles.card, revealed && styles.cardRevealed]}
+      >
         <Text style={styles.cardKind}>{card.supportingText}</Text>
         <View style={styles.promptWrap}>
           <Text style={styles.prompt}>{card.prompt}</Text>
@@ -102,6 +114,9 @@ export function ReviewScreen() {
           <View style={styles.ratingRow}>
             {ratings.map((rating) => (
               <Pressable
+                accessibilityHint="Schedules this card using the selected recall rating"
+                accessibilityLabel={`${rating.label}, next review ${formatInterval(rating.id, card)}`}
+                accessibilityRole="button"
                 key={rating.id}
                 disabled={isRating}
                 onPress={() => handleRating(rating.id)}
