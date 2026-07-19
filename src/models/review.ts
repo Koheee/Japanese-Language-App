@@ -13,6 +13,7 @@ export interface ReviewCard {
   repetitions: number;
   ease: number;
   lastReviewedAt?: string;
+  suspended?: boolean;
 }
 
 export interface LessonProgress {

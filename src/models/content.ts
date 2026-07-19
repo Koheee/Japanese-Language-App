@@ -22,6 +22,8 @@ export interface GrammarPoint {
   };
 }
 
+export type VocabularySource = 'course' | 'personal-deck' | 'custom';
+
 export interface VocabularyItem {
   id: string;
   japanese: string;
@@ -30,6 +32,9 @@ export interface VocabularyItem {
   partOfSpeech: string;
   note?: string;
   example?: JapaneseExample;
+  category?: string;
+  source?: VocabularySource;
+  sourceId?: string;
 }
 
 export interface DialogueTurn {
