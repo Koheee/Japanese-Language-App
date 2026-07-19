@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { ProgressBar } from '../components/ProgressBar';
 import { Screen } from '../components/Screen';
 import { ReviewRating } from '../models/review';
 import { formatInterval } from '../services/srs';
+import { createActionLock } from '../state/appStateCommitter';
 import { useStudy } from '../state/StudyContext';
 import { colors, radii, shadows, spacing, typography } from '../theme/tokens';
 
@@ -19,6 +20,8 @@ export function ReviewScreen() {
   const { state, dueCards, rateReview } = useStudy();
   const [revealed, setRevealed] = useState(false);
   const [isRating, setIsRating] = useState(false);
+  const rateLockRef = useRef<ReturnType<typeof createActionLock> | null>(null);
+  const rateLock = rateLockRef.current ??= createActionLock();
   const card = dueCards[0];
   const reviewedCount = Object.values(state.reviewCards).filter((item) => item.lastReviewedAt).length;
 
@@ -41,11 +44,17 @@ export function ReviewScreen() {
   }
 
   const handleRating = async (rating: ReviewRating) => {
-    if (isRating) return;
-    setIsRating(true);
-    const result = await rateReview(card.id, rating);
-    if (result.ok) setRevealed(false);
-    setIsRating(false);
+    const work = rateLock.tryRun(async () => {
+      const cardId = card.id;
+      setIsRating(true);
+      try {
+        const result = await rateReview(cardId, rating);
+        if (result.ok) setRevealed(false);
+      } finally {
+        setIsRating(false);
+      }
+    });
+    if (work) await work;
   };
 
   return (

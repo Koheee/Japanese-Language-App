@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { DialogueBubble } from '../components/DialogueBubble';
@@ -11,6 +11,7 @@ import { SectionTitle } from '../components/SectionTitle';
 import { getLessonOutline } from '../data/curriculum';
 import { getLesson } from '../data/lessons';
 import { LearnStackParamList } from '../navigation/types';
+import { createActionLock } from '../state/appStateCommitter';
 import { useStudy } from '../state/StudyContext';
 import { colors, radii, spacing, typography } from '../theme/tokens';
 
@@ -27,6 +28,8 @@ const tabs: { id: Tab; label: string }[] = [
 export function LessonDetailScreen({ navigation, route }: Props) {
   const [activeTab, setActiveTab] = useState<Tab>('overview');
   const [isStarting, setIsStarting] = useState(false);
+  const startLockRef = useRef<ReturnType<typeof createActionLock> | null>(null);
+  const startLock = startLockRef.current ??= createActionLock();
   const { startLesson, getProgress } = useStudy();
   const lesson = getLesson(route.params.lessonId);
   const outline = getLessonOutline(route.params.lessonId);
@@ -74,11 +77,16 @@ export function LessonDetailScreen({ navigation, route }: Props) {
   }
 
   const beginPractice = async () => {
-    if (isStarting) return;
-    setIsStarting(true);
-    const result = await startLesson(lesson.id);
-    if (result.ok) navigation.navigate('Exercise', { lessonId: lesson.id });
-    setIsStarting(false);
+    const work = startLock.tryRun(async () => {
+      setIsStarting(true);
+      try {
+        const result = await startLesson(lesson.id);
+        if (result.ok) navigation.navigate('Exercise', { lessonId: lesson.id });
+      } finally {
+        setIsStarting(false);
+      }
+    });
+    if (work) await work;
   };
 
   return (

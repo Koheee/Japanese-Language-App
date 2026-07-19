@@ -13,19 +13,27 @@ export function StorageRecoveryScreen({
   message,
   retryHydration,
 }: StorageRecoveryScreenProps) {
+  const recoveryTitle = 'Your study state needs another try.';
+  const recoveryBody = 'Your saved data was not changed. Try loading it again when device storage is available.';
   const tryAgain = async () => {
     await retryHydration();
   };
 
   return (
     <Screen contentStyle={styles.page}>
-      <View style={styles.mark}><Text style={styles.markText}>!</Text></View>
-      <Text style={styles.eyebrow}>STORAGE RECOVERY</Text>
-      <Text style={styles.title}>Your study state needs another try.</Text>
-      <Text style={styles.body}>
-        Your saved data was not changed. Try loading it again when device storage is available.
-      </Text>
-      {message ? <Text style={styles.detail}>{message}</Text> : null}
+      <View
+        accessible
+        accessibilityLabel={[recoveryTitle, recoveryBody, message].filter(Boolean).join(' ')}
+        accessibilityLiveRegion="assertive"
+        accessibilityRole="alert"
+        aria-live="assertive"
+      >
+        <View style={styles.mark}><Text style={styles.markText}>!</Text></View>
+        <Text style={styles.eyebrow}>STORAGE RECOVERY</Text>
+        <Text style={styles.title}>{recoveryTitle}</Text>
+        <Text style={styles.body}>{recoveryBody}</Text>
+        {message ? <Text style={styles.detail}>{message}</Text> : null}
+      </View>
       <PrimaryButton label="Try again" onPress={tryAgain} style={styles.action} />
     </Screen>
   );

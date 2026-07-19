@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { Alert, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { PrimaryButton } from '../components/PrimaryButton';
@@ -9,6 +9,7 @@ import { getLesson } from '../data/lessons';
 import { ChoiceOption, Exercise } from '../models/content';
 import { LearnStackParamList } from '../navigation/types';
 import { checkExerciseAnswer, getAnswerLabel } from '../services/exerciseEngine';
+import { createActionLock } from '../state/appStateCommitter';
 import { useStudy } from '../state/StudyContext';
 import { colors, radii, spacing, typography } from '../theme/tokens';
 
@@ -32,6 +33,8 @@ export function ExerciseScreen({ navigation, route }: Props) {
   const [finished, setFinished] = useState(false);
   const [audioPlayed, setAudioPlayed] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const submitLockRef = useRef<ReturnType<typeof createActionLock> | null>(null);
+  const submitLock = submitLockRef.current ??= createActionLock();
   const lessonProgress = getProgress(route.params.lessonId);
 
   const exercise = lesson?.exercises[currentIndex];
@@ -46,16 +49,29 @@ export function ExerciseScreen({ navigation, route }: Props) {
   if (!lesson || !exercise || lessonProgress?.started !== true) return null;
 
   const check = async () => {
-    if (!response.trim() || isSaving) return;
-    const correct = checkExerciseAnswer(exercise, response);
-    setIsSaving(true);
-    const result = await recordExercise(lesson.id, exercise.id, correct);
-    if (result.ok) {
-      setChecked(true);
-      setWasCorrect(correct);
-      if (correct) setScore((current) => current + 1);
-    }
-    setIsSaving(false);
+    if (!response.trim() || checked) return;
+    const work = submitLock.tryRun(async () => {
+      const submittedResponse = response;
+      const submittedExercise = exercise;
+      setIsSaving(true);
+      try {
+        const correct = checkExerciseAnswer(submittedExercise, submittedResponse);
+        const result = await recordExercise(
+          lesson.id,
+          submittedExercise.id,
+          correct,
+        );
+        if (result.ok) {
+          setResponse(submittedResponse);
+          setChecked(true);
+          setWasCorrect(correct);
+          if (correct) setScore((current) => current + 1);
+        }
+      } finally {
+        setIsSaving(false);
+      }
+    });
+    if (work) await work;
   };
 
   const next = () => {
@@ -119,7 +135,7 @@ export function ExerciseScreen({ navigation, route }: Props) {
             <TextInput
               value={response}
               onChangeText={setResponse}
-              editable={!checked}
+              editable={!checked && !isSaving}
               placeholder="Type the missing word"
               placeholderTextColor={colors.inkMuted}
               autoCapitalize="none"
@@ -134,7 +150,7 @@ export function ExerciseScreen({ navigation, route }: Props) {
             {exercise.wordBank ? (
               <View style={styles.wordBank}>
                 {exercise.wordBank.map((word) => (
-                  <Pressable key={word} disabled={checked} onPress={() => setResponse((value) => `${value}${word}`)} style={styles.wordToken}>
+                  <Pressable key={word} disabled={checked || isSaving} onPress={() => setResponse((value) => `${value}${word}`)} style={styles.wordToken}>
                     <Text style={styles.wordTokenText}>{word}</Text>
                   </Pressable>
                 ))}
@@ -143,7 +159,7 @@ export function ExerciseScreen({ navigation, route }: Props) {
             <TextInput
               value={response}
               onChangeText={setResponse}
-              editable={!checked}
+              editable={!checked && !isSaving}
               multiline
               placeholder={exercise.direction === 'en-ja' ? 'Type in Japanese' : 'Type in English'}
               placeholderTextColor={colors.inkMuted}
@@ -155,13 +171,13 @@ export function ExerciseScreen({ navigation, route }: Props) {
         ) : null}
 
         {exercise.type === 'multiple-choice' ? (
-          <ChoiceList options={exercise.options} selected={response} disabled={checked} onSelect={setResponse} />
+          <ChoiceList options={exercise.options} selected={response} disabled={checked || isSaving} onSelect={setResponse} />
         ) : null}
 
         {exercise.type === 'listening' ? (
           <>
             <Pressable
-              disabled={checked}
+              disabled={checked || isSaving}
               onPress={() => {
                 setAudioPlayed(true);
                 Alert.alert('Audio placeholder', `Connect recorded audio to:\n${exercise.audioPath}`);
@@ -174,7 +190,7 @@ export function ExerciseScreen({ navigation, route }: Props) {
               </View>
               <Text style={styles.audioText}>{audioPlayed ? 'Play again' : 'Play clip'}</Text>
             </Pressable>
-            <ChoiceList options={exercise.options} selected={response} disabled={checked} onSelect={setResponse} />
+            <ChoiceList options={exercise.options} selected={response} disabled={checked || isSaving} onSelect={setResponse} />
           </>
         ) : null}
       </View>

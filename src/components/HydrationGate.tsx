@@ -12,7 +12,15 @@ export function HydrationGate({ children }: PropsWithChildren) {
   if (hydrationStatus === 'loading') {
     return (
       <Screen contentStyle={styles.center}>
-        <Text style={styles.loading}>Preparing your saved study state…</Text>
+        <Text
+          accessible
+          accessibilityLabel="Preparing your saved study state"
+          accessibilityLiveRegion="polite"
+          aria-live="polite"
+          style={styles.loading}
+        >
+          Preparing your saved study state…
+        </Text>
       </Screen>
     );
   }

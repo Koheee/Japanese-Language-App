@@ -2,7 +2,11 @@ import { describe, expect, it } from 'vitest';
 
 import { PersistedAppStateV2 } from '../models/appState';
 import { emptyVocabularyOverrides } from '../models/vocabulary';
-import { createAppStateCommitter, createSingleFlight } from './appStateCommitter';
+import {
+  createActionLock,
+  createAppStateCommitter,
+  createSingleFlight,
+} from './appStateCommitter';
 
 const initialState = (): PersistedAppStateV2 => ({
   schemaVersion: 2,
@@ -175,6 +179,48 @@ describe('createSingleFlight', () => {
       else await expect(run()).resolves.toBe(1);
 
       await expect(run()).resolves.toBe(2);
+    },
+  );
+});
+
+describe('createActionLock', () => {
+  it('rejects a same-tick duplicate without invoking a second commit or advance', async () => {
+    const save = deferred<boolean>();
+    const lock = createActionLock();
+    let commits = 0;
+    let advances = 0;
+    const invoke = () => lock.tryRun(async () => {
+      commits += 1;
+      if (await save.promise) advances += 1;
+    });
+
+    const first = invoke();
+    const duplicate = invoke();
+
+    expect(first).not.toBeNull();
+    expect(duplicate).toBeNull();
+    expect(commits).toBe(1);
+    save.resolve(true);
+    await first;
+    expect(commits).toBe(1);
+    expect(advances).toBe(1);
+  });
+
+  it.each(['success', 'failed commit result', 'throw'] as const)(
+    'releases after action %s',
+    async (outcome) => {
+      const lock = createActionLock();
+      const first = lock.tryRun(async () => {
+        if (outcome === 'throw') throw new Error('action failed');
+        return outcome === 'success' ? { ok: true } : { ok: false };
+      });
+
+      expect(first).not.toBeNull();
+      if (outcome === 'throw') await expect(first).rejects.toThrow('action failed');
+      else await expect(first).resolves.toEqual({ ok: outcome === 'success' });
+
+      const next = lock.tryRun(async () => 'retried');
+      await expect(next).resolves.toBe('retried');
     },
   );
 });

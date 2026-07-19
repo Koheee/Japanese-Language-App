@@ -9,6 +9,28 @@ export interface AppStateCommitter {
   commit(transition: AppStateTransition): Promise<CommitResult>;
 }
 
+export interface ActionLock {
+  tryRun<T>(action: () => Promise<T>): Promise<T> | null;
+}
+
+export const createActionLock = (): ActionLock => {
+  let locked = false;
+
+  return {
+    tryRun<T>(action: () => Promise<T>) {
+      if (locked) return null;
+      locked = true;
+      return (async () => {
+        try {
+          return await action();
+        } finally {
+          locked = false;
+        }
+      })();
+    },
+  };
+};
+
 export const createSingleFlight = <T,>(operation: () => Promise<T>) => {
   let inFlight: Promise<T> | null = null;
 
