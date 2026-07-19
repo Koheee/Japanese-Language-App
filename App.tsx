@@ -1,9 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
+import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { HydrationGate } from './src/components/HydrationGate';
 import { StorageErrorBanner } from './src/components/StorageErrorBanner';
+import { getStorageErrorNavigatorOffset } from './src/components/storageErrorBannerLayout';
 import { AppNavigator } from './src/navigation/AppNavigator';
 import { StudyProvider, useStudy } from './src/state/StudyContext';
 
@@ -26,17 +28,27 @@ export default function App() {
 
 function ReadyApp() {
   const { storageError } = useStudy();
+  const [bannerBodyHeight, setBannerBodyHeight] = useState(0);
+  const navigatorOffset = getStorageErrorNavigatorOffset(
+    storageError !== null,
+    bannerBodyHeight,
+  );
 
   return (
     <View style={styles.readyApp}>
-      {storageError ? <StorageErrorBanner /> : null}
-      <AppNavigator />
+      {storageError
+        ? <StorageErrorBanner onBodyHeightChange={setBannerBodyHeight} />
+        : null}
+      <View style={[styles.navigator, { paddingTop: navigatorOffset }]}>
+        <AppNavigator />
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   readyApp: { flex: 1 },
+  navigator: { flex: 1 },
   canvas: {
     flex: 1,
     alignItems: 'center',

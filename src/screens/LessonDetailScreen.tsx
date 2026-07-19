@@ -286,7 +286,7 @@ export function LessonDetailScreen({ navigation, route }: Props) {
             <SectionTitle title="At a glance" />
             <View style={styles.statsRow}>
               <Stat value={lesson.grammar.length} label="patterns" />
-              <Stat value={wordsView?.visibleCount ?? lesson.vocabulary.length} label="words" />
+              <Stat value={lesson.vocabulary.length} label="words" />
               <Stat value={lesson.dialogue.length} label="lines" />
               <Stat value={lesson.exercises.length} label="drills" />
             </View>

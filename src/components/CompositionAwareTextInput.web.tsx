@@ -1,5 +1,13 @@
-import { ComponentType, ChangeEvent, CompositionEvent, FocusEvent, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { TextInput, TextInputProps } from 'react-native';
+
+import {
+  CompositionCommitCallbacks,
+  CompositionCommitController,
+  attachCompositionListeners,
+  createCompositionCommitController,
+  isCompositionHost,
+} from './compositionCommitController';
 
 export interface CompositionAwareTextInputProps extends Omit<
   TextInputProps,
@@ -11,16 +19,6 @@ export interface CompositionAwareTextInputProps extends Omit<
   onCompositionChange?(isComposing: boolean): void;
 }
 
-type WebChangeEvent = ChangeEvent<HTMLInputElement> & { nativeEvent: InputEvent };
-type WebTextInputProps = Omit<TextInputProps, 'onBlur' | 'onChange'> & {
-  onBlur?: (event: FocusEvent<HTMLInputElement>) => void;
-  onChange?: (event: WebChangeEvent) => void;
-  onCompositionStart?: (event: CompositionEvent<HTMLInputElement>) => void;
-  onCompositionEnd?: (event: CompositionEvent<HTMLInputElement>) => void;
-};
-
-const WebTextInput = TextInput as unknown as ComponentType<WebTextInputProps>;
-
 export function CompositionAwareTextInput({
   value,
   onDraftChange,
@@ -29,33 +27,38 @@ export function CompositionAwareTextInput({
   onBlur,
   ...props
 }: CompositionAwareTextInputProps) {
-  const composingRef = useRef(false);
+  const callbacksRef = useRef<CompositionCommitCallbacks>({
+    onDraftChange,
+    onCommittedChange,
+    onCompositionChange,
+  });
+  callbacksRef.current = { onDraftChange, onCommittedChange, onCompositionChange };
+  const controllerRef = useRef<CompositionCommitController | null>(null);
+  const controller = controllerRef.current ??= createCompositionCommitController(
+    value,
+    () => callbacksRef.current,
+  );
+  controller.syncDraft(value);
+  const hostRef = useRef<TextInput | null>(null);
+
+  useEffect(() => {
+    const host = hostRef.current;
+    if (!isCompositionHost(host)) return undefined;
+    return attachCompositionListeners(host, controller);
+  }, [controller, props.multiline]);
 
   return (
-    <WebTextInput
+    <TextInput
       {...props}
+      ref={hostRef}
       value={value}
       onChange={(event) => {
-        const nextValue = event.currentTarget.value;
-        onDraftChange(nextValue);
-        if (!composingRef.current && !event.nativeEvent.isComposing) {
-          onCommittedChange(nextValue);
-        }
-      }}
-      onCompositionStart={() => {
-        composingRef.current = true;
-        onCompositionChange?.(true);
-      }}
-      onCompositionEnd={(event) => {
-        composingRef.current = false;
-        const nextValue = event.currentTarget.value;
-        onDraftChange(nextValue);
-        onCommittedChange(nextValue);
-        onCompositionChange?.(false);
+        controller.change(event.nativeEvent.text);
       }}
       onBlur={(event) => {
-        if (!composingRef.current) onCommittedChange(event.currentTarget.value);
-        onBlur?.(event as unknown as Parameters<NonNullable<TextInputProps['onBlur']>>[0]);
+        const host = hostRef.current;
+        if (isCompositionHost(host)) controller.blur(host.value);
+        onBlur?.(event);
       }}
     />
   );
