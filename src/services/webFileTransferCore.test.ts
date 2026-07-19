@@ -7,8 +7,10 @@ import {
 } from '../models/vocabularyBackup';
 import {
   isUserCancellation,
+  type VocabularyTransferResult,
   vocabularyBackupFilename,
 } from './webFileTransferCore';
+import type { exportVocabularyBackupFile as platformExportVocabularyBackupFile } from './webFileTransfer';
 import { exportVocabularyBackupFile as exportNativeVocabularyBackupFile } from './webFileTransfer.native';
 import {
   exportVocabularyBackupFileWithEnvironment,
@@ -24,6 +26,17 @@ const backup: VocabularyBackupFileV1 = {
   hidden: [],
   reviewCards: [],
 };
+
+type ExpectedPlatformExport = (
+  backup: VocabularyBackupFileV1,
+) => Promise<VocabularyTransferResult>;
+type PlatformExport = typeof platformExportVocabularyBackupFile;
+type PlatformExportSignatureIsExact = PlatformExport extends ExpectedPlatformExport
+  ? ExpectedPlatformExport extends PlatformExport
+    ? true
+    : false
+  : false;
+const platformExportSignatureIsExact: PlatformExportSignatureIsExact = true;
 
 const namedError = (name: string, message = name) => {
   const error = new Error(message);
@@ -200,6 +213,10 @@ describe('web vocabulary file transfer', () => {
 });
 
 describe('vocabulary transfer helpers', () => {
+  it('exposes the exact platform-neutral export signature to TypeScript consumers', () => {
+    expect(platformExportSignatureIsExact).toBe(true);
+  });
+
   it('derives the backup filename from the validated timestamp date prefix', () => {
     expect(vocabularyBackupFilename(backup.exportedAt)).toBe('nihongo-path-vocabulary-2026-07-18.json');
   });
