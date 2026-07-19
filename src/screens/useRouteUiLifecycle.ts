@@ -18,16 +18,19 @@ export const useRouteUiLifecycle = (
   const coordinator = coordinatorRef.current ??= createRouteUiLifecycleCoordinator();
 
   useEffect(() => {
+    coordinator.mount();
+    return () => coordinator.remove();
+  }, [coordinator]);
+
+  useEffect(() => {
     if (isFocused) coordinator.activate();
-    else coordinator.deactivate();
+    else coordinator.blur();
   }, [coordinator, isFocused]);
 
   useEffect(
-    () => navigation.addListener('beforeRemove', coordinator.deactivate),
+    () => navigation.addListener('beforeRemove', coordinator.remove),
     [coordinator, navigation],
   );
-
-  useEffect(() => () => coordinator.deactivate(), [coordinator]);
 
   return coordinator;
 };

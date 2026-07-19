@@ -116,11 +116,11 @@ export function LessonDetailScreen({ navigation, route }: Props) {
         routeUiLifecycle,
         () => startLesson(lesson.id),
         (outcome) => {
-          setIsStarting(false);
           if (outcome.status === 'fulfilled' && outcome.value.ok) {
             navigation.navigate('Exercise', { lessonId: lesson.id });
           }
         },
+        () => setIsStarting(false),
       );
     });
     if (work) await work;

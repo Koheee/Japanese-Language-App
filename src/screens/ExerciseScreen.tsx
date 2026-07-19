@@ -62,7 +62,6 @@ export function ExerciseScreen({ navigation, route }: Props) {
         routeUiLifecycle,
         () => recordExercise(lesson.id, submittedExercise.id, correct),
         (outcome) => {
-          setIsSaving(false);
           if (outcome.status === 'fulfilled' && outcome.value.ok) {
             setResponse(submittedResponse);
             setChecked(true);
@@ -70,6 +69,7 @@ export function ExerciseScreen({ navigation, route }: Props) {
             if (correct) setScore((current) => current + 1);
           }
         },
+        () => setIsSaving(false),
       );
     });
     if (work) await work;

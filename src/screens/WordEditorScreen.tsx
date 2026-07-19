@@ -107,7 +107,6 @@ export function WordEditorScreen({ navigation, route }: Props) {
           ? editVocabulary(lesson.id, editingId, validation.normalizedDraft)
           : addVocabulary(lesson.id, validation.normalizedDraft),
         (outcome) => {
-          setIsSaving(false);
           if (outcome.status === 'rejected') {
             setWriteError(outcome.error instanceof Error
               ? outcome.error.message
@@ -118,6 +117,7 @@ export function WordEditorScreen({ navigation, route }: Props) {
             setWriteError(outcome.value.error.message);
           }
         },
+        () => setIsSaving(false),
       );
     });
     if (work) await work;
