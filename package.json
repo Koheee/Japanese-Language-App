@@ -11,7 +11,9 @@
     "web": "expo start --web",
     "export:web": "expo export --platform web",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "vocabulary:generate": "tsx scripts/vocabulary/importVocabulary.ts",
+    "vocabulary:verify": "tsx scripts/vocabulary/verifyPersonalImport.ts"
   },
   "dependencies": {
     "@expo/metro-runtime": "~6.1.2",
