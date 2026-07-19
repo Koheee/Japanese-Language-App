@@ -300,12 +300,17 @@ export function StudyProvider({ children }: PropsWithChildren) {
   );
 
   const prepareVocabularyImport = useCallback((bytes: Uint8Array) => {
-    const result = validateVocabularyBackupBytes({
-      bytes,
-      lessons,
-      current: stateRef.current,
-    });
-    setVocabularyImportPreview(result.ok ? result.preview : null);
+    let result: VocabularyBackupValidationResult;
+    try {
+      result = validateVocabularyBackupBytes({
+        bytes,
+        lessons,
+        current: stateRef.current,
+      });
+    } catch {
+      result = { ok: false, issues: ['Vocabulary backup validation failed unexpectedly'] };
+    }
+    if (result.ok) setVocabularyImportPreview(result.preview);
     return result;
   }, []);
 

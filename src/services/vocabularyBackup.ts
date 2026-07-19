@@ -44,6 +44,7 @@ const ISO_TIMESTAMP = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
 const LOWERCASE_SHA256 = /^[a-f0-9]{64}$/;
 const MAX_FOUR_DIGIT_ISO_TIMESTAMP = '9999-12-31T23:59:59.999Z';
 const MAX_FOUR_DIGIT_ISO_MILLISECONDS = Date.parse(MAX_FOUR_DIGIT_ISO_TIMESTAMP);
+const MAX_JSON_DATA_NESTING = 256;
 
 const compareText = (left: string, right: string): number =>
   left < right ? -1 : left > right ? 1 : 0;
@@ -95,66 +96,76 @@ const hasToJsonHook = (input: object): boolean => {
   return false;
 };
 
-const validateJsonData = (
-  input: unknown,
-  path: string,
-  ancestors = new Set<object>(),
-): string | undefined => {
-  if (input === null || typeof input === 'string' || typeof input === 'boolean') return undefined;
-  if (typeof input === 'number') {
-    return Number.isFinite(input) && !Object.is(input, -0)
-      ? undefined
-      : `${path || 'file'} must contain losslessly serializable JSON numbers`;
-  }
-  if (typeof input !== 'object') return `${path || 'file'} must be JSON-compatible`;
-  if (ancestors.has(input)) return `${path || 'file'} must not contain circular references`;
-  if (hasToJsonHook(input)) return `${at(path, 'toJSON')} is not allowed`;
-  if (Array.isArray(input)) {
-    if (Object.getPrototypeOf(input) !== Array.prototype) return `${path || 'file'} must use ordinary arrays`;
-  } else if (!isObject(input)) {
-    return `${path || 'file'} must use ordinary JSON objects`;
+type JsonWalkFrame =
+  | { kind: 'visit'; value: unknown; path: string; depth: number }
+  | { kind: 'leave'; value: object };
+
+const validateJsonData = (input: unknown, path: string): string | undefined => {
+  const ancestors = new Set<object>();
+  const stack: JsonWalkFrame[] = [{ kind: 'visit', value: input, path, depth: 0 }];
+
+  while (stack.length > 0) {
+    const frame = stack.pop()!;
+    if (frame.kind === 'leave') {
+      ancestors.delete(frame.value);
+      continue;
+    }
+
+    const { value, path: currentPath, depth } = frame;
+    if (value === null || typeof value === 'string' || typeof value === 'boolean') continue;
+    if (typeof value === 'number') {
+      if (!Number.isFinite(value) || Object.is(value, -0)) {
+        return `${currentPath || 'file'} must contain losslessly serializable JSON numbers`;
+      }
+      continue;
+    }
+    if (typeof value !== 'object') return `${currentPath || 'file'} must be JSON-compatible`;
+    if (depth > MAX_JSON_DATA_NESTING) {
+      return `${currentPath || 'file'} JSON data nesting exceeds ${MAX_JSON_DATA_NESTING} levels`;
+    }
+    if (ancestors.has(value)) return `${currentPath || 'file'} must not contain circular references`;
+    if (hasToJsonHook(value)) return `${at(currentPath, 'toJSON')} is not allowed`;
+
+    const children: Array<{ value: unknown; path: string }> = [];
+    if (Array.isArray(value)) {
+      if (Object.getPrototypeOf(value) !== Array.prototype) {
+        return `${currentPath || 'file'} must use ordinary arrays`;
+      }
+      for (const key of Reflect.ownKeys(value)) {
+        if (key === 'length') continue;
+        const numeric = typeof key === 'string' && /^(0|[1-9]\d*)$/.test(key) ? Number(key) : -1;
+        if (!Number.isSafeInteger(numeric) || numeric < 0 || numeric >= value.length) {
+          return `${at(currentPath, String(key))} is not an array element`;
+        }
+        const descriptor = Object.getOwnPropertyDescriptor(value, key);
+        if (!descriptor || !('value' in descriptor)) {
+          return `${at(currentPath, numeric)} must be a stored array value`;
+        }
+        children.push({ value: descriptor.value, path: at(currentPath, numeric) });
+      }
+      if (children.length !== value.length) {
+        return `${currentPath || 'file'} must not contain sparse arrays`;
+      }
+    } else {
+      if (!isObject(value)) return `${currentPath || 'file'} must use ordinary JSON objects`;
+      for (const key of Reflect.ownKeys(value)) {
+        if (typeof key === 'symbol') return `${at(currentPath, String(key))} is not allowed`;
+        const descriptor = Object.getOwnPropertyDescriptor(value, key);
+        if (!descriptor?.enumerable || !('value' in descriptor)) {
+          return `${at(currentPath, key)} must be an enumerable stored property`;
+        }
+        children.push({ value: descriptor.value, path: at(currentPath, key) });
+      }
+    }
+
+    ancestors.add(value);
+    stack.push({ kind: 'leave', value });
+    for (let index = children.length - 1; index >= 0; index -= 1) {
+      const child = children[index]!;
+      stack.push({ kind: 'visit', value: child.value, path: child.path, depth: depth + 1 });
+    }
   }
 
-  ancestors.add(input);
-  if (Array.isArray(input)) {
-    for (let index = 0; index < input.length; index += 1) {
-      const descriptor = Object.getOwnPropertyDescriptor(input, index);
-      if (!descriptor || !('value' in descriptor)) {
-        ancestors.delete(input);
-        return `${at(path, index)} must be a stored array value`;
-      }
-      const issue = validateJsonData(descriptor.value, at(path, index), ancestors);
-      if (issue) {
-        ancestors.delete(input);
-        return issue;
-      }
-    }
-    for (const key of Reflect.ownKeys(input)) {
-      if (key === 'length') continue;
-      const numeric = typeof key === 'string' && /^(0|[1-9]\d*)$/.test(key) ? Number(key) : -1;
-      if (Number.isSafeInteger(numeric) && numeric >= 0 && numeric < input.length) continue;
-      ancestors.delete(input);
-      return `${at(path, String(key))} is not an array element`;
-    }
-  } else {
-    for (const key of Reflect.ownKeys(input)) {
-      if (typeof key === 'symbol') {
-        ancestors.delete(input);
-        return `${at(path, String(key))} is not allowed`;
-      }
-      const descriptor = Object.getOwnPropertyDescriptor(input, key);
-      if (!descriptor?.enumerable || !('value' in descriptor)) {
-        ancestors.delete(input);
-        return `${at(path, key)} must be an enumerable stored property`;
-      }
-      const issue = validateJsonData(descriptor.value, at(path, key), ancestors);
-      if (issue) {
-        ancestors.delete(input);
-        return issue;
-      }
-    }
-  }
-  ancestors.delete(input);
   return undefined;
 };
 
@@ -819,7 +830,11 @@ export const validateVocabularyBackupBytes = ({
   } catch {
     return { ok: false, issues: ['File is not valid JSON'] };
   }
-  return validateBackupObject({ input: parsed, lessons, current });
+  try {
+    return validateBackupObject({ input: parsed, lessons, current });
+  } catch {
+    return { ok: false, issues: ['Vocabulary backup validation failed unexpectedly'] };
+  }
 };
 
 const timestampFor = (now: Date): string => {

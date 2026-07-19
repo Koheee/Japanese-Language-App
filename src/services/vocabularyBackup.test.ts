@@ -391,6 +391,38 @@ describe('vocabulary backup', () => {
     expect(firstIssue(result)).toContain('File exceeds 5 MB');
   });
 
+  it('rejects excessively nested JSON data without overflowing the validator stack', () => {
+    const depth = 20_000;
+    const bytes = new TextEncoder().encode(`${'['.repeat(depth)}null${']'.repeat(depth)}`);
+    expect(bytes.byteLength).toBeLessThanOrEqual(MAX_VOCABULARY_BACKUP_BYTES);
+
+    let result: ReturnType<typeof validate> | undefined;
+    expect(() => {
+      result = validate(bytes);
+    }).not.toThrow();
+
+    expect(result).toMatchObject({ ok: false });
+    expect(result && firstIssue(result)).toMatch(/JSON data nesting/i);
+  });
+
+  it('returns a safe validation failure when a semantic dependency throws unexpectedly', () => {
+    const explosiveCurrent = new Proxy(currentState(), {
+      get() {
+        throw new Error('unexpected validation dependency failure');
+      },
+    });
+
+    let result: ReturnType<typeof validate> | undefined;
+    expect(() => {
+      result = validate(backup(), explosiveCurrent);
+    }).not.toThrow();
+
+    expect(result).toEqual({
+      ok: false,
+      issues: ['Vocabulary backup validation failed unexpectedly'],
+    });
+  });
+
   it('rejects inherited serialization hooks instead of validating bytes that persist differently', () => {
     const bytes = bytesFor(backup());
     const previous = Object.getOwnPropertyDescriptor(Object.prototype, 'toJSON');
