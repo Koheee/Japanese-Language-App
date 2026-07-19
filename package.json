@@ -15,6 +15,7 @@
     "audit:public": "tsx scripts/assert-public-artifact-safe.ts",
     "audit:public:local": "tsx scripts/assert-public-artifact-safe.ts --tracked --dist dist --private .local/vocabulary/personal-vocabulary-v1.json",
     "benchmark:vocabulary-search": "tsx scripts/benchmark-vocabulary-search.ts",
+    "verify:grammar-links": "node scripts/verify-grammar-links.mjs",
     "vocabulary:generate": "tsx scripts/vocabulary/importVocabulary.ts",
     "vocabulary:verify": "tsx scripts/vocabulary/verifyPersonalImport.ts"
   },
