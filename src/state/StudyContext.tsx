@@ -20,6 +20,13 @@ import { hydrateAppStateV2, writeAppStateV2 } from '../services/appStateStorage'
 import { validatePersistedAppStateV2 } from '../services/appStateValidation';
 import { getDueCards } from '../services/srs';
 import {
+  VocabularyBackupValidationResult,
+  VocabularyImportPreview,
+  replaceVocabularyFromPreview,
+  undoLastVocabularyImport as buildUndoLastVocabularyImport,
+  validateVocabularyBackupBytes,
+} from '../services/vocabularyBackup';
+import {
   VocabularyDraft,
   VocabularyUndoToken,
   buildAddVocabularyState,
@@ -70,6 +77,11 @@ interface StudyContextValue {
   hideVocabulary: (lessonId: string, vocabularyId: string) => Promise<ReversibleCommitResult>;
   restoreVocabulary: (lessonId: string, vocabularyId: string) => Promise<ReversibleCommitResult>;
   undoVocabularyMutation: (token: VocabularyUndoToken) => Promise<CommitResult>;
+  vocabularyImportPreview: VocabularyImportPreview | null;
+  prepareVocabularyImport: (bytes: Uint8Array) => VocabularyBackupValidationResult;
+  confirmVocabularyImport: () => Promise<CommitResult>;
+  clearVocabularyImportPreview: () => void;
+  undoLastVocabularyImport: () => Promise<CommitResult>;
   getProgress: (lessonId: string) => LessonProgress | undefined;
 }
 
@@ -88,8 +100,11 @@ export function StudyProvider({ children }: PropsWithChildren) {
   const [hydrationStatus, setHydrationStatus] = useState<HydrationStatus>('loading');
   const [hydrationMessage, setHydrationMessage] = useState<string | null>(null);
   const [storageError, setStorageError] = useState<string | null>(null);
+  const [vocabularyImportPreview, setVocabularyImportPreview] =
+    useState<VocabularyImportPreview | null>(null);
   const stateRef = useRef(state);
   const committerRef = useRef<AppStateCommitter | null>(null);
+  const confirmingPreviewsRef = useRef(new Set<VocabularyImportPreview>());
   const mountedRef = useRef(false);
 
   const publish = useCallback((candidate: PersistedAppStateV2) => {
@@ -284,6 +299,50 @@ export function StudyProvider({ children }: PropsWithChildren) {
     [commitAppState],
   );
 
+  const prepareVocabularyImport = useCallback((bytes: Uint8Array) => {
+    const result = validateVocabularyBackupBytes({
+      bytes,
+      lessons,
+      current: stateRef.current,
+    });
+    setVocabularyImportPreview(result.ok ? result.preview : null);
+    return result;
+  }, []);
+
+  const clearVocabularyImportPreview = useCallback(() => {
+    setVocabularyImportPreview(null);
+  }, []);
+
+  const confirmVocabularyImport = useCallback(async (): Promise<CommitResult> => {
+    const preview = vocabularyImportPreview;
+    if (!preview) return { ok: false, error: new Error('No vocabulary import is ready to confirm.') };
+    if (confirmingPreviewsRef.current.has(preview)) {
+      return { ok: false, error: new Error('This vocabulary import is already being confirmed.') };
+    }
+
+    confirmingPreviewsRef.current.add(preview);
+    try {
+      const result = await commitAppState((current) => replaceVocabularyFromPreview(
+        current,
+        preview,
+        { lessons, now: new Date() },
+      ));
+      if (result.ok && mountedRef.current) {
+        setVocabularyImportPreview((latest) => latest === preview ? null : latest);
+      }
+      return result;
+    } finally {
+      confirmingPreviewsRef.current.delete(preview);
+    }
+  }, [commitAppState, vocabularyImportPreview]);
+
+  const undoLastVocabularyImport = useCallback(
+    () => commitAppState(
+      (current) => buildUndoLastVocabularyImport(current, { lessons, now: new Date() }),
+    ),
+    [commitAppState],
+  );
+
   const dueCards = useMemo(() => getDueCards(state.reviewCards), [state.reviewCards]);
   const getProgress = useCallback(
     (lessonId: string) => state.progress[lessonId],
@@ -307,17 +366,25 @@ export function StudyProvider({ children }: PropsWithChildren) {
       hideVocabulary,
       restoreVocabulary,
       undoVocabularyMutation,
+      vocabularyImportPreview,
+      prepareVocabularyImport,
+      confirmVocabularyImport,
+      clearVocabularyImportPreview,
+      undoLastVocabularyImport,
       getProgress,
     }),
     [
       addVocabulary,
       commitAppState,
+      clearVocabularyImportPreview,
+      confirmVocabularyImport,
       dueCards,
       editVocabulary,
       getProgress,
       hideVocabulary,
       hydrationMessage,
       hydrationStatus,
+      prepareVocabularyImport,
       rateReview,
       recordExercise,
       restoreVocabulary,
@@ -326,6 +393,8 @@ export function StudyProvider({ children }: PropsWithChildren) {
       state,
       storageError,
       undoVocabularyMutation,
+      undoLastVocabularyImport,
+      vocabularyImportPreview,
     ],
   );
 

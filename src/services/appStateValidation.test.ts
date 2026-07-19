@@ -444,10 +444,13 @@ describe('validatePersistedAppStateV2', () => {
     candidate.lastImportRecovery = {
       previousVocabulary: emptyVocabularyOverrides(),
       previousAffectedReviewCards: {
-        'review-word-01': { ...reviewCard },
-        'review-new-word': null,
+        'review-authored-word-01': null,
+        'review-custom:lesson-01:word-01': null,
       },
-      affectedReviewCardIds: ['review-word-01', 'review-new-word'],
+      affectedReviewCardIds: [
+        'review-authored-word-01',
+        'review-custom:lesson-01:word-01',
+      ],
       authoredBaselineVersion: 'course-v1-before-import',
       importedAt: timestamp,
     };
@@ -527,6 +530,151 @@ describe('validatePersistedAppStateV2', () => {
       validatePersistedAppStateV2,
       candidate,
       'lastImportRecovery.previousAffectedReviewCards.review-word-01.suspended',
+    );
+  });
+
+  it('requires recovery affected IDs to equal the complete union of both vocabulary layers', () => {
+    const candidate = validV2();
+    candidate.lastImportRecovery = {
+      previousVocabulary: {
+        recordsByLesson: {
+          'lesson-02': [{
+            ...structuredClone(deviceRecord),
+            lessonId: 'lesson-02',
+            item: {
+              ...structuredClone(deviceRecord.item),
+              id: 'custom:lesson-02:previous-with-hyphens',
+            },
+          }],
+        },
+        hiddenIdsByLesson: { 'lesson-02': ['retired-course-word'] },
+        updatedAt: timestamp,
+      },
+      previousAffectedReviewCards: {
+        'review-authored-word-01': null,
+        'review-custom:lesson-01:word-01': null,
+        'review-custom:lesson-02:previous-with-hyphens': null,
+        'review-retired-course-word': null,
+      },
+      affectedReviewCardIds: [
+        'review-authored-word-01',
+        'review-custom:lesson-01:word-01',
+        'review-custom:lesson-02:previous-with-hyphens',
+        'review-retired-course-word',
+      ],
+      authoredBaselineVersion: 'course-v1-before-import',
+      importedAt: timestamp,
+    };
+
+    expect(validatePersistedAppStateV2(candidate).ok).toBe(true);
+
+    const missing = structuredClone(candidate);
+    missing.lastImportRecovery!.affectedReviewCardIds.pop();
+    delete missing.lastImportRecovery!.previousAffectedReviewCards['review-retired-course-word'];
+    expectInvalid(
+      validatePersistedAppStateV2,
+      missing,
+      'lastImportRecovery.affectedReviewCardIds',
+    );
+
+    const extra = structuredClone(candidate);
+    extra.lastImportRecovery!.affectedReviewCardIds.splice(3, 0, 'review-grammar-point');
+    extra.lastImportRecovery!.previousAffectedReviewCards['review-grammar-point'] = null;
+    expectInvalid(
+      validatePersistedAppStateV2,
+      extra,
+      'lastImportRecovery.affectedReviewCardIds.3',
+    );
+  });
+
+  it('requires recovery affected IDs to use deterministic sorted order', () => {
+    const candidate = validV2();
+    candidate.lastImportRecovery = {
+      previousVocabulary: emptyVocabularyOverrides(),
+      previousAffectedReviewCards: {
+        'review-authored-word-01': null,
+        'review-custom:lesson-01:word-01': null,
+      },
+      affectedReviewCardIds: [
+        'review-custom:lesson-01:word-01',
+        'review-authored-word-01',
+      ],
+      authoredBaselineVersion: 'course-v1-before-import',
+      importedAt: timestamp,
+    };
+
+    expectInvalid(
+      validatePersistedAppStateV2,
+      candidate,
+      'lastImportRecovery.affectedReviewCardIds.0',
+    );
+  });
+
+  it('rejects recovery snapshots capable of restoring or deleting a grammar card', () => {
+    const grammarIdCollision = validV2();
+    grammarIdCollision.vocabulary.hiddenIdsByLesson['lesson-01'] = ['grammar-point'];
+    grammarIdCollision.reviewCards['review-grammar-point'] = {
+      ...reviewCard,
+      id: 'review-grammar-point',
+      kind: 'grammar',
+    };
+    grammarIdCollision.lastImportRecovery = {
+      previousVocabulary: emptyVocabularyOverrides(),
+      previousAffectedReviewCards: {
+        'review-custom:lesson-01:word-01': null,
+        'review-grammar-point': {
+          ...reviewCard,
+          id: 'review-grammar-point',
+          kind: 'grammar',
+        },
+      },
+      affectedReviewCardIds: [
+        'review-custom:lesson-01:word-01',
+        'review-grammar-point',
+      ],
+      authoredBaselineVersion: 'course-v1-before-import',
+      importedAt: timestamp,
+    };
+
+    expectInvalid(
+      validatePersistedAppStateV2,
+      grammarIdCollision,
+      'lastImportRecovery.previousAffectedReviewCards.review-grammar-point.kind',
+    );
+
+    const currentGrammarOnly = structuredClone(grammarIdCollision);
+    currentGrammarOnly.lastImportRecovery!.previousAffectedReviewCards['review-grammar-point'] = null;
+    expectInvalid(
+      validatePersistedAppStateV2,
+      currentGrammarOnly,
+      'reviewCards.review-grammar-point.kind',
+    );
+  });
+
+  it('requires each captured recovery card to match its vocabulary lesson owner', () => {
+    const candidate = validV2();
+    candidate.lastImportRecovery = {
+      previousVocabulary: emptyVocabularyOverrides(),
+      previousAffectedReviewCards: {
+        'review-authored-word-01': null,
+        'review-custom:lesson-01:word-01': {
+          ...reviewCard,
+          id: 'review-custom:lesson-01:word-01',
+          lessonId: 'lesson-02',
+        },
+      },
+      affectedReviewCardIds: [
+        'review-authored-word-01',
+        'review-custom:lesson-01:word-01',
+      ],
+      authoredBaselineVersion: 'course-v1-before-import',
+      importedAt: timestamp,
+    };
+
+    expectInvalid(
+      validatePersistedAppStateV2,
+      candidate,
+      'lastImportRecovery.previousAffectedReviewCards.review-custom:lesson-01:word-01.lessonId',
     );
   });
 

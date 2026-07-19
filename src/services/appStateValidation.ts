@@ -455,7 +455,28 @@ const validateVocabularyOverrides = (input: unknown, path: string): Failure | un
     : expectIsoTimestamp(value.updatedAt, updatedAtPath);
 };
 
-const validateRecovery = (input: unknown, path: string): Failure | undefined => {
+const vocabularyIdsIn = (vocabulary: VocabularyOverrides): Set<string> => new Set([
+  ...Object.values(vocabulary.recordsByLesson).flat().map(({ item }) => item.id),
+  ...Object.values(vocabulary.hiddenIdsByLesson).flat(),
+]);
+
+const vocabularyLessonsIn = (vocabulary: VocabularyOverrides): Map<string, string> => {
+  const owners = new Map<string, string>();
+  for (const [lessonId, records] of Object.entries(vocabulary.recordsByLesson)) {
+    for (const { item } of records) owners.set(item.id, lessonId);
+  }
+  for (const [lessonId, ids] of Object.entries(vocabulary.hiddenIdsByLesson)) {
+    for (const id of ids) if (!owners.has(id)) owners.set(id, lessonId);
+  }
+  return owners;
+};
+
+const validateRecovery = (
+  input: unknown,
+  path: string,
+  currentVocabulary: VocabularyOverrides,
+  currentReviewCards: Record<string, ReviewCard>,
+): Failure | undefined => {
   const objectFailure = expectObject(input, path);
   if (objectFailure) return objectFailure;
   const value = input as JsonObject;
@@ -501,6 +522,51 @@ const validateRecovery = (input: unknown, path: string): Failure | undefined => 
       );
     }
   }
+
+  const expectedAffectedIds = [...new Set([
+    ...vocabularyIdsIn(currentVocabulary),
+    ...vocabularyIdsIn(value.previousVocabulary as VocabularyOverrides),
+  ])]
+    .map((vocabularyId) => `review-${vocabularyId}`)
+    .sort();
+  const affectedPath = childPath(path, 'affectedReviewCardIds');
+  const sortedAffectedIds = [...affectedIds].sort();
+  const unsortedIndex = affectedIds.findIndex((cardId, index) => cardId !== sortedAffectedIds[index]);
+  if (unsortedIndex >= 0) {
+    return failure(childPath(affectedPath, unsortedIndex), 'must use deterministic sorted order');
+  }
+
+  const expectedAffected = new Set(expectedAffectedIds);
+  for (const [index, cardId] of affectedIds.entries()) {
+    if (!expectedAffected.has(cardId)) {
+      return failure(childPath(affectedPath, index), 'must identify vocabulary in the current or previous layer');
+    }
+  }
+  if (affectedIds.length !== expectedAffectedIds.length) {
+    return failure(affectedPath, 'must exactly cover vocabulary in the current and previous layers');
+  }
+
+  const previousVocabularyLessons = vocabularyLessonsIn(value.previousVocabulary as VocabularyOverrides);
+  const currentVocabularyLessons = vocabularyLessonsIn(currentVocabulary);
+  for (const cardId of affectedIds) {
+    const previousCard = previousCards[cardId] as ReviewCard | null;
+    if (previousCard?.kind !== undefined && previousCard.kind !== 'vocabulary') {
+      return failure(childPath(childPath(previousCardsPath, cardId), 'kind'), 'must be vocabulary');
+    }
+    const vocabularyId = cardId.slice('review-'.length);
+    const previousLessonId = previousVocabularyLessons.get(vocabularyId)
+      ?? currentVocabularyLessons.get(vocabularyId);
+    if (previousCard && previousLessonId && previousCard.lessonId !== previousLessonId) {
+      return failure(
+        childPath(childPath(previousCardsPath, cardId), 'lessonId'),
+        'must match its vocabulary lesson owner',
+      );
+    }
+    const currentCard = currentReviewCards[cardId];
+    if (currentCard && currentCard.kind !== 'vocabulary') {
+      return failure(childPath(childPath('reviewCards', cardId), 'kind'), 'must be vocabulary while recovery can affect it');
+    }
+  }
   return undefined;
 };
 
@@ -540,7 +606,12 @@ export const validatePersistedAppStateV2: ValidatePersistedAppStateV2 = (input) 
   if (structuralFailure) return structuralFailure;
 
   if (Object.hasOwn(value, 'lastImportRecovery')) {
-    const recoveryFailure = validateRecovery(value.lastImportRecovery, 'lastImportRecovery');
+    const recoveryFailure = validateRecovery(
+      value.lastImportRecovery,
+      'lastImportRecovery',
+      value.vocabulary as VocabularyOverrides,
+      value.reviewCards as Record<string, ReviewCard>,
+    );
     if (recoveryFailure) return recoveryFailure;
   }
 
