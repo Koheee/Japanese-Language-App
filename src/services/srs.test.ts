@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { ReviewCard } from '../models/review';
-import { getDueCards, scheduleReview } from './srs';
+import { getDueCards, getReviewStats, scheduleReview } from './srs';
 
 const card: ReviewCard = {
   id: 'review-test',
@@ -40,5 +40,17 @@ describe('scheduleReview', () => {
     const suspended = { ...due, id: 'review-suspended', suspended: true };
     expect(getDueCards({ [due.id]: due, [suspended.id]: suspended }, new Date('2026-01-02T00:00:00.000Z')))
       .toEqual([due]);
+  });
+
+  it('excludes suspended cards from deck and reviewed statistics', () => {
+    expect(getReviewStats({
+      active: { ...card, id: 'active', lastReviewedAt: '2026-01-01T00:00:00.000Z' },
+      suspended: {
+        ...card,
+        id: 'suspended',
+        suspended: true,
+        lastReviewedAt: '2026-01-01T00:00:00.000Z',
+      },
+    })).toEqual({ activeTotal: 1, reviewedActive: 1 });
   });
 });

@@ -86,6 +86,14 @@ export const getDueCards = (
     .filter((card) => new Date(card.dueAt).getTime() <= now.getTime())
     .sort((a, b) => a.dueAt.localeCompare(b.dueAt));
 
+export const getReviewStats = (cards: Record<string, ReviewCard>) => {
+  const active = Object.values(cards).filter((card) => card.suspended !== true);
+  return {
+    activeTotal: active.length,
+    reviewedActive: active.filter((card) => Boolean(card.lastReviewedAt)).length,
+  };
+};
+
 export const formatInterval = (rating: ReviewRating, card: ReviewCard) => {
   const scheduled = scheduleReview(card, rating, new Date(0));
   if (scheduled.intervalDays < 1) return '10m';

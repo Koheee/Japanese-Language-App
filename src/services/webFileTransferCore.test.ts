@@ -1,12 +1,14 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import {
+  MAX_VOCABULARY_BACKUP_BYTES,
   VOCABULARY_BACKUP_FORMAT,
   VOCABULARY_BACKUP_SCHEMA_VERSION,
   VocabularyBackupFileV1,
 } from '../models/vocabularyBackup';
 import {
   isUserCancellation,
+  readPickedVocabularyFile,
   type VocabularyTransferResult,
   vocabularyBackupFilename,
 } from './webFileTransferCore';
@@ -43,6 +45,11 @@ const namedError = (name: string, message = name) => {
   error.name = name;
   return error;
 };
+
+const fakePickedFile = (size: number, bytes = new Uint8Array()) => ({
+  size,
+  arrayBuffer: vi.fn(async () => bytes.slice().buffer),
+});
 
 interface WebEnvironmentOptions {
   share?: boolean;
@@ -213,6 +220,46 @@ describe('web vocabulary file transfer', () => {
 });
 
 describe('vocabulary transfer helpers', () => {
+  it('treats a cancelled picker as cancellation', async () => {
+    await expect(readPickedVocabularyFile(null)).resolves.toEqual({ status: 'cancelled' });
+  });
+
+  it('rejects an oversized picker file before reading it', async () => {
+    const file = fakePickedFile(MAX_VOCABULARY_BACKUP_BYTES + 1);
+    await expect(readPickedVocabularyFile(file)).resolves.toEqual({
+      status: 'error',
+      message: 'File exceeds 5 MB.',
+    });
+    expect(file.arrayBuffer).not.toHaveBeenCalled();
+  });
+
+  it('returns exact selected bytes', async () => {
+    await expect(
+      readPickedVocabularyFile(fakePickedFile(3, new Uint8Array([1, 2, 3]))),
+    ).resolves.toEqual({ status: 'picked', bytes: new Uint8Array([1, 2, 3]) });
+  });
+
+  it.each(['AbortError', 'NotAllowedError'])('treats a %s picker read failure as cancellation', async (name) => {
+    const file = {
+      size: 1,
+      arrayBuffer: vi.fn(async () => { throw namedError(name); }),
+    };
+
+    await expect(readPickedVocabularyFile(file)).resolves.toEqual({ status: 'cancelled' });
+  });
+
+  it('reports non-cancellation picker read failures', async () => {
+    const file = {
+      size: 1,
+      arrayBuffer: vi.fn(async () => { throw new Error('read failed'); }),
+    };
+
+    await expect(readPickedVocabularyFile(file)).resolves.toEqual({
+      status: 'error',
+      message: 'read failed',
+    });
+  });
+
   it('exposes the exact platform-neutral export signature to TypeScript consumers', () => {
     expect(platformExportSignatureIsExact).toBe(true);
   });

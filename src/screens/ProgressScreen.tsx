@@ -1,19 +1,128 @@
+import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import { CompositeScreenProps, useIsFocused } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
+import { PrimaryButton } from '../components/PrimaryButton';
 import { ProgressBar } from '../components/ProgressBar';
 import { Screen } from '../components/Screen';
+import { VocabularyFilePicker } from '../components/VocabularyFilePicker';
 import { curriculum } from '../data/curriculum';
-import { getLesson } from '../data/lessons';
+import { getLesson, lessons } from '../data/lessons';
+import { RootStackParamList, RootTabParamList } from '../navigation/types';
+import { getReviewStats } from '../services/srs';
+import { buildVocabularyBackup } from '../services/vocabularyBackup';
+import { exportVocabularyBackupFile } from '../services/webFileTransfer';
+import { isUserCancellation } from '../services/webFileTransferCore';
 import { useStudy } from '../state/StudyContext';
 import { colors, radii, spacing, typography } from '../theme/tokens';
 
-export function ProgressScreen() {
-  const { state } = useStudy();
+type Props = CompositeScreenProps<
+  BottomTabScreenProps<RootTabParamList, 'Progress'>,
+  NativeStackScreenProps<RootStackParamList, 'MainTabs'>
+>;
+
+type BusyAction = 'export' | 'import' | 'undo';
+
+export function ProgressScreen({ navigation }: Props) {
+  const {
+    clearVocabularyImportPreview,
+    prepareVocabularyImport,
+    state,
+    undoLastVocabularyImport,
+  } = useStudy();
+  const isFocused = useIsFocused();
+  const focusedRef = useRef(isFocused);
+  const mountedRef = useRef(true);
+  const busyRef = useRef(false);
+  const [busyAction, setBusyAction] = useState<BusyAction | null>(null);
+  const [transferMessage, setTransferMessage] = useState<string | null>(null);
+  const [transferIsError, setTransferIsError] = useState(false);
+  const [importIssues, setImportIssues] = useState<string[]>([]);
+  focusedRef.current = isFocused;
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+
   const progressItems = Object.values(state.progress);
   const attempts = progressItems.reduce((sum, item) => sum + item.attempts, 0);
   const correct = progressItems.reduce((sum, item) => sum + item.correctAnswers, 0);
   const accuracy = attempts ? Math.round((correct / attempts) * 100) : 0;
-  const reviewed = Object.values(state.reviewCards).filter((card) => card.lastReviewedAt).length;
+  const { reviewedActive } = getReviewStats(state.reviewCards);
+
+  const runAction = async (action: BusyAction, operation: () => Promise<void>) => {
+    if (busyRef.current) return;
+    busyRef.current = true;
+    setBusyAction(action);
+    try {
+      await operation();
+    } finally {
+      busyRef.current = false;
+      if (mountedRef.current) setBusyAction(null);
+    }
+  };
+
+  const exportBackup = async () => runAction('export', async () => {
+    try {
+      const backup = buildVocabularyBackup(state, lessons, new Date().toISOString());
+      const result = await exportVocabularyBackupFile(backup);
+      if (!mountedRef.current) return;
+      if (result === 'shared') {
+        setTransferIsError(false);
+        setTransferMessage('Vocabulary backup shared.');
+      }
+      if (result === 'downloaded') {
+        setTransferIsError(false);
+        setTransferMessage('Vocabulary backup downloaded.');
+      }
+      if (result === 'unavailable') {
+        setTransferIsError(true);
+        setTransferMessage('Vocabulary backup export is unavailable on this device.');
+      }
+    } catch (cause) {
+      if (isUserCancellation(cause) || !mountedRef.current) return;
+      setTransferIsError(true);
+      setTransferMessage(cause instanceof Error ? cause.message : String(cause));
+    }
+  });
+
+  const handlePickedFile = (bytes: Uint8Array, _fileName: string) => {
+    if (busyRef.current || !focusedRef.current) return;
+    busyRef.current = true;
+    setBusyAction('import');
+    try {
+      const result = prepareVocabularyImport(bytes);
+      if (result.ok) {
+        setImportIssues([]);
+        navigation.navigate('ImportPreview');
+      } else {
+        clearVocabularyImportPreview();
+        setImportIssues(result.issues);
+      }
+    } finally {
+      busyRef.current = false;
+      if (mountedRef.current) setBusyAction(null);
+    }
+  };
+
+  const handlePickerError = (message: string) => {
+    if (busyRef.current || !focusedRef.current) return;
+    clearVocabularyImportPreview();
+    setImportIssues([message]);
+  };
+
+  const undoImport = async () => runAction('undo', async () => {
+    const result = await undoLastVocabularyImport();
+    if (result.ok && mountedRef.current) {
+      setTransferIsError(false);
+      setTransferMessage('Last vocabulary import undone.');
+    }
+  });
 
   return (
     <Screen scroll contentStyle={styles.page}>
@@ -30,8 +139,60 @@ export function ProgressScreen() {
 
       <View style={styles.metrics}>
         <Metric value={`${accuracy}%`} label="practice accuracy" />
-        <Metric value={String(reviewed)} label="cards reviewed" />
+        <Metric value={String(reviewedActive)} label="cards reviewed" />
         <Metric value={String(attempts)} label="answers checked" />
+      </View>
+
+      <View style={styles.backupCard}>
+        <Text style={styles.backupEyebrow}>DEVICE-LOCAL BACKUP</Text>
+        <Text style={styles.backupTitle}>Protect your vocabulary changes</Text>
+        <Text style={styles.backupBody}>
+          Vocabulary changes are stored only on this device. Clearing site data or removing the PWA can remove them. Export a backup to transfer them manually.
+        </Text>
+        <View style={styles.backupActions}>
+          <PrimaryButton
+            accessibilityHint="Shares or downloads the current vocabulary backup"
+            accessibilityLabel="Export vocabulary backup"
+            disabled={busyAction !== null}
+            label={busyAction === 'export' ? 'Exporting...' : 'Export'}
+            onPress={exportBackup}
+            style={styles.backupAction}
+            variant="secondary"
+          />
+          <View style={styles.pickerAction}>
+            <VocabularyFilePicker
+              disabled={busyAction !== null}
+              onError={handlePickerError}
+              onPick={handlePickedFile}
+            />
+          </View>
+          <PrimaryButton
+            accessibilityHint="Restores the vocabulary state from before the most recent import"
+            accessibilityLabel="Undo last vocabulary import"
+            disabled={busyAction !== null || !state.lastImportRecovery}
+            label={busyAction === 'undo' ? 'Undoing...' : 'Undo last import'}
+            onPress={undoImport}
+            style={styles.backupAction}
+            variant="secondary"
+          />
+        </View>
+        {transferMessage ? (
+          <Text
+            accessibilityLiveRegion="polite"
+            style={[styles.transferMessage, transferIsError && styles.transferError]}
+          >
+            {transferMessage}
+          </Text>
+        ) : null}
+        {importIssues.length ? (
+          <View accessibilityLiveRegion="assertive" style={styles.importIssues}>
+            {importIssues.map((issue, index) => (
+              <Text accessibilityRole="alert" key={`${index}-${issue}`} style={styles.importIssue}>
+                {issue}
+              </Text>
+            ))}
+          </View>
+        ) : null}
       </View>
 
       <Text style={styles.sectionTitle}>Lesson activity</Text>
@@ -47,11 +208,30 @@ export function ProgressScreen() {
               <Text style={styles.lessonTitle}>{lesson.title}</Text>
               <ProgressBar value={completion} />
               <Text style={styles.lessonMeta}>{item.completedExerciseIds.length} of {lesson.exercises.length} exercises · {item.attempts ? Math.round((item.correctAnswers / item.attempts) * 100) : 0}% accuracy</Text>
+              <PrimaryButton
+                accessibilityHint={`Opens the vocabulary manager for Lesson ${lesson.number}`}
+                accessibilityLabel={`Manage Lesson ${lesson.number} words`}
+                label="Manage words"
+                onPress={() => navigation.navigate('VocabularyManager', { lessonId: lesson.id })}
+                style={styles.manageButton}
+                variant="secondary"
+              />
             </View>
           </View>
         );
       }) : (
-        <View style={styles.empty}><Text style={styles.emptyTitle}>No marks on the page yet</Text><Text style={styles.emptyBody}>Open Lesson 1 and begin its exercises. Your activity will collect here automatically.</Text></View>
+        <View style={styles.empty}>
+          <Text style={styles.emptyTitle}>No marks on the page yet</Text>
+          <Text style={styles.emptyBody}>Open Lesson 1 and begin its exercises. Your activity will collect here automatically.</Text>
+          <PrimaryButton
+            accessibilityHint="Opens the vocabulary manager for Lesson 1"
+            accessibilityLabel="Manage Lesson 1 words"
+            label="Manage Lesson 1 words"
+            onPress={() => navigation.navigate('VocabularyManager', { lessonId: lessons[0]!.id })}
+            style={styles.emptyManageButton}
+            variant="secondary"
+          />
+        </View>
       )}
 
       <View style={styles.principle}>
@@ -84,6 +264,17 @@ const styles = StyleSheet.create({
   metric: { flex: 1, minHeight: 92, alignItems: 'center', justifyContent: 'center', padding: spacing.sm, backgroundColor: colors.surface, borderRadius: radii.md, borderWidth: 1, borderColor: colors.line },
   metricValue: { color: colors.coral, fontSize: typography.title, fontWeight: '900' },
   metricLabel: { marginTop: 2, color: colors.inkMuted, fontSize: 9, lineHeight: 13, fontWeight: '700', textAlign: 'center' },
+  backupCard: { marginTop: spacing.xxl, padding: spacing.xl, gap: spacing.md, backgroundColor: colors.surface, borderRadius: radii.lg, borderWidth: 1, borderColor: colors.line },
+  backupEyebrow: { color: colors.coral, fontSize: typography.micro, fontWeight: '900', letterSpacing: 1.2 },
+  backupTitle: { color: colors.ink, fontSize: typography.heading, fontWeight: '900' },
+  backupBody: { color: colors.inkMuted, fontSize: typography.small, lineHeight: 20 },
+  backupActions: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
+  backupAction: { minHeight: 44, flexGrow: 1, paddingHorizontal: spacing.lg },
+  pickerAction: { minWidth: 88, flexGrow: 1 },
+  transferMessage: { color: colors.success, fontSize: typography.small, fontWeight: '700', lineHeight: 20 },
+  transferError: { color: colors.error },
+  importIssues: { gap: spacing.xs, padding: spacing.md, backgroundColor: colors.coralSoft, borderRadius: radii.sm },
+  importIssue: { color: colors.error, fontSize: typography.small, fontWeight: '700', lineHeight: 20 },
   sectionTitle: { marginTop: spacing.xxl, marginBottom: spacing.lg, color: colors.ink, fontSize: typography.title, fontWeight: '900' },
   lessonCard: { flexDirection: 'row', gap: spacing.lg, padding: spacing.lg, backgroundColor: colors.surface, borderRadius: radii.lg, borderWidth: 1, borderColor: colors.line },
   lessonNumber: { width: 46, height: 46, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.coral, borderRadius: 15 },
@@ -92,9 +283,11 @@ const styles = StyleSheet.create({
   lessonJapanese: { color: colors.forest, fontSize: typography.micro, fontWeight: '800' },
   lessonTitle: { marginBottom: spacing.sm, color: colors.ink, fontSize: typography.heading, fontWeight: '800' },
   lessonMeta: { marginTop: spacing.xs, color: colors.inkMuted, fontSize: typography.micro },
+  manageButton: { minHeight: 44, alignSelf: 'flex-start', marginTop: spacing.sm, paddingHorizontal: spacing.lg },
   empty: { padding: spacing.xl, gap: spacing.sm, backgroundColor: colors.surface, borderRadius: radii.lg, borderWidth: 1, borderColor: colors.line },
   emptyTitle: { color: colors.ink, fontSize: typography.heading, fontWeight: '800' },
   emptyBody: { color: colors.inkMuted, fontSize: typography.small, lineHeight: 20 },
+  emptyManageButton: { minHeight: 44, alignSelf: 'flex-start', marginTop: spacing.sm, paddingHorizontal: spacing.lg },
   principle: { marginTop: spacing.xxl, flexDirection: 'row', alignItems: 'center', gap: spacing.lg, padding: spacing.xl, backgroundColor: colors.goldSoft, borderRadius: radii.lg },
   principleKanji: { color: colors.coral, fontSize: 40, fontWeight: '800' },
   principleCopy: { flex: 1, gap: spacing.xs },

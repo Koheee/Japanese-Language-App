@@ -4,7 +4,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { ProgressBar } from '../components/ProgressBar';
 import { Screen } from '../components/Screen';
 import { ReviewRating } from '../models/review';
-import { formatInterval } from '../services/srs';
+import { formatInterval, getReviewStats } from '../services/srs';
 import { createActionLock } from '../state/appStateCommitter';
 import { useStudy } from '../state/StudyContext';
 import { colors, radii, shadows, spacing, typography } from '../theme/tokens';
@@ -20,24 +20,31 @@ export function ReviewScreen() {
   const { state, dueCards, rateReview } = useStudy();
   const [revealed, setRevealed] = useState(false);
   const [isRating, setIsRating] = useState(false);
+  const mountedRef = useRef(true);
   const rateLockRef = useRef<ReturnType<typeof createActionLock> | null>(null);
   const rateLock = rateLockRef.current ??= createActionLock();
   const card = dueCards[0];
-  const reviewedCount = Object.values(state.reviewCards).filter((item) => item.lastReviewedAt).length;
+  const { activeTotal, reviewedActive } = getReviewStats(state.reviewCards);
 
   useEffect(() => setRevealed(false), [card?.id]);
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
 
   if (!card) {
     return (
       <Screen scroll contentStyle={styles.page}>
         <Text style={styles.brand}>REVIEW ROOM</Text>
         <View style={styles.emptyMark}><Text style={styles.emptyKanji}>済</Text></View>
-        <Text style={styles.emptyTitle}>{Object.keys(state.reviewCards).length ? 'You’re caught up.' : 'Your deck is quiet.'}</Text>
-        <Text style={styles.emptyBody}>{Object.keys(state.reviewCards).length ? 'The next cards will appear when their memory interval ends. A little space is what makes recall stronger.' : 'Begin Lesson 1 practice to add its vocabulary and grammar patterns here.'}</Text>
+        <Text style={styles.emptyTitle}>{activeTotal ? 'You’re caught up.' : 'Your deck is quiet.'}</Text>
+        <Text style={styles.emptyBody}>{activeTotal ? 'The next cards will appear when their memory interval ends. A little space is what makes recall stronger.' : 'Begin Lesson 1 practice to add its vocabulary and grammar patterns here.'}</Text>
         <View style={styles.emptyStats}>
-          <View style={styles.emptyStat}><Text style={styles.emptyValue}>{Object.keys(state.reviewCards).length}</Text><Text style={styles.emptyLabel}>cards in deck</Text></View>
+          <View style={styles.emptyStat}><Text style={styles.emptyValue}>{activeTotal}</Text><Text style={styles.emptyLabel}>cards in deck</Text></View>
           <View style={styles.emptyDivider} />
-          <View style={styles.emptyStat}><Text style={styles.emptyValue}>{reviewedCount}</Text><Text style={styles.emptyLabel}>reviewed</Text></View>
+          <View style={styles.emptyStat}><Text style={styles.emptyValue}>{reviewedActive}</Text><Text style={styles.emptyLabel}>reviewed</Text></View>
         </View>
       </Screen>
     );
@@ -49,9 +56,9 @@ export function ReviewScreen() {
       setIsRating(true);
       try {
         const result = await rateReview(cardId, rating);
-        if (result.ok) setRevealed(false);
+        if (result.ok && mountedRef.current) setRevealed(false);
       } finally {
-        setIsRating(false);
+        if (mountedRef.current) setIsRating(false);
       }
     });
     if (work) await work;
@@ -68,7 +75,7 @@ export function ReviewScreen() {
       </View>
 
       <View style={styles.progressWrap}>
-        <ProgressBar value={reviewedCount / Math.max(Object.keys(state.reviewCards).length, 1)} accent={colors.gold} />
+        <ProgressBar value={reviewedActive / Math.max(activeTotal, 1)} accent={colors.gold} />
         <Text style={styles.progressLabel}>{card.kind === 'vocabulary' ? 'WORD' : 'GRAMMAR'} · LESSON {card.lessonId.slice(-2)}</Text>
       </View>
 
