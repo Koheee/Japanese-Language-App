@@ -3,8 +3,9 @@ import { StyleSheet, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { HydrationGate } from './src/components/HydrationGate';
+import { StorageErrorBanner } from './src/components/StorageErrorBanner';
 import { AppNavigator } from './src/navigation/AppNavigator';
-import { StudyProvider } from './src/state/StudyContext';
+import { StudyProvider, useStudy } from './src/state/StudyContext';
 
 export default function App() {
   return (
@@ -14,7 +15,7 @@ export default function App() {
           <StudyProvider>
             <HydrationGate>
               <StatusBar style="dark" />
-              <AppNavigator />
+              <ReadyApp />
             </HydrationGate>
           </StudyProvider>
         </SafeAreaProvider>
@@ -23,7 +24,19 @@ export default function App() {
   );
 }
 
+function ReadyApp() {
+  const { storageError } = useStudy();
+
+  return (
+    <View style={styles.readyApp}>
+      {storageError ? <StorageErrorBanner /> : null}
+      <AppNavigator />
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
+  readyApp: { flex: 1 },
   canvas: {
     flex: 1,
     alignItems: 'center',

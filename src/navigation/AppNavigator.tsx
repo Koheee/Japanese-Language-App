@@ -5,13 +5,17 @@ import { StyleSheet, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ExerciseScreen } from '../screens/ExerciseScreen';
+import { ImportPreviewScreen } from '../screens/ImportPreviewScreen';
 import { LessonDetailScreen } from '../screens/LessonDetailScreen';
 import { LessonListScreen } from '../screens/LessonListScreen';
 import { ProgressScreen } from '../screens/ProgressScreen';
 import { ReviewScreen } from '../screens/ReviewScreen';
+import { VocabularyManagerScreen } from '../screens/VocabularyManagerScreen';
+import { WordEditorScreen } from '../screens/WordEditorScreen';
 import { colors, typography } from '../theme/tokens';
-import { LearnStackParamList, RootTabParamList } from './types';
+import { LearnStackParamList, RootStackParamList, RootTabParamList } from './types';
 
+const RootStack = createNativeStackNavigator<RootStackParamList>();
 const LearnStack = createNativeStackNavigator<LearnStackParamList>();
 const Tabs = createBottomTabNavigator<RootTabParamList>();
 
@@ -44,27 +48,52 @@ const tabGlyphs: Record<keyof RootTabParamList, string> = {
   Progress: '歩',
 };
 
-export function AppNavigator() {
+function MainTabsNavigator() {
   const insets = useSafeAreaInsets();
 
   return (
+    <Tabs.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarActiveTintColor: colors.forest,
+        tabBarInactiveTintColor: colors.inkMuted,
+        tabBarStyle: [styles.tabBar, { height: 68 + insets.bottom, paddingBottom: Math.max(8, insets.bottom) }],
+        tabBarLabelStyle: styles.tabLabel,
+        tabBarIcon: ({ focused }) => (
+          <Text style={[styles.tabGlyph, focused && styles.tabGlyphActive]}>{tabGlyphs[route.name]}</Text>
+        ),
+      })}
+    >
+      <Tabs.Screen name="Learn" component={LearnNavigator} />
+      <Tabs.Screen name="Review" component={ReviewScreen} />
+      <Tabs.Screen name="Progress" component={ProgressScreen} />
+    </Tabs.Navigator>
+  );
+}
+
+export function AppNavigator() {
+  return (
     <NavigationContainer theme={navigationTheme}>
-      <Tabs.Navigator
-        screenOptions={({ route }) => ({
-          headerShown: false,
-          tabBarActiveTintColor: colors.forest,
-          tabBarInactiveTintColor: colors.inkMuted,
-          tabBarStyle: [styles.tabBar, { height: 68 + insets.bottom, paddingBottom: Math.max(8, insets.bottom) }],
-          tabBarLabelStyle: styles.tabLabel,
-          tabBarIcon: ({ focused }) => (
-            <Text style={[styles.tabGlyph, focused && styles.tabGlyphActive]}>{tabGlyphs[route.name]}</Text>
-          ),
-        })}
+      <RootStack.Navigator
+        screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.paper } }}
       >
-        <Tabs.Screen name="Learn" component={LearnNavigator} />
-        <Tabs.Screen name="Review" component={ReviewScreen} />
-        <Tabs.Screen name="Progress" component={ProgressScreen} />
-      </Tabs.Navigator>
+        <RootStack.Screen name="MainTabs" component={MainTabsNavigator} />
+        <RootStack.Screen
+          name="VocabularyManager"
+          component={VocabularyManagerScreen}
+          options={{ animation: 'slide_from_right' }}
+        />
+        <RootStack.Screen
+          name="WordEditor"
+          component={WordEditorScreen}
+          options={{ presentation: 'modal' }}
+        />
+        <RootStack.Screen
+          name="ImportPreview"
+          component={ImportPreviewScreen}
+          options={{ presentation: 'modal' }}
+        />
+      </RootStack.Navigator>
     </NavigationContainer>
   );
 }
