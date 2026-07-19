@@ -1,9 +1,19 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { useState } from 'react';
+import { Linking, Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { GrammarPoint } from '../models/content';
+import type { GrammarPoint } from '../models/content';
 import { colors, radii, spacing, typography } from '../theme/tokens';
+import {
+  createGrammarInsightState,
+  projectGrammarInsight,
+  setGrammarInsightFocused,
+  toggleGrammarInsight,
+} from './grammarCardPresentation';
 
 export function GrammarCard({ point, index }: { point: GrammarPoint; index: number }) {
+  const [insightState, setInsightState] = useState(createGrammarInsightState);
+  const insight = projectGrammarInsight(point, insightState);
+
   return (
     <View style={styles.card}>
       <View style={styles.headingRow}>
@@ -17,10 +27,47 @@ export function GrammarCard({ point, index }: { point: GrammarPoint; index: numb
       <View style={styles.translation}><Text style={styles.translationText}>{point.plainEnglish}</Text></View>
       <Text style={styles.body}>{point.explanation}</Text>
 
-      <View style={styles.whyBox}>
-        <Text style={styles.whyLabel}>WHY THIS FEELS DIFFERENT IN ENGLISH</Text>
-        <Text style={styles.whyText}>{point.whyItWorks}</Text>
-      </View>
+      <Pressable
+        accessibilityRole={insight.toggle.accessibilityRole}
+        accessibilityLabel={insight.toggle.accessibilityLabel}
+        accessibilityHint={insight.toggle.accessibilityHint}
+        accessibilityState={insight.toggle.accessibilityState}
+        onPress={() => setInsightState((current) => toggleGrammarInsight(current))}
+        onFocus={() => setInsightState((current) => setGrammarInsightFocused(current, true))}
+        onBlur={() => setInsightState((current) => setGrammarInsightFocused(current, false))}
+        style={[
+          styles.insightToggle,
+          { minHeight: insight.toggle.minimumTouchTarget },
+          insightState.focused && styles.insightToggleFocused,
+        ]}
+      >
+        <Text style={styles.insightToggleLabel}>Japanese-first insight</Text>
+        <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.insightChevron}>
+          {insightState.expanded ? '−' : '+'}
+        </Text>
+      </Pressable>
+
+      {insight.content ? (
+        <View style={styles.whyBox}>
+          <Text style={styles.whyText}>{insight.content.whyItWorks}</Text>
+          <Text style={styles.boundaryLabel}>USAGE BOUNDARY</Text>
+          <Text style={styles.whyText}>{insight.content.usageBoundary}</Text>
+          {insight.content.notes?.map((note) => (
+            <Text key={note} style={styles.note}>•  {note}</Text>
+          ))}
+          {insight.content.furtherReading?.map((reference) => (
+            <Pressable
+              key={reference.url}
+              accessibilityRole="link"
+              accessibilityLabel={`Further reading: ${reference.title}; opens an external site`}
+              onPress={() => { void Linking.openURL(reference.url); }}
+              style={styles.referenceLink}
+            >
+              <Text style={styles.referenceLinkText}>Further reading: {reference.title}</Text>
+            </Pressable>
+          ))}
+        </View>
+      ) : null}
 
       <View style={styles.examples}>
         {point.examples.map((example) => (
@@ -31,8 +78,6 @@ export function GrammarCard({ point, index }: { point: GrammarPoint; index: numb
           </View>
         ))}
       </View>
-
-      {point.notes?.map((note) => <Text key={note} style={styles.note}>•  {note}</Text>)}
 
       {point.commonMistake ? (
         <View style={styles.mistake}>
@@ -57,9 +102,31 @@ const styles = StyleSheet.create({
   translation: { alignSelf: 'flex-start', paddingHorizontal: spacing.md, paddingVertical: spacing.sm, backgroundColor: colors.coralSoft, borderRadius: radii.sm },
   translationText: { color: colors.ink, fontSize: typography.small, fontWeight: '700' },
   body: { color: colors.ink, fontSize: typography.body, lineHeight: 25 },
+  insightToggle: {
+    minHeight: 44,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm,
+    borderRadius: radii.md,
+    borderWidth: 1,
+    borderColor: colors.line,
+    backgroundColor: colors.surfaceStrong,
+  },
+  insightToggleFocused: { borderWidth: 2, borderColor: colors.coral },
+  insightToggleLabel: { color: colors.ink, fontSize: typography.small, fontWeight: '800' },
+  insightChevron: { color: colors.coral, fontSize: typography.heading, fontWeight: '800' },
   whyBox: { gap: spacing.sm, padding: spacing.lg, backgroundColor: colors.goldSoft, borderRadius: radii.md },
-  whyLabel: { color: colors.inkMuted, fontSize: typography.micro, fontWeight: '900', letterSpacing: 1 },
   whyText: { color: colors.ink, fontSize: typography.small, lineHeight: 21 },
+  boundaryLabel: { color: colors.inkMuted, fontSize: typography.micro, fontWeight: '900', letterSpacing: 1 },
+  referenceLink: { minHeight: 44, justifyContent: 'center', paddingVertical: spacing.sm },
+  referenceLinkText: {
+    color: colors.forest,
+    fontSize: typography.small,
+    fontWeight: '700',
+    textDecorationLine: 'underline',
+  },
   examples: { gap: spacing.sm },
   example: { paddingLeft: spacing.md, borderLeftWidth: 3, borderLeftColor: colors.forestSoft },
   japanese: { color: colors.ink, fontSize: typography.body, fontWeight: '700', lineHeight: 24 },
