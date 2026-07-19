@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Crypto from 'expo-crypto';
 import React, {
   PropsWithChildren,
   createContext,
@@ -19,6 +20,15 @@ import { hydrateAppStateV2, writeAppStateV2 } from '../services/appStateStorage'
 import { validatePersistedAppStateV2 } from '../services/appStateValidation';
 import { getDueCards } from '../services/srs';
 import {
+  VocabularyDraft,
+  VocabularyUndoToken,
+  buildAddVocabularyState,
+  buildEditVocabularyState,
+  buildHideVocabularyState,
+  buildRestoreVocabularyState,
+  buildTemporaryVocabularyUndoState,
+} from '../services/vocabularyMutations';
+import {
   AppStateCommitter,
   CommitResult,
   createAppStateCommitter,
@@ -31,6 +41,10 @@ import {
 } from './studyTransitions';
 
 type HydrationStatus = 'loading' | 'ready' | 'recovery';
+
+export type ReversibleCommitResult =
+  | { ok: true; state: PersistedAppStateV2; undoToken: VocabularyUndoToken }
+  | { ok: false; error: Error };
 
 interface StudyContextValue {
   hydrationStatus: HydrationStatus;
@@ -47,6 +61,15 @@ interface StudyContextValue {
     correct: boolean,
   ) => Promise<CommitResult>;
   rateReview: (cardId: string, rating: ReviewRating) => Promise<CommitResult>;
+  addVocabulary: (lessonId: string, draft: VocabularyDraft) => Promise<CommitResult>;
+  editVocabulary: (
+    lessonId: string,
+    vocabularyId: string,
+    draft: VocabularyDraft,
+  ) => Promise<CommitResult>;
+  hideVocabulary: (lessonId: string, vocabularyId: string) => Promise<ReversibleCommitResult>;
+  restoreVocabulary: (lessonId: string, vocabularyId: string) => Promise<ReversibleCommitResult>;
+  undoVocabularyMutation: (token: VocabularyUndoToken) => Promise<CommitResult>;
   getProgress: (lessonId: string) => LessonProgress | undefined;
 }
 
@@ -156,6 +179,29 @@ export function StudyProvider({ children }: PropsWithChildren) {
     [runHydration],
   );
 
+  const commitReversibleVocabularyMutation = useCallback(async (
+    transition: (current: PersistedAppStateV2) => {
+      state: PersistedAppStateV2;
+      undoToken: VocabularyUndoToken;
+    },
+  ): Promise<ReversibleCommitResult> => {
+    let capturedUndoToken: VocabularyUndoToken | undefined;
+    const result = await commitAppState((current) => {
+      const reversible = transition(current);
+      capturedUndoToken = reversible.undoToken;
+      return reversible.state;
+    });
+
+    if (!result.ok) {
+      capturedUndoToken = undefined;
+      return result;
+    }
+    if (!capturedUndoToken) {
+      return { ok: false, error: new Error('Committed vocabulary undo token was not captured.') };
+    }
+    return { ...result, undoToken: capturedUndoToken };
+  }, [commitAppState]);
+
   const startLesson = useCallback(
     (lessonId: string) => commitAppState(
       (current) => buildStartLessonState(current, lessonId, lessons),
@@ -173,6 +219,67 @@ export function StudyProvider({ children }: PropsWithChildren) {
   const rateReview = useCallback(
     (cardId: string, rating: ReviewRating) => commitAppState(
       (current) => buildRateReviewState(current, cardId, rating),
+    ),
+    [commitAppState],
+  );
+
+  const addVocabulary = useCallback(
+    (lessonId: string, draft: VocabularyDraft) => {
+      const uuid = Crypto.randomUUID();
+      return commitAppState((current) => buildAddVocabularyState(
+        current,
+        lessonId,
+        draft,
+        { lessons, now: new Date(), uuid },
+      ));
+    },
+    [commitAppState],
+  );
+
+  const editVocabulary = useCallback(
+    (lessonId: string, vocabularyId: string, draft: VocabularyDraft) => commitAppState(
+      (current) => buildEditVocabularyState(
+        current,
+        lessonId,
+        vocabularyId,
+        draft,
+        { lessons, now: new Date() },
+      ),
+    ),
+    [commitAppState],
+  );
+
+  const hideVocabulary = useCallback(
+    (lessonId: string, vocabularyId: string) => commitReversibleVocabularyMutation(
+      (current) => buildHideVocabularyState(
+        current,
+        lessonId,
+        vocabularyId,
+        { lessons, now: new Date() },
+      ),
+    ),
+    [commitReversibleVocabularyMutation],
+  );
+
+  const restoreVocabulary = useCallback(
+    (lessonId: string, vocabularyId: string) => commitReversibleVocabularyMutation(
+      (current) => buildRestoreVocabularyState(
+        current,
+        lessonId,
+        vocabularyId,
+        { lessons, now: new Date() },
+      ),
+    ),
+    [commitReversibleVocabularyMutation],
+  );
+
+  const undoVocabularyMutation = useCallback(
+    (token: VocabularyUndoToken) => commitAppState(
+      (current) => buildTemporaryVocabularyUndoState(
+        current,
+        token,
+        { lessons, now: new Date() },
+      ),
     ),
     [commitAppState],
   );
@@ -195,20 +302,30 @@ export function StudyProvider({ children }: PropsWithChildren) {
       startLesson,
       recordExercise,
       rateReview,
+      addVocabulary,
+      editVocabulary,
+      hideVocabulary,
+      restoreVocabulary,
+      undoVocabularyMutation,
       getProgress,
     }),
     [
+      addVocabulary,
       commitAppState,
       dueCards,
+      editVocabulary,
       getProgress,
+      hideVocabulary,
       hydrationMessage,
       hydrationStatus,
       rateReview,
       recordExercise,
+      restoreVocabulary,
       retryHydration,
       startLesson,
       state,
       storageError,
+      undoVocabularyMutation,
     ],
   );
 
