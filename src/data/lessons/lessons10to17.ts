@@ -653,7 +653,7 @@ const lesson16: Lesson = {
       whyItWorks: 'Japanese can maintain one topic while each て-form hands the event forward. The non-final connectors remain tenseless, so the sentence waits for the final predicate to locate the entire sequence in time.',
       usageBoundary: 'Only the final predicate carries past or nonpast tense for the whole taught chain. Use this link for compatible sequential actions, not for reasons, contrast, のに, し, or representative たり lists.',
       examples: [
-        { japanese: '受付へ 行って、名前を 書いて、カードを もらいます。', reading: 'うけつけへ いって、なまえを かいて、カードを もらいます。', english: 'Go to reception, write your name, and receive a card.' },
+        { japanese: '受付へ 行って、名前を 書いて、カードを もらいます。', reading: 'うけつけへ いって、なまえを かいて、カードを もらいます。', english: 'I go to reception, write my name, and receive a card.' },
         { japanese: '朝、シャワーを あびて、朝ごはんを 食べて、出かけました。', reading: 'あさ、シャワーを あびて、あさごはんを たべて、でかけました。', english: 'In the morning, I showered, ate breakfast, and went out.' },
       ],
     },
@@ -753,7 +753,7 @@ const lesson17: Lesson = {
       title: 'Build the plain negative ない-form',
       pattern: 'verb → ～ない',
       plainEnglish: '“not do…” in a form that connects to other expressions.',
-      explanation: 'Start from the familiar ～ます form and identify the verb group. Group 1 changes the final i-row kana before ます to the matching a-row kana, removes ます, and adds ない; い becomes わ. Group 2 replaces ます with ない. The irregular します becomes しない, and 来ます becomes こない.',
+      explanation: 'Use the learned ～ます form to determine the verb group. Group 1 changes the final i-row kana before ます to the matching a-row kana, removes ます, and adds ない; い becomes わ. Group 2 replaces ます with ない. The irregular します becomes しない, and 来ます becomes こない.',
       whyItWorks: 'Japanese builds negation into the verb ending rather than placing a separate helper before an unchanged verb. The group-specific change creates one nonpolite negative form that can connect to the longer expressions in this lesson.',
       usageBoundary: 'Apply the rule to the learned forms: 書きます→書かない, 読みます→読まない, 待ちます→待たない, 買います→買わない, and 見ます→見ない; あります becomes ない. Broader form analysis remains deferred to Lesson 18.',
       notes: ['For Group 1, pair the kana before ます with its a-row partner, such as き→か, み→ま, ち→た, and い→わ.', 'Group 2 directly replaces ます with ない; します and 来ます are irregular.'],

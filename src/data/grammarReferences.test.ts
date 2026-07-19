@@ -53,4 +53,19 @@ describe('grammarReferences', () => {
       'Missing grammar reference manifest entry: l99-not-real',
     );
   });
+
+  it('maps boundaries and invitations to official pages that cover those patterns', () => {
+    expect(getGrammarReferences('l4-bounds')).toEqual([
+      {
+        title: "Tae Kim's Guide: Particles used with verbs",
+        url: 'https://guidetojapanese.org/learn/grammar/verbparticles',
+      },
+    ]);
+    expect(getGrammarReferences('l6-invite')).toEqual([
+      {
+        title: "Tae Kim's Guide: The Question Marker",
+        url: 'https://guidetojapanese.org/learn/grammar/question',
+      },
+    ]);
+  });
 });

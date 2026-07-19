@@ -43,4 +43,18 @@ describe('grammar enrichment for Lessons 18-25', () => {
       }),
     ]));
   });
+
+  it('keeps the Lesson 25 opening within the approved conditional scope', () => {
+    const opening = lessons
+      .find(({ number }) => number === 25)
+      ?.dialogue.find(({ id }) => id === 'l25-d01');
+
+    expect(opening).toMatchObject({
+      id: 'l25-d01',
+      speaker: 'Aya',
+      japanese: 'らいげつ、おおさかへ てんきんします。',
+      reading: 'らいげつ、おおさかへ てんきんします。',
+      english: 'I’m transferring to Osaka next month.',
+    });
+  });
 });

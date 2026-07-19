@@ -271,7 +271,7 @@ const lesson04: Lesson = {
       id: 'l4-past', title: 'Report completed actions politely', pattern: 'Vました / Vませんでした',
       plainEnglish: 'did / did not',
       explanation: 'Within the same ます・ません・ました・ませんでした grid, ました reports an affirmative completed action and ませんでした reports that a past action did not occur.',
-      whyItWorks: 'Japanese places tense and polarity together in the polite ending. Once the verb stem is known, the consistent final shape tells the listener both that the time is past and whether the event happened.',
+      whyItWorks: 'Japanese places tense and polarity together in the polite ending. Across the four-form grid, the final shape tells the listener both that the time is past and whether the event happened.',
       usageBoundary: 'Do not combine two polite endings or use ません for a finished negative event; the complete past-negative ending is ませんでした.',
       examples: [
         { japanese: 'きのう 11じに ねました。', reading: 'きのう じゅういちじに ねました。', english: 'I went to bed at eleven yesterday.' },
@@ -287,7 +287,7 @@ const lesson04: Lesson = {
       notes: ['A weekday may take に when treated as a scheduled point.', 'A clock time normally takes に.'],
       examples: [
         { japanese: '8じに はたらきます。', reading: 'はちじに はたらきます。', english: 'I work at eight.' },
-        { japanese: 'あした うちで やすみます。', reading: 'あした うちで やすみます。', english: 'I will rest at home tomorrow.' },
+        { japanese: 'あした やすみます。', reading: 'あした やすみます。', english: 'I will rest tomorrow.' },
       ],
     },
     {
@@ -325,7 +325,7 @@ const lesson04: Lesson = {
   dialogue: dialogue(4, [
     ['Ren', 'ミナさんは まいあさ なんじに おきますか。', 'ミナさんは まいあさ なんじに おきますか。', 'Mina, what time do you get up every morning?', ['l4-time-ni', 'l4-nonpast']],
     ['Mina', '6じはんに おきます。7じに うちを でます。', 'ろくじはんに おきます。しちじに うちを でます。', 'I get up at 6:30. I leave home at seven.', ['l4-time-ni']],
-    ['Ren', 'ラジオの しごとは なんじからですか。', 'ラジオの しごとは なんじからですか。', 'What time does the radio work start?', ['l4-bounds']],
+    ['Ren', 'ラジオの しごとは なんじからですか。', 'ラジオの しごとは なんじからですか。', 'What time does your radio job start?', ['l4-bounds']],
     ['Mina', '8じから 11じまでです。きょうは 12じまで はたらきます。', 'はちじから じゅういちじまでです。きょうは じゅうにじまで はたらきます。', 'It is from eight to eleven. Today I will work until twelve.', ['l4-bounds', 'l4-nonpast']],
     ['Ren', 'きのうも はたらきましたか。', 'きのうも はたらきましたか。', 'Did you work yesterday too?', ['l4-past']],
     ['Mina', 'いいえ、はたらきませんでした。うちで べんきょうしました。', 'いいえ、はたらきませんでした。うちで べんきょうしました。', 'No, I did not work. I studied at home.', ['l4-past']],
@@ -517,7 +517,7 @@ const lesson06: Lesson = {
     ['Riku', 'メイさん、こんや えきまえで えいがを 見ます。', 'メイさん、こんや えきまえで えいがを みます。', 'Mei, I am watching a film near the station tonight.', ['l6-action-place', 'l6-object']],
     ['Mei', 'そうですか。どんな えいがですか。', 'そうですか。どんな えいがですか。', 'Oh? What kind of film is it?'],
     ['Riku', '日本の アニメです。いっしょに 見ませんか。', 'にほんの アニメです。いっしょに みませんか。', 'It is a Japanese animated film. Would you like to watch it together?', ['l6-invite']],
-    ['Mei', 'いいですね。ぜひ 見たいです。', 'いいですね。ぜひ みたいです。', 'That sounds good. I would definitely like to see it.'],
+    ['Mei', 'いいですね。ぜひ 見ましょう。', 'いいですね。ぜひ みましょう。', 'That sounds good. Let’s definitely watch it.'],
     ['Riku', 'えいがの まえに、カフェで ばんごはんを 食べませんか。', 'えいがの まえに、カフェで ばんごはんを たべませんか。', 'Before the film, would you like to eat dinner at a café?', ['l6-action-place', 'l6-object', 'l6-invite']],
     ['Mei', 'はい。6じに カフェで 会いましょう。', 'はい。ろくじに カフェで あいましょう。', 'Yes. Let’s meet at the café at six.', ['l6-suggest']],
     ['Riku', 'わかりました。カフェで なにを 食べますか。', 'わかりました。カフェで なにを たべますか。', 'All right. What will you eat at the café?', ['l6-action-place', 'l6-object']],
@@ -770,7 +770,7 @@ const lesson09: Lesson = {
       ],
     },
     {
-      id: 'l9-reason', title: 'Give the reason after the cause', pattern: 'reason から、result',
+      id: 'l9-reason', title: 'State a reason before its conclusion', pattern: 'reason から、result',
       plainEnglish: 'because reason, result',
       explanation: 'Place から after a complete reason clause, then state the conclusion that the reason supports. In a direct answer, the conclusion may remain understood when the question already supplies it.',
       whyItWorks: 'Japanese first presents a proposition and then labels that whole proposition as the basis for what follows. The listener receives the evidence before interpreting the resulting choice or judgment.',
@@ -804,7 +804,7 @@ const lesson09: Lesson = {
   dialogue: dialogue(9, [
     ['Hana', 'ノアさんは どんな 音楽が すきですか。', 'ノアさんは どんな おんがくが すきですか。', 'Noah, what kind of music do you like?', ['l9-preference']],
     ['Noah', '音楽が だいすきです。とくに ジャズが すきです。', 'おんがくが だいすきです。とくに ジャズが すきです。', 'I love music. I especially like jazz.', ['l9-preference']],
-    ['Hana', '楽器も じょうずですか。', 'がっきも じょうずですか。', 'Are you good at musical instruments too?', ['l9-skill']],
+    ['Hana', 'ギターが じょうずですか。', 'ギターが じょうずですか。', 'Are you good at guitar?', ['l9-skill']],
     ['Noah', 'いいえ、ギターは あまり じょうずじゃありません。でも、歌が すきです。', 'いいえ、ギターは あまり じょうずじゃありません。でも、うたが すきです。', 'No, I am not very good at guitar. But I like singing.', ['l9-skill', 'l9-preference']],
     ['Hana', '日本の 歌が わかりますか。', 'にほんの うたが わかりますか。', 'Do you understand Japanese songs?', ['l9-understand']],
     ['Noah', 'すこし わかります。ことばが やさしいですから。', 'すこし わかります。ことばが やさしいですから。', 'I understand a little, because the words are simple.', ['l9-understand', 'l9-reason']],

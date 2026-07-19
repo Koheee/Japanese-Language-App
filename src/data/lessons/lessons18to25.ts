@@ -1105,7 +1105,7 @@ export const lessons18to25: Lesson[] = ([
       ['げんき', 'げんき', 'well; energetic', 'な-adjective'],
     ]),
     dialogue: makeDialogue(25, [
-      ['Aya', 'らいげつ、おおさかへ てんきんすることに なりました。', 'らいげつ、おおさかへ てんきんすることに なりました。', 'It has been decided that I’ll transfer to Osaka next month.'],
+      ['Aya', 'らいげつ、おおさかへ てんきんします。', 'らいげつ、おおさかへ てんきんします。', 'I’m transferring to Osaka next month.'],
       ['Ben', 'そうですか。おおさかに ついたら、まず なにを しますか。', 'そうですか。おおさかに ついたら、まず なにを しますか。', 'I see. When you arrive in Osaka, what will you do first?', ['l25-after-tara']],
       ['Aya', 'ひっこしが おわったら、ちかくを あるきます。', 'ひっこしが おわったら、ちかくを あるきます。', 'Once the move is finished, I’ll walk around the neighborhood.', ['l25-after-tara']],
       ['Ben', 'しごとが いそがしくても、しゃしんを おくってくださいね。', 'しごとが いそがしくても、しゃしんを おくってくださいね。', 'Even if work is busy, please send photos.', ['l25-even-if']],

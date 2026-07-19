@@ -290,7 +290,7 @@ exports[`complete curriculum > freezes dialogue presentation and exercise IDs be
         "speaker": "Mina",
       },
       {
-        "english": "What time does the radio work start?",
+        "english": "What time does your radio job start?",
         "grammarIds": [
           "l4-bounds",
         ],
@@ -475,10 +475,10 @@ exports[`complete curriculum > freezes dialogue presentation and exercise IDs be
         "speaker": "Riku",
       },
       {
-        "english": "That sounds good. I would definitely like to see it.",
+        "english": "That sounds good. Let’s definitely watch it.",
         "grammarIds": [],
         "id": "l6-d04",
-        "japanese": "いいですね。ぜひ 見たいです。",
+        "japanese": "いいですね。ぜひ 見ましょう。",
         "speaker": "Mei",
       },
       {
@@ -728,12 +728,12 @@ exports[`complete curriculum > freezes dialogue presentation and exercise IDs be
         "speaker": "Noah",
       },
       {
-        "english": "Are you good at musical instruments too?",
+        "english": "Are you good at guitar?",
         "grammarIds": [
           "l9-skill",
         ],
         "id": "l9-d03",
-        "japanese": "楽器も じょうずですか。",
+        "japanese": "ギターが じょうずですか。",
         "speaker": "Hana",
       },
       {
@@ -1869,10 +1869,10 @@ exports[`complete curriculum > freezes dialogue presentation and exercise IDs be
   {
     "dialogue": [
       {
-        "english": "It has been decided that I’ll transfer to Osaka next month.",
+        "english": "I’m transferring to Osaka next month.",
         "grammarIds": [],
         "id": "l25-d01",
-        "japanese": "らいげつ、おおさかへ てんきんすることに なりました。",
+        "japanese": "らいげつ、おおさかへ てんきんします。",
         "speaker": "Aya",
       },
       {

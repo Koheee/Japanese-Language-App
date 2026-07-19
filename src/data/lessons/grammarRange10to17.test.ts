@@ -62,4 +62,30 @@ describe('grammar enrichment for Lessons 10-17', () => {
       );
     }
   });
+
+  it('keeps the て-form and ない-form algorithm framing independently worded', () => {
+    const points = new Map(
+      lessons
+        .filter(({ number }) => number === 14 || number === 17)
+        .flatMap(({ grammar }) => grammar.map((point) => [point.id, point] as const)),
+    );
+
+    expect(points.get('l14-te-form')?.explanation).toContain(
+      'Start from the familiar ～ます form and identify the verb group.',
+    );
+    expect(points.get('l17-nai-form')?.explanation).toContain(
+      'Use the learned ～ます form to determine the verb group.',
+    );
+  });
+
+  it('translates the Lesson 16 nonpast action chain as a first-person routine', () => {
+    const point = lessons
+      .find(({ number }) => number === 16)
+      ?.grammar.find(({ id }) => id === 'l16-action-sequence');
+
+    expect(point?.examples[0]).toEqual(expect.objectContaining({
+      japanese: '受付へ 行って、名前を 書いて、カードを もらいます。',
+      english: 'I go to reception, write my name, and receive a card.',
+    }));
+  });
 });
