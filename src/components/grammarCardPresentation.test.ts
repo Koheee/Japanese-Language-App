@@ -68,13 +68,21 @@ describe('grammar card presentation', () => {
   });
 
   it('opens a further-reading link and reports no error', async () => {
-    const opened: string[] = [];
+    const receiverDependentOpener = {
+      opened: [] as string[],
+      async openURL(url: string) {
+        if (this !== receiverDependentOpener) {
+          throw new Error('openURL receiver was detached');
+        }
+        this.opened.push(url);
+      },
+    };
     const result = await openGrammarReference(
       'https://example.com/grammar',
-      async (url) => { opened.push(url); },
+      (url) => receiverDependentOpener.openURL(url),
     );
 
-    expect(opened).toEqual(['https://example.com/grammar']);
+    expect(receiverDependentOpener.opened).toEqual(['https://example.com/grammar']);
     expect(result).toBeNull();
   });
 
@@ -112,7 +120,7 @@ describe('GrammarCard source contract', () => {
     const expandedContent = source.match(/\{insight\.content \? \([\s\S]*?\n\s*\) : null\}/)?.[0];
 
     expect(source).toContain('setReferenceError(null)');
-    expect(source).toContain('openGrammarReference(reference.url, Linking.openURL)');
+    expect(source).toContain('openGrammarReference(reference.url, (url) => Linking.openURL(url))');
     expect(source).toContain('.then(setReferenceError)');
     expect(expandedContent).toContain('accessibilityRole="alert"');
     expect(expandedContent).toContain('accessibilityLiveRegion="polite"');

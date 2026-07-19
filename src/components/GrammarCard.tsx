@@ -69,7 +69,7 @@ export function GrammarCard({ point, index }: { point: GrammarPoint; index: numb
               accessibilityLabel={`Further reading: ${reference.title}; opens an external site`}
               onPress={() => {
                 setReferenceError(null);
-                void openGrammarReference(reference.url, Linking.openURL).then(setReferenceError);
+                void openGrammarReference(reference.url, (url) => Linking.openURL(url)).then(setReferenceError);
               }}
               style={styles.referenceLink}
             >
