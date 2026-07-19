@@ -79,3 +79,15 @@ pnpm audit:public -- --tracked --dist dist
 ```
 
 The exported site is written to `dist/`.
+
+## Grammar enrichment rollout and rollback
+
+Before deployment, export a vocabulary backup from Progress on each device with device-local personal data. Do not remove the iPhone PWA or clear site data during an update; either action can remove device-local progress, vocabulary, and schedules.
+
+Tag the completed vocabulary V2 foundation as `grammar-enrichment-base-2026-07-18`. Run the complete clean verification gate, push the tag, then push the reviewed vocabulary-plus-grammar commits to `main`. Wait for the GitHub Pages workflow to finish successfully before opening the production URL.
+
+On Windows, open the production URL online and verify Lesson 1 and Lesson 25 grammar cards, independent collapsed insight toggles, current review-card text, Progress attribution, and external links. Export a vocabulary backup, cancel and repeat the picker once, and confirm device-local words and hidden state survived the update. Then disable network access, reload the already-loaded PWA, and verify every in-app explanation, expanded insight, personal word, and vocabulary manager remains available; external links may be unavailable offline.
+
+On iPhone, launch the installed PWA online without uninstalling it, leave it open long enough to receive the new deployment, close it fully, and reopen it. Verify portrait/landscape/notch safe areas, readable line lengths, 44-pixel controls, VoiceOver labels and expanded state, keyboard focus when a hardware keyboard is available, and independent grammar-card expansion. Use the Japanese keyboard in lesson search and the word editor; composition must not filter, submit, or show a duplicate before it ends. Transfer the Windows JSON through Files, select that same file twice, import it, and confirm personal/custom/hidden words plus their schedules. Verify Web Share when `canShare({ files })` succeeds, and confirm cancelling share/pick is not reported as an error. Review one existing grammar card and one affected vocabulary card, confirming history is preserved and import-recovery invalidation follows the documented affected-card rule. Reopen once in airplane mode and verify core grammar content, imported vocabulary, and the manager remain available.
+
+Never roll production back to a pre-V2 build after production has written V2 state. A pre-V2 deployment can diverge from the V2 envelope and device-owned vocabulary. For a grammar content or presentation defect, revert only commits after `grammar-enrichment-base-2026-07-18` and redeploy the still-V2-compatible result. For any persistence or hydration defect, stop rollout and fix forward on the V2 foundation. A rollback must never delete the V2 key, rewrite the untouched V1 fallback, clear browser storage, uninstall the PWA, or discard a user's backup.
