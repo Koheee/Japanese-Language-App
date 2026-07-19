@@ -56,13 +56,20 @@ const mutationTimestampFor = (now: Date): string => {
   return timestamp;
 };
 
-const nextVocabularyTimestamp = (current: PersistedAppStateV2, now: Date): string => {
+const nextVocabularyTimestamp = (
+  current: PersistedAppStateV2,
+  now: Date,
+  recordFloors: readonly string[] = [],
+): string => {
   const requestedTimestamp = mutationTimestampFor(now);
   const requestedMilliseconds = Date.parse(requestedTimestamp);
 
-  const previousMilliseconds = current.vocabulary.updatedAt === null
-    ? Number.NEGATIVE_INFINITY
-    : Date.parse(current.vocabulary.updatedAt);
+  const previousMilliseconds = Math.max(
+    current.vocabulary.updatedAt === null
+      ? Number.NEGATIVE_INFINITY
+      : Date.parse(current.vocabulary.updatedAt),
+    ...recordFloors.map(Date.parse),
+  );
   const nextMilliseconds = requestedMilliseconds > previousMilliseconds
     ? requestedMilliseconds
     : previousMilliseconds + 1;
@@ -148,7 +155,7 @@ export const buildAddVocabularyState = (
 
   const vocabularyId = `custom:${lessonId}:${options.uuid}`;
   assertUnusedCustomId(current.vocabulary, vocabularyId);
-  const mutationTimestamp = mutationTimestampFor(options.now);
+  const mutationTimestamp = nextVocabularyTimestamp(current, options.now);
   const records = current.vocabulary.recordsByLesson[lessonId] ?? [];
   const vocabulary: VocabularyOverrides = {
     ...current.vocabulary,
@@ -170,7 +177,7 @@ export const buildAddVocabularyState = (
         },
       ],
     },
-    updatedAt: nextVocabularyTimestamp(current, options.now),
+    updatedAt: mutationTimestamp,
   };
   return completeMutation(current, vocabulary, options);
 };
@@ -193,8 +200,11 @@ export const buildEditVocabularyState = (
 
   const normalized = validateVocabularyDraft(draft);
   assertNoLessonDuplicate(lesson, current.vocabulary, normalized.japanese, vocabularyId);
-  const mutationTimestamp = mutationTimestampFor(options.now);
   const existing = records[recordIndex]!;
+  const mutationTimestamp = nextVocabularyTimestamp(current, options.now, [
+    existing.createdAt,
+    existing.updatedAt,
+  ]);
   const { category: discardedCategory, ...itemWithoutCategory } = existing.item;
   void discardedCategory;
   const nextRecords = [...records];
@@ -213,7 +223,7 @@ export const buildEditVocabularyState = (
       ...current.vocabulary.recordsByLesson,
       [lessonId]: nextRecords,
     },
-    updatedAt: nextVocabularyTimestamp(current, options.now),
+    updatedAt: mutationTimestamp,
   };
   return completeMutation(current, vocabulary, options);
 };

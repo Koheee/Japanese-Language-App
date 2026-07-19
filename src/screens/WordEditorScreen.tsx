@@ -21,6 +21,8 @@ import { createActionLock } from '../state/appStateCommitter';
 import { useStudy } from '../state/StudyContext';
 import { colors, radii, spacing, typography } from '../theme/tokens';
 import { buildWordEditorValidation } from './wordEditorModel';
+import { runRouteUiAction } from './routeUiLifecycle';
+import { useRouteUiLifecycle } from './useRouteUiLifecycle';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'WordEditor'>;
 
@@ -59,6 +61,7 @@ export function WordEditorScreen({ navigation, route }: Props) {
   const [writeError, setWriteError] = useState<string | null>(null);
   const saveLockRef = useRef<ReturnType<typeof createActionLock> | null>(null);
   const saveLock = saveLockRef.current ??= createActionLock();
+  const routeUiLifecycle = useRouteUiLifecycle(navigation);
   const cannotEdit = !lesson
     || (editingId !== undefined && (!resolvedEditingItem || !resolvedEditingItem.editable));
   const composing = japaneseComposing || readingComposing;
@@ -98,20 +101,24 @@ export function WordEditorScreen({ navigation, route }: Props) {
     const work = saveLock.tryRun(async () => {
       setIsSaving(true);
       setWriteError(null);
-      try {
-        const result = editingId
-          ? await editVocabulary(lesson.id, editingId, validation.normalizedDraft)
-          : await addVocabulary(lesson.id, validation.normalizedDraft);
-        if (result.ok) {
-          navigation.goBack();
-        } else {
-          setWriteError(result.error.message);
-        }
-      } catch (cause) {
-        setWriteError(cause instanceof Error ? cause.message : String(cause));
-      } finally {
-        setIsSaving(false);
-      }
+      await runRouteUiAction(
+        routeUiLifecycle,
+        () => editingId
+          ? editVocabulary(lesson.id, editingId, validation.normalizedDraft)
+          : addVocabulary(lesson.id, validation.normalizedDraft),
+        (outcome) => {
+          setIsSaving(false);
+          if (outcome.status === 'rejected') {
+            setWriteError(outcome.error instanceof Error
+              ? outcome.error.message
+              : String(outcome.error));
+          } else if (outcome.value.ok) {
+            navigation.goBack();
+          } else {
+            setWriteError(outcome.value.error.message);
+          }
+        },
+      );
     });
     if (work) await work;
   };

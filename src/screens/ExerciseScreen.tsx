@@ -12,6 +12,8 @@ import { checkExerciseAnswer, getAnswerLabel } from '../services/exerciseEngine'
 import { createActionLock } from '../state/appStateCommitter';
 import { useStudy } from '../state/StudyContext';
 import { colors, radii, spacing, typography } from '../theme/tokens';
+import { runRouteUiAction } from './routeUiLifecycle';
+import { useRouteUiLifecycle } from './useRouteUiLifecycle';
 
 type Props = NativeStackScreenProps<LearnStackParamList, 'Exercise'>;
 
@@ -35,6 +37,7 @@ export function ExerciseScreen({ navigation, route }: Props) {
   const [isSaving, setIsSaving] = useState(false);
   const submitLockRef = useRef<ReturnType<typeof createActionLock> | null>(null);
   const submitLock = submitLockRef.current ??= createActionLock();
+  const routeUiLifecycle = useRouteUiLifecycle(navigation);
   const lessonProgress = getProgress(route.params.lessonId);
 
   const exercise = lesson?.exercises[currentIndex];
@@ -54,22 +57,20 @@ export function ExerciseScreen({ navigation, route }: Props) {
       const submittedResponse = response;
       const submittedExercise = exercise;
       setIsSaving(true);
-      try {
-        const correct = checkExerciseAnswer(submittedExercise, submittedResponse);
-        const result = await recordExercise(
-          lesson.id,
-          submittedExercise.id,
-          correct,
-        );
-        if (result.ok) {
-          setResponse(submittedResponse);
-          setChecked(true);
-          setWasCorrect(correct);
-          if (correct) setScore((current) => current + 1);
-        }
-      } finally {
-        setIsSaving(false);
-      }
+      const correct = checkExerciseAnswer(submittedExercise, submittedResponse);
+      await runRouteUiAction(
+        routeUiLifecycle,
+        () => recordExercise(lesson.id, submittedExercise.id, correct),
+        (outcome) => {
+          setIsSaving(false);
+          if (outcome.status === 'fulfilled' && outcome.value.ok) {
+            setResponse(submittedResponse);
+            setChecked(true);
+            setWasCorrect(correct);
+            if (correct) setScore((current) => current + 1);
+          }
+        },
+      );
     });
     if (work) await work;
   };

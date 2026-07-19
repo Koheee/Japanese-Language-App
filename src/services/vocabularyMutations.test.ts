@@ -5,6 +5,7 @@ import { Lesson } from '../models/content';
 import { ReviewCard } from '../models/review';
 import { DeviceVocabularyRecord, VocabularyOverrides } from '../models/vocabulary';
 import { resolveVocabularyLists } from './vocabularyResolver';
+import { buildVocabularyBackup, validateVocabularyBackupBytes } from './vocabularyBackup';
 import {
   VocabularyDraft,
   buildAddVocabularyState,
@@ -417,6 +418,63 @@ describe('vocabulary mutations', () => {
     expect(added.vocabulary.updatedAt).toBe('2026-07-18T00:00:00.001Z');
     expect(hidden.state.vocabulary.updatedAt).toBe('2026-07-18T00:00:00.002Z');
     expect(hidden.undoToken.expectedVocabularyUpdatedAt).toBe('2026-07-18T00:00:00.002Z');
+  });
+
+  it('keeps record timelines importable when the device clock moves backward', () => {
+    const backwardClock = new Date('2026-07-15T00:00:00.000Z');
+    const current = currentState();
+    const localId = localRecord.item.id;
+    const cardId = `review-${localId}`;
+    const originalSchedule = pickSchedule(current.reviewCards[cardId]!);
+
+    const added = buildAddVocabularyState(current, 'lesson-01', draft, {
+      lessons,
+      now: backwardClock,
+      uuid,
+    });
+    const addedRecord = added.vocabulary.recordsByLesson['lesson-01']?.find(
+      ({ item }) => item.id === `custom:lesson-01:${uuid}`,
+    );
+    expect(addedRecord).toMatchObject({
+      createdAt: '2026-07-17T00:00:00.001Z',
+      updatedAt: '2026-07-17T00:00:00.001Z',
+    });
+
+    const edited = buildEditVocabularyState(
+      added,
+      'lesson-02',
+      localId,
+      editedDraft,
+      { lessons, now: backwardClock },
+    );
+    const editedRecord = getLocalRecord(edited);
+    expect(editedRecord.createdAt).toBe(localRecord.createdAt);
+    expect(editedRecord.updatedAt).toBe('2026-07-17T00:00:00.002Z');
+    expect(pickSchedule(edited.reviewCards[cardId]!)).toEqual(originalSchedule);
+
+    const hidden = buildHideVocabularyState(edited, 'lesson-02', localId, {
+      lessons,
+      now: backwardClock,
+    });
+    const restored = buildRestoreVocabularyState(hidden.state, 'lesson-02', localId, {
+      lessons,
+      now: backwardClock,
+    });
+    expect(getLocalRecord(hidden.state)).toEqual(editedRecord);
+    expect(getLocalRecord(restored.state)).toEqual(editedRecord);
+    expect(pickSchedule(restored.state.reviewCards[cardId]!)).toEqual(originalSchedule);
+
+    const backup = buildVocabularyBackup(
+      restored.state,
+      lessons,
+      '2026-07-18T00:00:00.000Z',
+    );
+    const prepared = validateVocabularyBackupBytes({
+      bytes: new TextEncoder().encode(JSON.stringify(backup)),
+      lessons,
+      current: restored.state,
+    });
+    expect(prepared).toMatchObject({ ok: true });
   });
 
   it('rejects a mutation that would advance beyond the maximum four-digit ISO revision', () => {

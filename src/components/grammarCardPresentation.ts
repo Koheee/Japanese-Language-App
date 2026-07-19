@@ -1,4 +1,5 @@
 import type { GrammarPoint } from '../models/content';
+import { createLatestAttemptCoordinator } from './latestAttemptCoordinator';
 
 export interface GrammarInsightState {
   expanded: boolean;
@@ -30,6 +31,18 @@ export const openGrammarReference = async (
   } catch {
     return 'Could not open this further-reading link. Please try again.';
   }
+};
+
+export const createGrammarReferenceAttemptCoordinator = () => {
+  const coordinator = createLatestAttemptCoordinator<string | null>();
+  return {
+    open: (
+      url: string,
+      openUrl: (url: string) => Promise<unknown>,
+      applyResult: (result: string | null) => void,
+    ) => coordinator.run(() => openGrammarReference(url, openUrl), applyResult),
+    deactivate: coordinator.deactivate,
+  };
 };
 
 export const projectGrammarInsight = (point: GrammarPoint, state: GrammarInsightState) => ({

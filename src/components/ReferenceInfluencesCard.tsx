@@ -16,7 +16,6 @@ type Props = {
 const openWithLinking = (url: string) => Linking.openURL(url);
 
 export function ReferenceInfluencesCard({ openUrl = openWithLinking }: Props) {
-  const mountedRef = useRef(true);
   const referenceAttemptCoordinatorRef = useRef<ReturnType<
     typeof createLatestReferenceAttemptCoordinator
   > | null>(null);
@@ -26,17 +25,12 @@ export function ReferenceInfluencesCard({ openUrl = openWithLinking }: Props) {
   const [referenceError, setReferenceError] = useState<string | null>(null);
 
   useEffect(() => {
-    mountedRef.current = true;
-    return () => {
-      mountedRef.current = false;
-    };
-  }, []);
+    return () => referenceAttemptCoordinator.deactivate();
+  }, [referenceAttemptCoordinator]);
 
   const openReference = (url: string) => {
     setReferenceError(null);
-    void referenceAttemptCoordinator.open(url, openUrl, (message) => {
-      if (mountedRef.current) setReferenceError(message);
-    });
+    void referenceAttemptCoordinator.open(url, openUrl, setReferenceError);
   };
 
   return (

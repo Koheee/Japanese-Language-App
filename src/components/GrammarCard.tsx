@@ -1,20 +1,30 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Linking, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import type { GrammarPoint } from '../models/content';
 import { colors, radii, spacing, typography } from '../theme/tokens';
 import {
+  createGrammarReferenceAttemptCoordinator,
   createGrammarInsightState,
-  openGrammarReference,
   projectGrammarInsight,
   setGrammarInsightFocused,
   toggleGrammarInsight,
 } from './grammarCardPresentation';
 
 export function GrammarCard({ point, index }: { point: GrammarPoint; index: number }) {
+  const referenceAttemptCoordinatorRef = useRef<ReturnType<
+    typeof createGrammarReferenceAttemptCoordinator
+  > | null>(null);
+  const referenceAttemptCoordinator = referenceAttemptCoordinatorRef.current ??=
+    createGrammarReferenceAttemptCoordinator();
   const [insightState, setInsightState] = useState(createGrammarInsightState);
   const [referenceError, setReferenceError] = useState<string | null>(null);
   const insight = projectGrammarInsight(point, insightState);
+
+  useEffect(
+    () => () => referenceAttemptCoordinator.deactivate(),
+    [referenceAttemptCoordinator],
+  );
 
   return (
     <View style={styles.card}>
@@ -69,7 +79,11 @@ export function GrammarCard({ point, index }: { point: GrammarPoint; index: numb
               accessibilityLabel={`Further reading: ${reference.title}; opens an external site`}
               onPress={() => {
                 setReferenceError(null);
-                void openGrammarReference(reference.url, (url) => Linking.openURL(url)).then(setReferenceError);
+                void referenceAttemptCoordinator.open(
+                  reference.url,
+                  (url) => Linking.openURL(url),
+                  setReferenceError,
+                );
               }}
               style={styles.referenceLink}
             >

@@ -22,6 +22,8 @@ import { createActionLock } from '../state/appStateCommitter';
 import { useStudy } from '../state/StudyContext';
 import { colors, radii, spacing, typography } from '../theme/tokens';
 import { buildLessonWordsView } from './lessonWordsModel';
+import { runRouteUiAction } from './routeUiLifecycle';
+import { useRouteUiLifecycle } from './useRouteUiLifecycle';
 
 type Props = CompositeScreenProps<
   NativeStackScreenProps<LearnStackParamList, 'LessonDetail'>,
@@ -46,6 +48,7 @@ export function LessonDetailScreen({ navigation, route }: Props) {
   const [isStarting, setIsStarting] = useState(false);
   const startLockRef = useRef<ReturnType<typeof createActionLock> | null>(null);
   const startLock = startLockRef.current ??= createActionLock();
+  const routeUiLifecycle = useRouteUiLifecycle(navigation);
   const { startLesson, getProgress, state } = useStudy();
   const lesson = getLesson(route.params.lessonId);
   const outline = getLessonOutline(route.params.lessonId);
@@ -109,12 +112,16 @@ export function LessonDetailScreen({ navigation, route }: Props) {
   const beginPractice = async () => {
     const work = startLock.tryRun(async () => {
       setIsStarting(true);
-      try {
-        const result = await startLesson(lesson.id);
-        if (result.ok) navigation.navigate('Exercise', { lessonId: lesson.id });
-      } finally {
-        setIsStarting(false);
-      }
+      await runRouteUiAction(
+        routeUiLifecycle,
+        () => startLesson(lesson.id),
+        (outcome) => {
+          setIsStarting(false);
+          if (outcome.status === 'fulfilled' && outcome.value.ok) {
+            navigation.navigate('Exercise', { lessonId: lesson.id });
+          }
+        },
+      );
     });
     if (work) await work;
   };

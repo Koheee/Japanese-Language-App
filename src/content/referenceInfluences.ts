@@ -1,3 +1,5 @@
+import { createLatestAttemptCoordinator } from '../components/latestAttemptCoordinator';
+
 export const referenceInfluences = {
   heading: 'Reference influences',
   body: "Tae Kim's Guide to Japanese Grammar informed this course's Japanese-first coverage review.",
@@ -34,17 +36,18 @@ export interface LatestReferenceAttemptCoordinator {
     openUrl: (url: string) => Promise<unknown>,
     applyResult: (result: string | null) => void,
   ) => Promise<void>;
+  deactivate: () => void;
 }
 
 export const createLatestReferenceAttemptCoordinator = (
 ): LatestReferenceAttemptCoordinator => {
-  let latestAttemptId = 0;
+  const coordinator = createLatestAttemptCoordinator<string | null>();
 
   return {
-    open: async (url, openUrl, applyResult) => {
-      const attemptId = ++latestAttemptId;
-      const result = await openReferenceInfluence(url, openUrl);
-      if (attemptId === latestAttemptId) applyResult(result);
-    },
+    open: (url, openUrl, applyResult) => coordinator.run(
+      () => openReferenceInfluence(url, openUrl),
+      applyResult,
+    ),
+    deactivate: coordinator.deactivate,
   };
 };

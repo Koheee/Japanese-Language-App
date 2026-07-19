@@ -5,12 +5,23 @@ import { describe, expect, it } from 'vitest';
 
 import type { GrammarPoint } from '../models/content';
 import {
+  createGrammarReferenceAttemptCoordinator,
   createGrammarInsightState,
   openGrammarReference,
   projectGrammarInsight,
   setGrammarInsightFocused,
   toggleGrammarInsight,
 } from './grammarCardPresentation';
+
+const deferred = <T,>() => {
+  let resolve!: (value: T | PromiseLike<T>) => void;
+  let reject!: (reason?: unknown) => void;
+  const promise = new Promise<T>((resolvePromise, rejectPromise) => {
+    resolve = resolvePromise;
+    reject = rejectPromise;
+  });
+  return { promise, reject, resolve };
+};
 
 const point: GrammarPoint = {
   id: 'l1-topic-copula',
@@ -94,6 +105,55 @@ describe('grammar card presentation', () => {
 
     expect(result).toBe('Could not open this further-reading link. Please try again.');
   });
+
+  it('keeps a newer success when an older failure settles last', async () => {
+    const coordinator = createGrammarReferenceAttemptCoordinator();
+    const olderFailure = deferred<void>();
+    const newerSuccess = deferred<void>();
+    const applied: Array<string | null> = [];
+
+    const older = coordinator.open('https://example.com/older', () => olderFailure.promise, (value) => applied.push(value));
+    const newer = coordinator.open('https://example.com/newer', () => newerSuccess.promise, (value) => applied.push(value));
+    newerSuccess.resolve();
+    await newer;
+    olderFailure.reject(new Error('older failure'));
+    await older;
+
+    expect(applied).toEqual([null]);
+  });
+
+  it('keeps a newer failure when an older success settles first', async () => {
+    const coordinator = createGrammarReferenceAttemptCoordinator();
+    const olderSuccess = deferred<void>();
+    const newerFailure = deferred<void>();
+    const applied: Array<string | null> = [];
+
+    const older = coordinator.open('https://example.com/older', () => olderSuccess.promise, (value) => applied.push(value));
+    const newer = coordinator.open('https://example.com/newer', () => newerFailure.promise, (value) => applied.push(value));
+    olderSuccess.resolve();
+    await older;
+    newerFailure.reject(new Error('newer failure'));
+    await newer;
+
+    expect(applied).toEqual(['Could not open this further-reading link. Please try again.']);
+  });
+
+  it('drops a further-reading result after the card unmounts', async () => {
+    const coordinator = createGrammarReferenceAttemptCoordinator();
+    const pending = deferred<void>();
+    const applied: Array<string | null> = [];
+    const attempt = coordinator.open(
+      'https://example.com/reference',
+      () => pending.promise,
+      (value) => applied.push(value),
+    );
+
+    coordinator.deactivate();
+    pending.reject(new Error('late failure'));
+    await attempt;
+
+    expect(applied).toEqual([]);
+  });
 });
 
 describe('GrammarCard source contract', () => {
@@ -120,8 +180,10 @@ describe('GrammarCard source contract', () => {
     const expandedContent = source.match(/\{insight\.content \? \([\s\S]*?\n\s*\) : null\}/)?.[0];
 
     expect(source).toContain('setReferenceError(null)');
-    expect(source).toContain('openGrammarReference(reference.url, (url) => Linking.openURL(url))');
-    expect(source).toContain('.then(setReferenceError)');
+    expect(source).toContain('createGrammarReferenceAttemptCoordinator()');
+    expect(source).toContain('referenceAttemptCoordinator.open(');
+    expect(source).toContain('(url) => Linking.openURL(url)');
+    expect(source).toContain('referenceAttemptCoordinator.deactivate()');
     expect(expandedContent).toContain('accessibilityRole="alert"');
     expect(expandedContent).toContain('accessibilityLiveRegion="polite"');
     expect(expandedContent).toContain('{referenceError}');
