@@ -9,6 +9,11 @@ import { containsHan, containsLatinLetters, isKanaReading } from '../../services
 import { getGrammarReferences } from '../grammarReferences';
 import { FROZEN_GRAMMAR_IDS, GRAMMAR_IDS_BY_LESSON } from './grammarInventory';
 import { lessons } from '.';
+import {
+  ORIGINALITY_MIN_TOKENS,
+  collectGrammarProseRecords,
+  findCrossRecordOverlaps,
+} from '../../../scripts/grammar-originality-core';
 
 describe('complete curriculum', () => {
   it('contains one ready, fully authored lesson for every number from 1 to 25', () => {
@@ -125,6 +130,13 @@ describe('complete curriculum', () => {
         }
       }
     }
+  });
+
+  it('has no unexplained corpus-wide 12-token overlap between grammar points', () => {
+    const records = collectGrammarProseRecords(lessons);
+    expect(ORIGINALITY_MIN_TOKENS).toBe(12);
+    expect(records).toHaveLength(101);
+    expect(findCrossRecordOverlaps(records)).toEqual([]);
   });
 
   it.each(Array.from({ length: 25 }, (_, index) => index + 1))(

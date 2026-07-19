@@ -50,7 +50,46 @@ const asObject = (value: unknown): Record<string, unknown> | undefined =>
     ? value as Record<string, unknown>
     : undefined;
 
-const jsonStringCanary = (value: string): string => JSON.stringify(value);
+const javascriptStringLiteral = (
+  value: string,
+  quote: "'" | '"',
+  escapeUnicode: boolean,
+  uppercaseHex = false,
+): string => {
+  let encoded = quote;
+  for (let index = 0; index < value.length; index += 1) {
+    const codeUnit = value.charCodeAt(index);
+    const character = value[index]!;
+    if (character === quote || character === '\\') {
+      encoded += `\\${character}`;
+    } else if (character === '\b') encoded += '\\b';
+    else if (character === '\f') encoded += '\\f';
+    else if (character === '\n') encoded += '\\n';
+    else if (character === '\r') encoded += '\\r';
+    else if (character === '\t') encoded += '\\t';
+    else if (codeUnit < 0x20 || codeUnit === 0x2028 || codeUnit === 0x2029 || (escapeUnicode && codeUnit > 0x7e)) {
+      const hex = codeUnit.toString(16).padStart(4, '0');
+      encoded += `\\u${uppercaseHex ? hex.toUpperCase() : hex}`;
+    } else {
+      encoded += character;
+    }
+  }
+  return `${encoded}${quote}`;
+};
+
+export const javascriptStringCanaries = (value: string): string[] => [...new Set([
+  javascriptStringLiteral(value, '"', false),
+  javascriptStringLiteral(value, "'", false),
+  javascriptStringLiteral(value, '"', true),
+  javascriptStringLiteral(value, "'", true),
+  javascriptStringLiteral(value, '"', true, true),
+  javascriptStringLiteral(value, "'", true, true),
+])];
+
+const isDistinctiveTextCanary = (
+  key: 'japanese' | 'reading' | 'english' | 'category',
+  value: string,
+): boolean => Array.from(value.trim()).length >= (key === 'japanese' || key === 'reading' ? 4 : 12);
 
 export const findPrivateCanaryLeaks = (
   privateFile: unknown,
@@ -62,7 +101,7 @@ export const findPrivateCanaryLeaks = (
   if (!Array.isArray(records)) throw new Error('Private input has an invalid structure');
 
   const identityCanaries = new Set<string>();
-  const textCanaries = new Set<string>();
+  const textCanaries = new Map<string, string[]>();
   for (const recordValue of records) {
     const record = asObject(recordValue);
     const item = asObject(record?.item);
@@ -74,15 +113,19 @@ export const findPrivateCanaryLeaks = (
     }
     for (const key of ['japanese', 'reading', 'english', 'category'] as const) {
       const value = item[key];
-      if (typeof value !== 'string' || value.length < 4) continue;
-      if (!publicContent.includes(value)) textCanaries.add(jsonStringCanary(value));
+      if (typeof value !== 'string' || !isDistinctiveTextCanary(key, value)) continue;
+      if (!publicContent.includes(value)) textCanaries.set(value, javascriptStringCanaries(value));
     }
   }
 
   const publicBundle = distFiles.map(({ content }) => content).join('\n');
-  return [...identityCanaries, ...textCanaries]
+  const identityLeaks = [...identityCanaries]
     .filter((canary) => publicBundle.includes(canary))
     .length;
+  const textLeaks = [...textCanaries.values()]
+    .filter((encodings) => encodings.some((canary) => publicBundle.includes(canary)))
+    .length;
+  return identityLeaks + textLeaks;
 };
 
 const LOOPBACK_SERVICE_WORKER_GUARD = /if\s*\(\s*['"]serviceWorker['"]\s+in\s+navigator\s*&&\s*\(?\s*location\.protocol\s*===\s*['"]https:['"]\s*\|\|\s*location\.hostname\s*===\s*['"]localhost['"]\s*\|\|\s*location\.hostname\s*===\s*['"]127\.0\.0\.1['"]\s*\)?\s*\)\s*\{/u;
@@ -148,6 +191,22 @@ const runSelfTest = async (): Promise<void> => {
     [{ path: 'dist/_expo/static/js/app.js', content: JSON.stringify(['invented private gloss']) }],
   ) === 1);
   assertSelfTest(findPrivateCanaryLeaks(
+    {
+      records: [{
+        item: {
+          id: 'personal-deck:lesson-01:9002',
+          sourceId: 'L01-9002',
+          japanese: '\u672a\u4f7f\u7528\u8a9e',
+          reading: '\u307f\u3057\u3088\u3046\u3054',
+          english: 'component',
+          category: 'noun',
+        },
+      }],
+    },
+    JSON.stringify({ vocabulary: [] }),
+    [{ path: 'dist/_expo/static/js/app.js', content: "const runtime='component';const type='noun';" }],
+  ) === 0);
+  assertSelfTest(findPrivateCanaryLeaks(
     privateFile,
     JSON.stringify({ vocabulary: [] }),
     [{ path: 'dist/_expo/static/js/app.js', content: JSON.stringify(['prefix invented private gloss suffix']) }],
@@ -156,6 +215,27 @@ const runSelfTest = async (): Promise<void> => {
     privateFile,
     'The invented private gloss is already legitimate public interface copy.',
     [{ path: 'dist/_expo/static/js/app.js', content: JSON.stringify(['invented private gloss']) }],
+  ) === 0);
+  assertSelfTest(findPrivateCanaryLeaks(
+    privateFile,
+    JSON.stringify({ vocabulary: [] }),
+    [{
+      path: 'dist/_expo/static/js/app.js',
+      content: "const english='invented private gloss';const japanese='\\u9020\\u8a9e\\u56db\\u5b57';",
+    }],
+  ) === 2);
+  assertSelfTest(findPrivateCanaryLeaks(
+    privateFile,
+    JSON.stringify({ vocabulary: [] }),
+    [{ path: 'dist/_expo/static/js/app.js', content: "const japanese='\\u9020\\u8A9E\\u56DB\\u5B57';" }],
+  ) === 1);
+  assertSelfTest(findPrivateCanaryLeaks(
+    privateFile,
+    JSON.stringify({ vocabulary: [] }),
+    [{
+      path: 'dist/_expo/static/js/app.js',
+      content: "const english='prefix invented private gloss suffix';const japanese='\\u524d\\u9020\\u8a9e\\u56db\\u5b57\\u5f8c';",
+    }],
   ) === 0);
 
   const safeGuard = "location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1'";
