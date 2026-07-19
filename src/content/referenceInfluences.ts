@@ -27,3 +27,24 @@ export const openReferenceInfluence = async (
     return 'Could not open this reference link. Please try again.';
   }
 };
+
+export interface LatestReferenceAttemptCoordinator {
+  open: (
+    url: string,
+    openUrl: (url: string) => Promise<unknown>,
+    applyResult: (result: string | null) => void,
+  ) => Promise<void>;
+}
+
+export const createLatestReferenceAttemptCoordinator = (
+): LatestReferenceAttemptCoordinator => {
+  let latestAttemptId = 0;
+
+  return {
+    open: async (url, openUrl, applyResult) => {
+      const attemptId = ++latestAttemptId;
+      const result = await openReferenceInfluence(url, openUrl);
+      if (attemptId === latestAttemptId) applyResult(result);
+    },
+  };
+};

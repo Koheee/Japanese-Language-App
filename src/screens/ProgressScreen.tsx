@@ -9,7 +9,7 @@ import { ProgressBar } from '../components/ProgressBar';
 import { Screen } from '../components/Screen';
 import { VocabularyFilePicker } from '../components/VocabularyFilePicker';
 import {
-  openReferenceInfluence,
+  createLatestReferenceAttemptCoordinator,
   referenceInfluences,
 } from '../content/referenceInfluences';
 import { curriculum } from '../data/curriculum';
@@ -45,6 +45,11 @@ export function ProgressScreen({ navigation }: Props) {
   > | null>(null);
   const actionCoordinator = actionCoordinatorRef.current ??=
     createExclusiveActionCoordinator<BusyAction>();
+  const referenceAttemptCoordinatorRef = useRef<ReturnType<
+    typeof createLatestReferenceAttemptCoordinator
+  > | null>(null);
+  const referenceAttemptCoordinator = referenceAttemptCoordinatorRef.current ??=
+    createLatestReferenceAttemptCoordinator();
   const [busyAction, setBusyAction] = useState<BusyAction | null>(null);
   const [transferMessage, setTransferMessage] = useState<string | null>(null);
   const [transferIsError, setTransferIsError] = useState(false);
@@ -149,9 +154,13 @@ export function ProgressScreen({ navigation }: Props) {
 
   const openReference = (url: string) => {
     setReferenceError(null);
-    void openReferenceInfluence(url, (targetUrl) => Linking.openURL(targetUrl)).then((message) => {
-      if (mountedRef.current) setReferenceError(message);
-    });
+    void referenceAttemptCoordinator.open(
+      url,
+      (targetUrl) => Linking.openURL(targetUrl),
+      (message) => {
+        if (mountedRef.current) setReferenceError(message);
+      },
+    );
   };
 
   return (
@@ -255,7 +264,7 @@ export function ProgressScreen({ navigation }: Props) {
         {referenceError ? (
           <Text
             accessibilityRole="alert"
-            accessibilityLiveRegion="polite"
+            accessibilityLiveRegion="assertive"
             style={styles.referenceError}
           >
             {referenceError}

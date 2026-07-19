@@ -4,9 +4,20 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 import {
+  createLatestReferenceAttemptCoordinator,
   openReferenceInfluence,
   referenceInfluences,
 } from './referenceInfluences';
+
+const deferred = <T,>() => {
+  let resolve!: (value: T | PromiseLike<T>) => void;
+  let reject!: (reason?: unknown) => void;
+  const promise = new Promise<T>((resolvePromise, rejectPromise) => {
+    resolve = resolvePromise;
+    reject = rejectPromise;
+  });
+  return { promise, reject, resolve };
+};
 
 describe('reference influences copy', () => {
   it('states source, license, independent authorship, and non-endorsement exactly', () => {
@@ -50,6 +61,58 @@ describe('reference influences copy', () => {
     );
 
     expect(result).toBe('Could not open this reference link. Please try again.');
+  });
+
+  it('ignores an older success when the newer attempt later fails', async () => {
+    const coordinator = createLatestReferenceAttemptCoordinator();
+    const olderSuccess = deferred<void>();
+    const newerFailure = deferred<void>();
+    const applied: Array<string | null> = [];
+
+    const olderAttempt = coordinator.open(
+      'https://example.com/older',
+      () => olderSuccess.promise,
+      (result) => applied.push(result),
+    );
+    const newerAttempt = coordinator.open(
+      'https://example.com/newer',
+      () => newerFailure.promise,
+      (result) => applied.push(result),
+    );
+
+    olderSuccess.resolve();
+    await olderAttempt;
+    expect(applied).toEqual([]);
+
+    newerFailure.reject(new Error('newer browser failure'));
+    await newerAttempt;
+    expect(applied).toEqual(['Could not open this reference link. Please try again.']);
+  });
+
+  it('keeps a newer success when the older attempt later fails', async () => {
+    const coordinator = createLatestReferenceAttemptCoordinator();
+    const olderFailure = deferred<void>();
+    const newerSuccess = deferred<void>();
+    const applied: Array<string | null> = [];
+
+    const olderAttempt = coordinator.open(
+      'https://example.com/older',
+      () => olderFailure.promise,
+      (result) => applied.push(result),
+    );
+    const newerAttempt = coordinator.open(
+      'https://example.com/newer',
+      () => newerSuccess.promise,
+      (result) => applied.push(result),
+    );
+
+    newerSuccess.resolve();
+    await newerAttempt;
+    expect(applied).toEqual([null]);
+
+    olderFailure.reject(new Error('older browser failure'));
+    await olderAttempt;
+    expect(applied).toEqual([null]);
   });
 });
 
@@ -100,17 +163,19 @@ describe('reference influences presentation contract', () => {
     expect(textStyle).toContain('flexShrink: 1');
   });
 
-  it('opens through a receiver-preserving closure and reports rejection in a live alert', () => {
+  it('uses one latest-attempt coordinator and reports rejection in an assertive alert', () => {
     const referenceCard = progressSource.match(
       /<View style=\{styles\.referenceCard\}>[\s\S]*?<Text style=\{styles\.sectionTitle\}>Lesson activity<\/Text>/,
     )?.[0];
 
-    expect(progressSource).toContain(
-      'openReferenceInfluence(url, (targetUrl) => Linking.openURL(targetUrl))',
-    );
-    expect(progressSource).not.toContain('openReferenceInfluence(url, Linking.openURL)');
+    expect(progressSource).toContain('createLatestReferenceAttemptCoordinator()');
+    expect(progressSource).toContain('referenceAttemptCoordinatorRef.current ??=');
+    expect(progressSource).toContain('referenceAttemptCoordinator.open(');
+    expect(progressSource).toContain('(targetUrl) => Linking.openURL(targetUrl)');
+    expect(progressSource).not.toContain('referenceAttemptCoordinator.open(url, Linking.openURL');
+    expect(progressSource).toContain('if (mountedRef.current) setReferenceError(message)');
     expect(referenceCard).toContain('accessibilityRole="alert"');
-    expect(referenceCard).toContain('accessibilityLiveRegion="polite"');
+    expect(referenceCard).toContain('accessibilityLiveRegion="assertive"');
     expect(referenceCard).toContain('{referenceError}');
   });
 
