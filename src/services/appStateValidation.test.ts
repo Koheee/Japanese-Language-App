@@ -74,6 +74,22 @@ const expectInvalid = <T>(
   expect(result.message.length).toBeGreaterThan(0);
 };
 
+const withPrototypeProperty = <T>(
+  prototype: object,
+  key: PropertyKey,
+  value: unknown,
+  run: () => T,
+): T => {
+  const previous = Object.getOwnPropertyDescriptor(prototype, key);
+  Object.defineProperty(prototype, key, { configurable: true, value });
+  try {
+    return run();
+  } finally {
+    if (previous) Object.defineProperty(prototype, key, previous);
+    else delete (prototype as Record<PropertyKey, unknown>)[key];
+  }
+};
+
 describe('validateStudyStateV1', () => {
   it('accepts the exact V1 maps and treats a missing suspended field as active', () => {
     const result = validateStudyStateV1({
@@ -114,6 +130,90 @@ describe('validateStudyStateV1', () => {
       { progress: { 'lesson-02': progress }, reviewCards: {} },
       'progress.lesson-02.lessonId',
     );
+  });
+
+  it('does not let Object.prototype satisfy a missing nested V1 field', () => {
+    const inheritedStarted = { ...progress } as Partial<typeof progress>;
+    delete inheritedStarted.started;
+
+    withPrototypeProperty(Object.prototype, 'started', true, () => {
+      expectInvalid(
+        validateStudyStateV1,
+        { progress: { 'lesson-01': inheritedStarted }, reviewCards: {} },
+        'progress.lesson-01.started',
+      );
+    });
+  });
+
+  it('rejects nested records with a custom Object.create prototype', () => {
+    const inheritedStarted = Object.assign(
+      Object.create({ started: true }) as Record<string, unknown>,
+      {
+        lessonId: progress.lessonId,
+        completedExerciseIds: progress.completedExerciseIds,
+        correctAnswers: progress.correctAnswers,
+        attempts: progress.attempts,
+      },
+    );
+
+    expectInvalid(
+      validateStudyStateV1,
+      { progress: { 'lesson-01': inheritedStarted }, reviewCards: {} },
+      'progress.lesson-01',
+    );
+  });
+
+  it('ignores an inherited optional suspended field because it is not stored JSON data', () => {
+    withPrototypeProperty(Object.prototype, 'suspended', 'not-a-boolean', () => {
+      const result = validateStudyStateV1({
+        progress: {},
+        reviewCards: { 'review-word-01': reviewCard },
+      });
+
+      expect(result.ok).toBe(true);
+      if (result.ok) expect(Object.hasOwn(result.value.reviewCards['review-word-01']!, 'suspended')).toBe(false);
+    });
+  });
+
+  it.each([
+    ['progress.lesson-01.attempts', { ...progress, attempts: -0 }],
+    ['reviewCards.review-word-01.ease', undefined],
+  ])('rejects negative zero at %s before JSON can normalize it', (path, malformedProgress) => {
+    const candidate = malformedProgress
+      ? { progress: { 'lesson-01': malformedProgress }, reviewCards: {} }
+      : { progress: {}, reviewCards: { 'review-word-01': { ...reviewCard, ease: -0 } } };
+
+    expectInvalid(validateStudyStateV1, candidate, path);
+  });
+
+  it('rejects array subclasses while preserving ordinary-array validation', () => {
+    class ExerciseIds extends Array<string> {}
+    const completedExerciseIds = new ExerciseIds('exercise-01');
+
+    expectInvalid(
+      validateStudyStateV1,
+      { progress: { 'lesson-01': { ...progress, completedExerciseIds } }, reviewCards: {} },
+      'progress.lesson-01.completedExerciseIds',
+    );
+    expect(validateStudyStateV1({
+      progress: { 'lesson-01': { ...progress, completedExerciseIds: ['exercise-01'] } },
+      reviewCards: {},
+    }).ok).toBe(true);
+  });
+
+  it('rejects a sparse array even when Array.prototype supplies its missing index', () => {
+    withPrototypeProperty(Array.prototype, '0', 'inherited-exercise', () => {
+      expectInvalid(
+        validateStudyStateV1,
+        {
+          progress: {
+            'lesson-01': { ...progress, completedExerciseIds: new Array<string>(1) },
+          },
+          reviewCards: {},
+        },
+        'progress.lesson-01.completedExerciseIds.0',
+      );
+    });
   });
 
   it('returns an exact validation failure for a sparse array instead of throwing', () => {
@@ -174,6 +274,59 @@ describe('validatePersistedAppStateV2', () => {
     ['authoredBaselineVersion', { ...validV2(), authoredBaselineVersion: 1 }],
   ])('rejects the wrong schema or version type at %s', (path, candidate) => {
     expectInvalid(validatePersistedAppStateV2, candidate, path);
+  });
+
+  it('does not let Object.prototype satisfy a missing top-level V2 field', () => {
+    const candidate = validV2() as Partial<PersistedAppStateV2>;
+    delete candidate.schemaVersion;
+
+    withPrototypeProperty(Object.prototype, 'schemaVersion', 2, () => {
+      expectInvalid(validatePersistedAppStateV2, candidate, 'schemaVersion');
+    });
+  });
+
+  it('does not let Object.prototype satisfy a missing nested V2 field', () => {
+    const candidate = validV2();
+    const nested = candidate.progress['lesson-01'] as Partial<typeof progress>;
+    delete nested.started;
+
+    withPrototypeProperty(Object.prototype, 'started', true, () => {
+      expectInvalid(validatePersistedAppStateV2, candidate, 'progress.lesson-01.started');
+    });
+  });
+
+  it('rejects negative zero in V2 at its exact path', () => {
+    const candidate = validV2();
+    candidate.reviewCards['review-word-01']!.intervalDays = -0;
+
+    expectInvalid(
+      validatePersistedAppStateV2,
+      candidate,
+      'reviewCards.review-word-01.intervalDays',
+    );
+  });
+
+  it('rejects inherited and own toJSON serialization hooks', () => {
+    withPrototypeProperty(Object.prototype, 'toJSON', () => ({ replaced: true }), () => {
+      expectInvalid(validatePersistedAppStateV2, validV2(), 'toJSON');
+    });
+
+    expectInvalid(
+      validatePersistedAppStateV2,
+      { ...validV2(), futureEnvelopeField: { value: 1, toJSON: () => ({ replaced: true }) } },
+      'futureEnvelopeField.toJSON',
+    );
+  });
+
+  it('rejects circular input at the exact first back-reference path', () => {
+    const futureEnvelopeField: { self?: unknown } = {};
+    futureEnvelopeField.self = futureEnvelopeField;
+
+    expectInvalid(
+      validatePersistedAppStateV2,
+      { ...validV2(), futureEnvelopeField },
+      'futureEnvelopeField.self',
+    );
   });
 
   it.each([
@@ -390,7 +543,7 @@ describe('validatePersistedAppStateV2', () => {
 
   it.each([
     ['futureEnvelopeField.value', { value: undefined }],
-    ['futureEnvelopeField', new Date(timestamp)],
+    ['futureEnvelopeField.toJSON', new Date(timestamp)],
     ['futureEnvelopeField.0', [Number.POSITIVE_INFINITY]],
   ])('rejects non-JSON values even under ignored top-level fields at %s', (path, futureEnvelopeField) => {
     expectInvalid(

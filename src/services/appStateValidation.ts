@@ -29,6 +29,16 @@ const isObject = (input: unknown): input is JsonObject => {
   return prototype === Object.prototype || prototype === null;
 };
 
+const hasToJsonHook = (input: object): boolean => {
+  let current: object | null = input;
+  while (current !== null) {
+    const descriptor = Object.getOwnPropertyDescriptor(current, 'toJSON');
+    if (descriptor) return !('value' in descriptor) || typeof descriptor.value === 'function';
+    current = Object.getPrototypeOf(current) as object | null;
+  }
+  return false;
+};
+
 const validateJsonValue = (
   input: unknown,
   path = '',
@@ -36,12 +46,19 @@ const validateJsonValue = (
 ): Failure | undefined => {
   if (input === null || typeof input === 'string' || typeof input === 'boolean') return undefined;
   if (typeof input === 'number') {
-    return Number.isFinite(input) ? undefined : failure(path, 'must be a finite JSON number');
+    return Number.isFinite(input) && !Object.is(input, -0)
+      ? undefined
+      : failure(path, 'must be a losslessly serializable JSON number');
   }
   if (typeof input !== 'object') return failure(path, 'must be JSON-compatible');
   if (ancestors.has(input)) return failure(path, 'must not contain a circular reference');
 
-  if (!Array.isArray(input) && !isObject(input)) return failure(path, 'must be a JSON object or array');
+  if (hasToJsonHook(input)) return failure(childPath(path, 'toJSON'), 'must not define or inherit a toJSON hook');
+  if (Array.isArray(input)) {
+    if (Object.getPrototypeOf(input) !== Array.prototype) return failure(path, 'must be an ordinary array');
+  } else if (!isObject(input)) {
+    return failure(path, 'must be a JSON object or array');
+  }
 
   ancestors.add(input);
   if (Array.isArray(input)) {
@@ -137,6 +154,17 @@ const validateKnownKeys = (
     : failure(childPath(path, unknown), 'is not a recognized property');
 };
 
+const requireOwnKeys = (
+  input: JsonObject,
+  path: string,
+  keys: readonly string[],
+): Failure | undefined => {
+  const missing = keys.find((key) => !Object.hasOwn(input, key));
+  return missing === undefined
+    ? undefined
+    : failure(childPath(path, missing), 'must be an own stored property');
+};
+
 const validateStringArray = (
   input: unknown,
   path: string,
@@ -169,6 +197,13 @@ const validateLessonProgress = (
     ['lessonId', 'started', 'completedExerciseIds', 'correctAnswers', 'attempts'],
   );
   if (knownFailure) return knownFailure;
+
+  const missingFailure = requireOwnKeys(
+    value,
+    path,
+    ['lessonId', 'started', 'completedExerciseIds', 'correctAnswers', 'attempts'],
+  );
+  if (missingFailure) return missingFailure;
 
   const lessonPath = childPath(path, 'lessonId');
   const lessonFailure = expectString(value.lessonId, lessonPath);
@@ -215,6 +250,19 @@ const validateReviewCard = (
     'suspended',
   ]);
   if (knownFailure) return knownFailure;
+
+  const missingFailure = requireOwnKeys(value, path, [
+    'id',
+    'lessonId',
+    'kind',
+    'prompt',
+    'answer',
+    'dueAt',
+    'intervalDays',
+    'repetitions',
+    'ease',
+  ]);
+  if (missingFailure) return missingFailure;
 
   const idPath = childPath(path, 'id');
   const idFailure = expectString(value.id, idPath);
@@ -276,6 +324,8 @@ const validateJapaneseExample = (input: unknown, path: string): Failure | undefi
   const value = input as JsonObject;
   const knownFailure = validateKnownKeys(value, path, ['japanese', 'reading', 'english']);
   if (knownFailure) return knownFailure;
+  const missingFailure = requireOwnKeys(value, path, ['japanese', 'english']);
+  if (missingFailure) return missingFailure;
   const requiredFailure = expectString(value.japanese, childPath(path, 'japanese'))
     ?? expectString(value.english, childPath(path, 'english'));
   if (requiredFailure) return requiredFailure;
@@ -301,6 +351,13 @@ const validateDeviceVocabularyItem = (input: unknown, path: string): Failure | u
     'sourceId',
   ]);
   if (knownFailure) return knownFailure;
+
+  const missingFailure = requireOwnKeys(
+    value,
+    path,
+    ['id', 'japanese', 'reading', 'english', 'partOfSpeech', 'source'],
+  );
+  if (missingFailure) return missingFailure;
 
   const requiredFailure = expectString(value.id, childPath(path, 'id'))
     ?? expectString(value.japanese, childPath(path, 'japanese'))
@@ -334,6 +391,9 @@ const validateDeviceRecord = (
   const knownFailure = validateKnownKeys(value, path, ['lessonId', 'item', 'createdAt', 'updatedAt', 'sortKey']);
   if (knownFailure) return knownFailure;
 
+  const missingFailure = requireOwnKeys(value, path, ['lessonId', 'item', 'createdAt', 'updatedAt', 'sortKey']);
+  if (missingFailure) return missingFailure;
+
   const lessonPath = childPath(path, 'lessonId');
   const lessonFailure = expectString(value.lessonId, lessonPath);
   if (lessonFailure) return lessonFailure;
@@ -351,6 +411,9 @@ const validateVocabularyOverrides = (input: unknown, path: string): Failure | un
   const value = input as JsonObject;
   const knownFailure = validateKnownKeys(value, path, ['recordsByLesson', 'hiddenIdsByLesson', 'updatedAt']);
   if (knownFailure) return knownFailure;
+
+  const missingFailure = requireOwnKeys(value, path, ['recordsByLesson', 'hiddenIdsByLesson', 'updatedAt']);
+  if (missingFailure) return missingFailure;
 
   const recordsPath = childPath(path, 'recordsByLesson');
   const recordsFailure = expectObject(value.recordsByLesson, recordsPath);
@@ -405,6 +468,15 @@ const validateRecovery = (input: unknown, path: string): Failure | undefined => 
   ]);
   if (knownFailure) return knownFailure;
 
+  const missingFailure = requireOwnKeys(value, path, [
+    'previousVocabulary',
+    'previousAffectedReviewCards',
+    'affectedReviewCardIds',
+    'authoredBaselineVersion',
+    'importedAt',
+  ]);
+  if (missingFailure) return missingFailure;
+
   const previousCardsPath = childPath(path, 'previousAffectedReviewCards');
   const structuralFailure = validateVocabularyOverrides(value.previousVocabulary, childPath(path, 'previousVocabulary'))
     ?? validateReviewCardMap(value.previousAffectedReviewCards, previousCardsPath, { allowNull: true })
@@ -438,6 +510,8 @@ export const validateStudyStateV1: ValidateStudyStateV1 = (input) => {
   const objectFailure = expectObject(input, '');
   if (objectFailure) return objectFailure;
   const value = input as JsonObject;
+  const missingFailure = requireOwnKeys(value, '', ['progress', 'reviewCards']);
+  if (missingFailure) return missingFailure;
   const structuralFailure = validateProgressMap(value.progress, 'progress')
     ?? validateReviewCardMap(value.reviewCards, 'reviewCards');
   return structuralFailure
@@ -450,6 +524,13 @@ export const validatePersistedAppStateV2: ValidatePersistedAppStateV2 = (input) 
   const objectFailure = expectObject(input, '');
   if (objectFailure) return objectFailure;
   const value = input as JsonObject;
+
+  const missingFailure = requireOwnKeys(
+    value,
+    '',
+    ['schemaVersion', 'authoredBaselineVersion', 'progress', 'reviewCards', 'vocabulary'],
+  );
+  if (missingFailure) return missingFailure;
 
   if (value.schemaVersion !== 2) return failure('schemaVersion', 'must equal 2');
   const structuralFailure = expectString(value.authoredBaselineVersion, 'authoredBaselineVersion')

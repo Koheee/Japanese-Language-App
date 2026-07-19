@@ -64,6 +64,22 @@ const memoryStorage = (
   };
 };
 
+const withPrototypeProperty = async <T>(
+  prototype: object,
+  key: PropertyKey,
+  value: unknown,
+  run: () => Promise<T>,
+): Promise<T> => {
+  const previous = Object.getOwnPropertyDescriptor(prototype, key);
+  Object.defineProperty(prototype, key, { configurable: true, value });
+  try {
+    return await run();
+  } finally {
+    if (previous) Object.defineProperty(prototype, key, previous);
+    else delete (prototype as Record<PropertyKey, unknown>)[key];
+  }
+};
+
 const validV2 = (overrides: Partial<PersistedAppStateV2> = {}): PersistedAppStateV2 => ({
   schemaVersion: 2,
   authoredBaselineVersion: AUTHORED_BASELINE_VERSION,
@@ -222,6 +238,98 @@ describe('hydrateAppStateV2', () => {
 
     expect(result).toMatchObject({ status: 'ready', source: 'v2', state: { futureEnvelopeField: { enabled: true } } });
     expect(storage.setCalls).toEqual([]);
+  });
+
+  it('rejects V2 whose missing top-level field is supplied by Object.prototype', async () => {
+    const { schemaVersion: _missing, ...missingSchemaVersion } = validV2();
+    const storage = memoryStorage({
+      [V2_APP_STATE_STORAGE_KEY]: JSON.stringify(missingSchemaVersion),
+    });
+
+    await withPrototypeProperty(Object.prototype, 'schemaVersion', 2, async () => {
+      const result = await hydrateAppStateV2({ storage, lessons, now });
+
+      expect(result).toMatchObject({ status: 'recovery', reason: 'invalid-v2' });
+      expect(storage.calls).toEqual([['get', V2_APP_STATE_STORAGE_KEY]]);
+      expect(storage.setCalls).toEqual([]);
+    });
+  });
+
+  it('rejects V1 whose missing nested field is supplied by Object.prototype', async () => {
+    const { started: _missing, ...missingStarted } = {
+      lessonId: 'lesson-01',
+      started: true,
+      completedExerciseIds: [],
+      correctAnswers: 0,
+      attempts: 0,
+    };
+    const storage = memoryStorage({
+      [V1_STUDY_STORAGE_KEY]: JSON.stringify({
+        progress: { 'lesson-01': missingStarted },
+        reviewCards: {},
+      }),
+    });
+
+    await withPrototypeProperty(Object.prototype, 'started', true, async () => {
+      const result = await hydrateAppStateV2({ storage, lessons, now });
+
+      expect(result).toMatchObject({ status: 'recovery', reason: 'invalid-v1' });
+      expect(storage.calls).toEqual([
+        ['get', V2_APP_STATE_STORAGE_KEY],
+        ['get', V1_STUDY_STORAGE_KEY],
+      ]);
+      expect(storage.setCalls).toEqual([]);
+    });
+  });
+
+  it.each(['v2', 'v1'] as const)('rejects %s negative zero before any normalizing write', async (version) => {
+    const progressWithZero = {
+      'lesson-01': {
+        lessonId: 'lesson-01',
+        started: false,
+        completedExerciseIds: [],
+        correctAnswers: 0,
+        attempts: 0,
+      },
+    };
+    const text = version === 'v2'
+      ? JSON.stringify(validV2({ authoredBaselineVersion: 'course-v1-stale', progress: progressWithZero }))
+      : JSON.stringify({ progress: progressWithZero, reviewCards: {} });
+    const negativeZeroText = text.replace('"attempts":0', '"attempts":-0');
+    const storage = memoryStorage({
+      [version === 'v2' ? V2_APP_STATE_STORAGE_KEY : V1_STUDY_STORAGE_KEY]: negativeZeroText,
+    });
+
+    const result = await hydrateAppStateV2({ storage, lessons, now });
+
+    expect(result).toMatchObject({
+      status: 'recovery',
+      reason: version === 'v2' ? 'invalid-v2' : 'invalid-v1',
+    });
+    expect(storage.setCalls).toEqual([]);
+  });
+
+  it('rejects parsed arrays when Array.prototype has a toJSON hook', async () => {
+    const storage = memoryStorage({
+      [V2_APP_STATE_STORAGE_KEY]: JSON.stringify(validV2({
+        progress: {
+          'lesson-01': {
+            lessonId: 'lesson-01',
+            started: false,
+            completedExerciseIds: [],
+            correctAnswers: 0,
+            attempts: 0,
+          },
+        },
+      })),
+    });
+
+    await withPrototypeProperty(Array.prototype, 'toJSON', () => ['replaced'], async () => {
+      const result = await hydrateAppStateV2({ storage, lessons, now });
+
+      expect(result).toMatchObject({ status: 'recovery', reason: 'invalid-v2' });
+      expect(storage.setCalls).toEqual([]);
+    });
   });
 
   it.each([
