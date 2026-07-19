@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { lessons } from '.';
 import { collectGrammarRangeErrors } from './grammarEnrichmentTestUtils';
 
 describe('grammar enrichment for Lessons 10-17', () => {
@@ -12,5 +13,53 @@ describe('grammar enrichment for Lessons 10-17', () => {
       dialogueTurns: 53,
       dialogueByLesson: { 10: 6, 11: 6, 12: 6, 13: 6, 14: 7, 15: 7, 16: 7, 17: 8 },
     })).toEqual([]);
+  });
+
+  it('anchors the taught て-form and ない-form algorithms to familiar ～ます forms', () => {
+    const points = new Map(
+      lessons
+        .filter(({ number }) => number === 14 || number === 17)
+        .flatMap(({ grammar }) => grammar.map((point) => [point.id, point] as const)),
+    );
+    const teForm = points.get('l14-te-form');
+    const naiForm = points.get('l17-nai-form');
+    if (!teForm || !naiForm) throw new Error('Missing Lesson 14 or Lesson 17 formation point');
+
+    for (const required of [
+      '～います・～ちます・～ります become ～って',
+      '～びます・～みます・～にます become ～んで',
+      '～きます becomes ～いて',
+      '～ぎます becomes ～いで',
+      '～します becomes ～して',
+      'Group 2 replaces ～ます with ～て',
+      'します becomes して',
+      '来ます becomes きて',
+      '行きます exceptionally becomes 行って',
+    ]) {
+      expect(teForm.explanation).toContain(required);
+    }
+
+    for (const required of [
+      'final i-row kana before ます to the matching a-row kana',
+      'removes ます, and adds ない',
+      'い becomes わ',
+      'Group 2 replaces ます with ない',
+      'します becomes しない',
+      '来ます becomes こない',
+    ]) {
+      expect(naiForm.explanation).toContain(required);
+    }
+    expect(naiForm.usageBoundary).toContain('あります becomes ない');
+
+    for (const point of [teForm, naiForm]) {
+      const formationGuidance = [
+        point.explanation,
+        point.usageBoundary,
+        ...(point.notes ?? []),
+      ].join(' ');
+      expect(formationGuidance).not.toMatch(
+        /dictionary form|basic (?:verb )?form|drop(?:s|ping)? (?:final )?る|u-row/u,
+      );
+    }
   });
 });
