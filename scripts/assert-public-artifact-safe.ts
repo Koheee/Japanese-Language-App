@@ -4,6 +4,7 @@ import { extname, join, relative } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 import { lessons } from '../src/data/lessons';
+import { collectInstalledPublicRuntimeCorpus } from './public-runtime-corpus';
 
 export interface PublicTextFile {
   path: string;
@@ -86,22 +87,36 @@ export const javascriptStringCanaries = (value: string): string[] => [...new Set
   javascriptStringLiteral(value, "'", true, true),
 ])];
 
-const isDistinctiveTextCanary = (
-  key: 'japanese' | 'reading' | 'english' | 'category',
-  value: string,
-): boolean => Array.from(value.trim()).length >= (key === 'japanese' || key === 'reading' ? 4 : 12);
+const isEligibleTextCanary = (value: string): boolean => Array.from(value.trim()).length >= 4;
 
-export const findPrivateCanaryLeaks = (
+export interface PrivateCanaryScan {
+  recordCount: number;
+  identityCanaryCount: number;
+  recordsWithEligibleTextFields: number;
+  eligibleTextFieldCount: number;
+  uniqueTextCanaryCount: number;
+  trackedPublicCollisionCount: number;
+  runtimePublicCollisionCount: number;
+  scannedNonCollidingTextCanaryCount: number;
+  identityLeakCount: number;
+  textLeakCount: number;
+  leakCount: number;
+}
+
+export const scanPrivateCanaries = (
   privateFile: unknown,
   publicContent: string,
   distFiles: readonly PublicTextFile[],
-): number => {
+  runtimeSourceFiles: readonly PublicTextFile[] = [],
+): PrivateCanaryScan => {
   const root = asObject(privateFile);
   const records = root?.records;
   if (!Array.isArray(records)) throw new Error('Private input has an invalid structure');
 
   const identityCanaries = new Set<string>();
   const textCanaries = new Map<string, string[]>();
+  let eligibleTextFieldCount = 0;
+  let recordsWithEligibleTextFields = 0;
   for (const recordValue of records) {
     const record = asObject(recordValue);
     const item = asObject(record?.item);
@@ -111,22 +126,69 @@ export const findPrivateCanaryLeaks = (
       if (typeof value !== 'string' || !value) throw new Error('Private input has an invalid identity field');
       identityCanaries.add(value);
     }
+    let recordHasEligibleText = false;
     for (const key of ['japanese', 'reading', 'english', 'category'] as const) {
       const value = item[key];
-      if (typeof value !== 'string' || !isDistinctiveTextCanary(key, value)) continue;
-      if (!publicContent.includes(value)) textCanaries.set(value, javascriptStringCanaries(value));
+      if (typeof value !== 'string' || !isEligibleTextCanary(value)) continue;
+      recordHasEligibleText = true;
+      eligibleTextFieldCount += 1;
+      textCanaries.set(value, javascriptStringCanaries(value));
     }
+    if (recordHasEligibleText) recordsWithEligibleTextFields += 1;
   }
 
   const publicBundle = distFiles.map(({ content }) => content).join('\n');
-  const identityLeaks = [...identityCanaries]
+  const identityLeakCount = [...identityCanaries]
     .filter((canary) => publicBundle.includes(canary))
     .length;
-  const textLeaks = [...textCanaries.values()]
-    .filter((encodings) => encodings.some((canary) => publicBundle.includes(canary)))
-    .length;
-  return identityLeaks + textLeaks;
+  let trackedPublicCollisionCount = 0;
+  let runtimePublicCollisionCount = 0;
+  let textLeakCount = 0;
+  for (const [value, encodings] of textCanaries) {
+    if (publicContent.includes(value)) {
+      trackedPublicCollisionCount += 1;
+      continue;
+    }
+    if (!encodings.some((canary) => publicBundle.includes(canary))) continue;
+    if (runtimeSourceFiles.some(({ content }) =>
+      encodings.some((canary) => content.includes(canary)))) {
+      runtimePublicCollisionCount += 1;
+    } else {
+      textLeakCount += 1;
+    }
+  }
+  const scannedNonCollidingTextCanaryCount = textCanaries.size
+    - trackedPublicCollisionCount
+    - runtimePublicCollisionCount;
+  return {
+    recordCount: records.length,
+    identityCanaryCount: identityCanaries.size,
+    recordsWithEligibleTextFields,
+    eligibleTextFieldCount,
+    uniqueTextCanaryCount: textCanaries.size,
+    trackedPublicCollisionCount,
+    runtimePublicCollisionCount,
+    scannedNonCollidingTextCanaryCount,
+    identityLeakCount,
+    textLeakCount,
+    leakCount: identityLeakCount + textLeakCount,
+  };
 };
+
+export const formatPrivateCanaryCoverage = (scan: PrivateCanaryScan): string =>
+  `Private canary coverage: identity=${scan.identityCanaryCount}; records-with-eligible-text=${scan.recordsWithEligibleTextFields}/${scan.recordCount}; eligible-text-fields=${scan.eligibleTextFieldCount}; unique-text=${scan.uniqueTextCanaryCount}; tracked-collisions=${scan.trackedPublicCollisionCount}; runtime-collisions=${scan.runtimePublicCollisionCount}; scanned-noncolliding-text=${scan.scannedNonCollidingTextCanaryCount}`;
+
+export const findPrivateCanaryLeaks = (
+  privateFile: unknown,
+  publicContent: string,
+  distFiles: readonly PublicTextFile[],
+  runtimeSourceFiles: readonly PublicTextFile[] = [],
+): number => scanPrivateCanaries(
+  privateFile,
+  publicContent,
+  distFiles,
+  runtimeSourceFiles,
+).leakCount;
 
 const LOOPBACK_SERVICE_WORKER_GUARD = /if\s*\(\s*['"]serviceWorker['"]\s+in\s+navigator\s*&&\s*\(?\s*location\.protocol\s*===\s*['"]https:['"]\s*\|\|\s*location\.hostname\s*===\s*['"]localhost['"]\s*\|\|\s*location\.hostname\s*===\s*['"]127\.0\.0\.1['"]\s*\)?\s*\)\s*\{/u;
 
@@ -205,6 +267,7 @@ const runSelfTest = async (): Promise<void> => {
     },
     JSON.stringify({ vocabulary: [] }),
     [{ path: 'dist/_expo/static/js/app.js', content: "const runtime='component';const type='noun';" }],
+    [{ path: 'node_modules/runtime/index.js', content: "const runtime='component';const type='noun';" }],
   ) === 0);
   assertSelfTest(findPrivateCanaryLeaks(
     privateFile,
@@ -365,9 +428,17 @@ const runAudit = async (args: AuditArguments): Promise<boolean> => {
       issueCount += 1;
     } else {
       const publicContent = await readLegitimatePublicCorpus();
-      const canaryLeaks = findPrivateCanaryLeaks(privateFile, publicContent, distTextFiles);
-      process.stdout.write(`Private canary leak count: ${canaryLeaks}\n`);
-      issueCount += canaryLeaks;
+      const runtimeCorpus = await collectInstalledPublicRuntimeCorpus();
+      const scan = scanPrivateCanaries(
+        privateFile,
+        publicContent,
+        distTextFiles,
+        runtimeCorpus.files,
+      );
+      process.stdout.write(`Private public-runtime collision corpus: packages=${runtimeCorpus.packageCount}; files=${runtimeCorpus.files.length}\n`);
+      process.stdout.write(`${formatPrivateCanaryCoverage(scan)}\n`);
+      process.stdout.write(`Private canary leak count: ${scan.leakCount}\n`);
+      issueCount += scan.leakCount;
     }
   }
   return issueCount === 0;
