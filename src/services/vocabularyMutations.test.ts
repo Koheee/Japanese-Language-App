@@ -210,6 +210,22 @@ describe('vocabulary mutations', () => {
   });
 
   it.each([
+    '',
+    'not-a-uuid',
+    '11111111-1111-1111-8111-111111111111',
+  ])('rejects non-v4 custom UUID %j before constructing state', (invalidUuid) => {
+    const current = currentState();
+    const before = structuredClone(current);
+
+    expect(() => buildAddVocabularyState(current, 'lesson-01', draft, {
+      lessons,
+      now,
+      uuid: invalidUuid,
+    })).toThrow('Custom vocabulary UUID must be an RFC 4122 version 4 UUID.');
+    expect(current).toEqual(before);
+  });
+
+  it.each([
     [{ japanese: '', reading: 'かな', english: 'x' }, 'Japanese is required'],
     [{ japanese: 'かな', reading: 'かな', english: '' }, 'English is required'],
     [{ japanese: '漢字', reading: '', english: 'kanji' }, 'Kana reading is required'],
@@ -401,6 +417,35 @@ describe('vocabulary mutations', () => {
     expect(added.vocabulary.updatedAt).toBe('2026-07-18T00:00:00.001Z');
     expect(hidden.state.vocabulary.updatedAt).toBe('2026-07-18T00:00:00.002Z');
     expect(hidden.undoToken.expectedVocabularyUpdatedAt).toBe('2026-07-18T00:00:00.002Z');
+  });
+
+  it('rejects a mutation that would advance beyond the maximum four-digit ISO revision', () => {
+    const current = currentState();
+    current.vocabulary.updatedAt = '9999-12-31T23:59:59.999Z';
+    const before = structuredClone(current);
+
+    expect(() => buildHideVocabularyState(
+      current,
+      'lesson-01',
+      'course-word',
+      { lessons, now: new Date('9999-12-31T23:59:59.999Z') },
+    )).toThrow('Vocabulary revision cannot advance beyond 9999-12-31T23:59:59.999Z.');
+    expect(current).toEqual(before);
+  });
+
+  it.each([
+    new Date(Number.NaN),
+    new Date(Date.UTC(10000, 0, 1)),
+  ])('rejects unsupported supplied mutation time %s before constructing state', (unsupportedNow) => {
+    const current = currentState();
+    const before = structuredClone(current);
+
+    expect(() => buildAddVocabularyState(current, 'lesson-01', draft, {
+      lessons,
+      now: unsupportedNow,
+      uuid,
+    })).toThrow('Vocabulary mutation time must use a valid four-digit ISO timestamp.');
+    expect(current).toEqual(before);
   });
 
   it('clones only affected vocabulary branches and retains every review card', () => {

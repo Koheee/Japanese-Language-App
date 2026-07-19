@@ -33,15 +33,32 @@ interface ReversibleVocabularyState {
   undoToken: VocabularyUndoToken;
 }
 
+const UUID_V4 = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const FOUR_DIGIT_ISO_TIMESTAMP = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
+const MAX_FOUR_DIGIT_ISO_TIMESTAMP = '9999-12-31T23:59:59.999Z';
+const MAX_FOUR_DIGIT_ISO_MILLISECONDS = Date.parse(MAX_FOUR_DIGIT_ISO_TIMESTAMP);
+
 const lessonFor = (lessons: readonly Lesson[], lessonId: string): Lesson => {
   const lesson = lessons.find(({ id }) => id === lessonId);
   if (!lesson) throw new Error(`Lesson ${lessonId} was not found.`);
   return lesson;
 };
 
-const nextVocabularyTimestamp = (current: PersistedAppStateV2, now: Date): string => {
+const mutationTimestampFor = (now: Date): string => {
   const requestedMilliseconds = now.getTime();
-  if (!Number.isFinite(requestedMilliseconds)) throw new Error('Mutation time must be valid.');
+  if (!Number.isFinite(requestedMilliseconds)) {
+    throw new Error('Vocabulary mutation time must use a valid four-digit ISO timestamp.');
+  }
+  const timestamp = now.toISOString();
+  if (!FOUR_DIGIT_ISO_TIMESTAMP.test(timestamp)) {
+    throw new Error('Vocabulary mutation time must use a valid four-digit ISO timestamp.');
+  }
+  return timestamp;
+};
+
+const nextVocabularyTimestamp = (current: PersistedAppStateV2, now: Date): string => {
+  const requestedTimestamp = mutationTimestampFor(now);
+  const requestedMilliseconds = Date.parse(requestedTimestamp);
 
   const previousMilliseconds = current.vocabulary.updatedAt === null
     ? Number.NEGATIVE_INFINITY
@@ -49,6 +66,9 @@ const nextVocabularyTimestamp = (current: PersistedAppStateV2, now: Date): strin
   const nextMilliseconds = requestedMilliseconds > previousMilliseconds
     ? requestedMilliseconds
     : previousMilliseconds + 1;
+  if (nextMilliseconds > MAX_FOUR_DIGIT_ISO_MILLISECONDS) {
+    throw new Error(`Vocabulary revision cannot advance beyond ${MAX_FOUR_DIGIT_ISO_TIMESTAMP}.`);
+  }
   return new Date(nextMilliseconds).toISOString();
 };
 
@@ -120,12 +140,15 @@ export const buildAddVocabularyState = (
   options: AddVocabularyOptions,
 ): PersistedAppStateV2 => {
   const lesson = lessonFor(options.lessons, lessonId);
+  if (!UUID_V4.test(options.uuid)) {
+    throw new Error('Custom vocabulary UUID must be an RFC 4122 version 4 UUID.');
+  }
   const normalized = validateVocabularyDraft(draft);
   assertNoLessonDuplicate(lesson, current.vocabulary, normalized.japanese);
 
   const vocabularyId = `custom:${lessonId}:${options.uuid}`;
   assertUnusedCustomId(current.vocabulary, vocabularyId);
-  const mutationTimestamp = options.now.toISOString();
+  const mutationTimestamp = mutationTimestampFor(options.now);
   const records = current.vocabulary.recordsByLesson[lessonId] ?? [];
   const vocabulary: VocabularyOverrides = {
     ...current.vocabulary,
@@ -170,13 +193,14 @@ export const buildEditVocabularyState = (
 
   const normalized = validateVocabularyDraft(draft);
   assertNoLessonDuplicate(lesson, current.vocabulary, normalized.japanese, vocabularyId);
+  const mutationTimestamp = mutationTimestampFor(options.now);
   const existing = records[recordIndex]!;
   const { category: discardedCategory, ...itemWithoutCategory } = existing.item;
   void discardedCategory;
   const nextRecords = [...records];
   nextRecords[recordIndex] = {
     ...existing,
-    updatedAt: options.now.toISOString(),
+    updatedAt: mutationTimestamp,
     item: {
       ...itemWithoutCategory,
       ...normalized,
