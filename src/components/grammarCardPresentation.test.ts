@@ -1,8 +1,12 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
 import { describe, expect, it } from 'vitest';
 
 import type { GrammarPoint } from '../models/content';
 import {
   createGrammarInsightState,
+  openGrammarReference,
   projectGrammarInsight,
   setGrammarInsightFocused,
   toggleGrammarInsight,
@@ -61,5 +65,57 @@ describe('grammar card presentation', () => {
     expect(projectGrammarInsight(point, focused).toggle.accessibilityHint).toBe(
       'Collapses the Japanese-first insight, usage boundary, notes, and further reading.',
     );
+  });
+
+  it('opens a further-reading link and reports no error', async () => {
+    const opened: string[] = [];
+    const result = await openGrammarReference(
+      'https://example.com/grammar',
+      async (url) => { opened.push(url); },
+    );
+
+    expect(opened).toEqual(['https://example.com/grammar']);
+    expect(result).toBeNull();
+  });
+
+  it('turns a rejected further-reading opener into a user-facing error', async () => {
+    const result = await openGrammarReference(
+      'https://example.com/grammar',
+      async () => { throw new Error('browser unavailable'); },
+    );
+
+    expect(result).toBe('Could not open this further-reading link. Please try again.');
+  });
+});
+
+describe('GrammarCard source contract', () => {
+  const source = readFileSync(join(import.meta.dirname, 'GrammarCard.tsx'), 'utf8');
+
+  it('hides the decorative chevron from native and web accessibility trees', () => {
+    const chevronTag = source.match(/<Text[^>]*style=\{styles\.insightChevron\}[^>]*>/)?.[0];
+
+    expect(chevronTag).toContain('accessibilityElementsHidden');
+    expect(chevronTag).toContain('importantForAccessibility="no"');
+    expect(chevronTag).toContain('aria-hidden={true}');
+  });
+
+  it('keeps focus geometry fixed and uses the high-contrast forest token', () => {
+    const baseStyle = source.match(/insightToggle:\s*\{[\s\S]*?\n\s*\},\n\s*insightToggleFocused:/)?.[0];
+    const focusedStyle = source.match(/insightToggleFocused:\s*\{[^}]*\}/)?.[0];
+
+    expect(baseStyle).toContain('borderWidth: 1');
+    expect(focusedStyle).toContain('borderColor: colors.forest');
+    expect(focusedStyle).not.toContain('borderWidth');
+  });
+
+  it('reports external-link failures from inside the expanded insight', () => {
+    const expandedContent = source.match(/\{insight\.content \? \([\s\S]*?\n\s*\) : null\}/)?.[0];
+
+    expect(source).toContain('setReferenceError(null)');
+    expect(source).toContain('openGrammarReference(reference.url, Linking.openURL)');
+    expect(source).toContain('.then(setReferenceError)');
+    expect(expandedContent).toContain('accessibilityRole="alert"');
+    expect(expandedContent).toContain('accessibilityLiveRegion="polite"');
+    expect(expandedContent).toContain('{referenceError}');
   });
 });

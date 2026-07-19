@@ -20,6 +20,18 @@ export const setGrammarInsightFocused = (
   focused: boolean,
 ): GrammarInsightState => ({ ...state, focused });
 
+export const openGrammarReference = async (
+  url: string,
+  openUrl: (url: string) => Promise<unknown>,
+): Promise<string | null> => {
+  try {
+    await openUrl(url);
+    return null;
+  } catch {
+    return 'Could not open this further-reading link. Please try again.';
+  }
+};
+
 export const projectGrammarInsight = (point: GrammarPoint, state: GrammarInsightState) => ({
   toggle: {
     accessibilityRole: 'button' as const,

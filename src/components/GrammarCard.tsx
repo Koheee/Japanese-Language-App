@@ -5,6 +5,7 @@ import type { GrammarPoint } from '../models/content';
 import { colors, radii, spacing, typography } from '../theme/tokens';
 import {
   createGrammarInsightState,
+  openGrammarReference,
   projectGrammarInsight,
   setGrammarInsightFocused,
   toggleGrammarInsight,
@@ -12,6 +13,7 @@ import {
 
 export function GrammarCard({ point, index }: { point: GrammarPoint; index: number }) {
   const [insightState, setInsightState] = useState(createGrammarInsightState);
+  const [referenceError, setReferenceError] = useState<string | null>(null);
   const insight = projectGrammarInsight(point, insightState);
 
   return (
@@ -42,7 +44,12 @@ export function GrammarCard({ point, index }: { point: GrammarPoint; index: numb
         ]}
       >
         <Text style={styles.insightToggleLabel}>Japanese-first insight</Text>
-        <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.insightChevron}>
+        <Text
+          aria-hidden={true}
+          accessibilityElementsHidden
+          importantForAccessibility="no"
+          style={styles.insightChevron}
+        >
           {insightState.expanded ? '−' : '+'}
         </Text>
       </Pressable>
@@ -60,12 +67,24 @@ export function GrammarCard({ point, index }: { point: GrammarPoint; index: numb
               key={reference.url}
               accessibilityRole="link"
               accessibilityLabel={`Further reading: ${reference.title}; opens an external site`}
-              onPress={() => { void Linking.openURL(reference.url); }}
+              onPress={() => {
+                setReferenceError(null);
+                void openGrammarReference(reference.url, Linking.openURL).then(setReferenceError);
+              }}
               style={styles.referenceLink}
             >
               <Text style={styles.referenceLinkText}>Further reading: {reference.title}</Text>
             </Pressable>
           ))}
+          {referenceError ? (
+            <Text
+              accessibilityRole="alert"
+              accessibilityLiveRegion="polite"
+              style={styles.referenceError}
+            >
+              {referenceError}
+            </Text>
+          ) : null}
         </View>
       ) : null}
 
@@ -114,7 +133,7 @@ const styles = StyleSheet.create({
     borderColor: colors.line,
     backgroundColor: colors.surfaceStrong,
   },
-  insightToggleFocused: { borderWidth: 2, borderColor: colors.coral },
+  insightToggleFocused: { borderColor: colors.forest },
   insightToggleLabel: { color: colors.ink, fontSize: typography.small, fontWeight: '800' },
   insightChevron: { color: colors.coral, fontSize: typography.heading, fontWeight: '800' },
   whyBox: { gap: spacing.sm, padding: spacing.lg, backgroundColor: colors.goldSoft, borderRadius: radii.md },
@@ -127,6 +146,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     textDecorationLine: 'underline',
   },
+  referenceError: { color: colors.error, fontSize: typography.small, fontWeight: '700', lineHeight: 20 },
   examples: { gap: spacing.sm },
   example: { paddingLeft: spacing.md, borderLeftWidth: 3, borderLeftColor: colors.forestSoft },
   japanese: { color: colors.ink, fontSize: typography.body, fontWeight: '700', lineHeight: 24 },
