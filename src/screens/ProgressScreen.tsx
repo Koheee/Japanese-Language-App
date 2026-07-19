@@ -2,12 +2,16 @@ import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { CompositeScreenProps, useIsFocused } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect, useRef, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Linking, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { PrimaryButton } from '../components/PrimaryButton';
 import { ProgressBar } from '../components/ProgressBar';
 import { Screen } from '../components/Screen';
 import { VocabularyFilePicker } from '../components/VocabularyFilePicker';
+import {
+  openReferenceInfluence,
+  referenceInfluences,
+} from '../content/referenceInfluences';
 import { curriculum } from '../data/curriculum';
 import { getLesson, lessons } from '../data/lessons';
 import { RootStackParamList, RootTabParamList } from '../navigation/types';
@@ -45,6 +49,8 @@ export function ProgressScreen({ navigation }: Props) {
   const [transferMessage, setTransferMessage] = useState<string | null>(null);
   const [transferIsError, setTransferIsError] = useState(false);
   const [importIssues, setImportIssues] = useState<string[]>([]);
+  const [focusedReferenceUrl, setFocusedReferenceUrl] = useState<string | null>(null);
+  const [referenceError, setReferenceError] = useState<string | null>(null);
   focusedRef.current = isFocused;
 
   useEffect(() => {
@@ -141,6 +147,13 @@ export function ProgressScreen({ navigation }: Props) {
     }
   });
 
+  const openReference = (url: string) => {
+    setReferenceError(null);
+    void openReferenceInfluence(url, (targetUrl) => Linking.openURL(targetUrl)).then((message) => {
+      if (mountedRef.current) setReferenceError(message);
+    });
+  };
+
   return (
     <Screen scroll contentStyle={styles.page}>
       <Text style={styles.brand}>YOUR TRAIL</Text>
@@ -211,6 +224,42 @@ export function ProgressScreen({ navigation }: Props) {
               </Text>
             ))}
           </View>
+        ) : null}
+      </View>
+
+      <View style={styles.referenceCard}>
+        <Text style={styles.referenceTitle}>{referenceInfluences.heading}</Text>
+        <Text style={styles.referenceBody}>{referenceInfluences.body}</Text>
+        <Text style={styles.referenceBody}>{referenceInfluences.license}</Text>
+        <Text style={styles.referenceBody}>{referenceInfluences.originality}</Text>
+        <Text style={styles.referenceBody}>{referenceInfluences.nonEndorsement}</Text>
+        {referenceInfluences.links.map((link) => (
+          <Pressable
+            key={link.url}
+            accessibilityRole="link"
+            accessibilityLabel={`${link.title}; opens an external site`}
+            onPress={() => openReference(link.url)}
+            onFocus={() => setFocusedReferenceUrl(link.url)}
+            onBlur={() => setFocusedReferenceUrl((current) => (
+              current === link.url ? null : current
+            ))}
+            style={({ pressed }) => [
+              styles.referenceAction,
+              focusedReferenceUrl === link.url && styles.referenceActionFocused,
+              pressed && styles.referenceActionPressed,
+            ]}
+          >
+            <Text style={styles.referenceActionText}>{link.title}</Text>
+          </Pressable>
+        ))}
+        {referenceError ? (
+          <Text
+            accessibilityRole="alert"
+            accessibilityLiveRegion="polite"
+            style={styles.referenceError}
+          >
+            {referenceError}
+          </Text>
         ) : null}
       </View>
 
@@ -294,6 +343,33 @@ const styles = StyleSheet.create({
   transferError: { color: colors.error },
   importIssues: { gap: spacing.xs, padding: spacing.md, backgroundColor: colors.coralSoft, borderRadius: radii.sm },
   importIssue: { color: colors.error, fontSize: typography.small, fontWeight: '700', lineHeight: 20 },
+  referenceCard: { marginTop: spacing.xxl, padding: spacing.xl, gap: spacing.md, backgroundColor: colors.surface, borderRadius: radii.lg, borderWidth: 1, borderColor: colors.line },
+  referenceTitle: { color: colors.ink, fontSize: typography.heading, fontWeight: '900' },
+  referenceBody: { color: colors.inkMuted, fontSize: typography.small, lineHeight: 20 },
+  referenceAction: {
+    minHeight: 44,
+    width: '100%',
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: radii.md,
+    borderWidth: 2,
+    borderColor: 'transparent',
+    backgroundColor: colors.surfaceStrong,
+  },
+  referenceActionFocused: { borderColor: colors.forest },
+  referenceActionPressed: { backgroundColor: colors.forestSoft },
+  referenceActionText: {
+    width: '100%',
+    flexShrink: 1,
+    color: colors.forest,
+    fontSize: typography.small,
+    fontWeight: '800',
+    lineHeight: 20,
+    textDecorationLine: 'underline',
+  },
+  referenceError: { color: colors.error, fontSize: typography.small, fontWeight: '700', lineHeight: 20 },
   sectionTitle: { marginTop: spacing.xxl, marginBottom: spacing.lg, color: colors.ink, fontSize: typography.title, fontWeight: '900' },
   lessonCard: { flexDirection: 'row', gap: spacing.lg, padding: spacing.lg, backgroundColor: colors.surface, borderRadius: radii.lg, borderWidth: 1, borderColor: colors.line },
   lessonNumber: { width: 46, height: 46, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.coral, borderRadius: 15 },

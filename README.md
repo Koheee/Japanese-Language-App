@@ -18,6 +18,12 @@ An original, mobile-first Japanese course with a 25-lesson beginner path. The pr
 
 Every explanation, scenario, example, dialogue, and exercise is original. The course follows a familiar beginner progression without copying textbook prose or page design.
 
+## Reference influences
+
+[Tae Kim's Guide to Japanese Grammar](https://guidetojapanese.org/learn/grammar/) informed this course's Japanese-first coverage review. The guide identifies its content as CC BY-NC-SA 3.0 US.
+
+The [Saeris guide-to-japanese port](https://github.com/Saeris/guide-to-japanese) was used as a structured review aid. Nihongo Path's explanations, examples, dialogues, and exercises are independently written. Neither Tae Kim nor the Saeris project endorses Nihongo Path. No source prose, examples, media, or website code is included.
+
 ## Learning flow
 
 Each complete lesson follows one predictable loop:
