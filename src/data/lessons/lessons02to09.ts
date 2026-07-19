@@ -191,7 +191,7 @@ const lesson03: Lesson = {
       usageBoundary: 'Use this pattern to identify a known noun’s location; do not treat it as an existence statement with あります or います, which is deferred.',
       examples: [
         { japanese: 'うけつけは 1かいです。', reading: 'うけつけは いっかいです。', english: 'Reception is on the first floor.' },
-        { japanese: 'ミナさんは カフェです。', reading: 'ミナさんは カフェです。', english: 'Mina is in the café.' },
+        { japanese: 'ミナさんは どこですか。— カフェです。', reading: 'ミナさんは どこですか。カフェです。', english: 'Where is Mina? — At the café.' },
       ],
     },
     {
@@ -270,7 +270,7 @@ const lesson04: Lesson = {
     {
       id: 'l4-past', title: 'Report completed actions politely', pattern: 'Vました / Vませんでした',
       plainEnglish: 'did / did not',
-      explanation: 'Within the same ます・ません・ました・ませんでした grid, ました reports an affirmative completed action and ませんでした reports that an expected past action did not occur.',
+      explanation: 'Within the same ます・ません・ました・ませんでした grid, ました reports an affirmative completed action and ませんでした reports that a past action did not occur.',
       whyItWorks: 'Japanese places tense and polarity together in the polite ending. Once the verb stem is known, the consistent final shape tells the listener both that the time is past and whether the event happened.',
       usageBoundary: 'Do not combine two polite endings or use ません for a finished negative event; the complete past-negative ending is ませんでした.',
       examples: [
@@ -358,7 +358,7 @@ const lesson05: Lesson = {
       usageBoundary: 'Use these particles with the taught movement destination; the purpose pattern V-stem に行く and broader particle stacking remain deferred.',
       notes: ['行きます moves away from the reference point; 来ます moves toward it.', '帰ります describes returning to home or another familiar base.'],
       examples: [
-        { japanese: 'らいしゅう こうえんへ 行きます。', reading: 'らいしゅう こうえんへ いきます。', english: 'I will go toward the park next week.' },
+        { japanese: 'らいしゅう こうえんへ 行きます。', reading: 'らいしゅう こうえんへ いきます。', english: 'I will go to the park next week.' },
         { japanese: '7じに うちに 帰ります。', reading: 'しちじに うちに かえります。', english: 'I will return home at seven.' },
       ],
     },

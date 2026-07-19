@@ -1,5 +1,5 @@
 import { getGrammarReferences } from '../grammarReferences';
-import { containsHan, containsLatinLetters, isKanaReading } from '../../services/vocabularyText';
+import { containsLatinLetters, isKanaReading } from '../../services/vocabularyText';
 import { lessons } from '.';
 
 export interface GrammarRangeExpectation {
@@ -11,7 +11,7 @@ export interface GrammarRangeExpectation {
   dialogueByLesson: Readonly<Record<number, number>>;
 }
 
-const nonEmpty = (value: string | undefined) => Boolean(value?.trim());
+const nonEmpty = (value: string | undefined): value is string => Boolean(value?.trim());
 
 export const collectGrammarRangeErrors = (expectation: GrammarRangeExpectation): string[] => {
   const errors: string[] = [];
@@ -86,10 +86,10 @@ export const collectGrammarRangeErrors = (expectation: GrammarRangeExpectation):
       if (!nonEmpty(example.japanese) || !nonEmpty(example.english)) {
         errors.push(`${point.id}: example ${index + 1} is incomplete`);
       }
-      if (containsHan(example.japanese) && !nonEmpty(example.reading)) {
-        errors.push(`${point.id}: example ${index + 1} needs a kanji reading`);
-      }
-      if (example.reading && (!isKanaReading(example.reading) || containsLatinLetters(example.reading))) {
+      const reading = example.reading;
+      if (!nonEmpty(reading)) {
+        errors.push(`${point.id}: example ${index + 1} needs a reading`);
+      } else if (!isKanaReading(reading) || containsLatinLetters(reading)) {
         errors.push(`${point.id}: example ${index + 1} reading is not kana`);
       }
     }
