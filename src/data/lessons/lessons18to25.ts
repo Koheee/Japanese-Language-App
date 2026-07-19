@@ -649,6 +649,7 @@ export const lessons18to25: Lesson[] = ([
         explanation: 'In friendly speech, a rising tone or a question word can make a question, so か is often absent. For noun and な-adjective questions, omit statement-final だ: ひま？, だれ？. Keep か in polite speech.',
         whyItWorks: 'English uses word order to distinguish many questions. Japanese casual speech can leave the order unchanged and rely on intonation and context. Imagine a spoken question mark at the end.',
         usageBoundary: 'Use context, a question word, and spoken intonation for this close-relationship pattern; do not assume every written plain sentence is a question. Keep polite か in polite questions, while explanatory question-ending の remains deferred.',
+        notes: ['The dialogue’s どうしたの？ is a fixed receptive expression meaning “What’s up?” or “What happened?”; productive explanatory question-final の remains deferred.'],
         examples: [
           example('もう ばんごはんを たべた？', 'もう ばんごはんを たべた？', 'Have you eaten dinner already?'),
           example('あした だれが くる？', 'あした だれが くる？', 'Who is coming tomorrow?'),
@@ -1053,7 +1054,7 @@ export const lessons18to25: Lesson[] = ([
         usageBoundary: 'Use this sequence when a discovery or next event follows the completed viewpoint of the first event. It does not say both actions are simultaneous, and this lesson does not extend the contrast into productive なら or ば.',
         examples: [
           example('おおさかに ついたら、れんらくしてください。', 'おおさかに ついたら、れんらくしてください。', 'Please contact me when you arrive in Osaka.'),
-          example('しごとに なれたら、しゃしんを おくります。', 'しごとに なれたら、しゃしんを おくります。', 'Once I get used to the job, I will send photos.'),
+          example('まどを あけたら、ゆきが ふっていました。', 'まどを あけたら、ゆきが ふっていました。', 'When I opened the window, I found it was snowing.'),
         ],
       },
       {
