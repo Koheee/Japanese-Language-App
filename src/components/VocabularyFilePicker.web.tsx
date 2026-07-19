@@ -1,6 +1,6 @@
 import { ChangeEvent, CSSProperties, useEffect, useId, useRef, useState } from 'react';
 
-import { readPickedVocabularyFile } from '../services/webFileTransferCore';
+import { runPickedVocabularyFileRead } from '../services/webFileTransferCore';
 import { colors, radii, spacing, typography } from '../theme/tokens';
 import type { VocabularyFilePickerProps } from './VocabularyFilePicker';
 
@@ -19,6 +19,8 @@ const visuallyHidden: CSSProperties = {
 export function VocabularyFilePicker({
   onPick,
   onError,
+  onReadStart,
+  onReadFinish,
   disabled = false,
 }: VocabularyFilePickerProps) {
   const inputId = useId();
@@ -39,18 +41,25 @@ export function VocabularyFilePicker({
     const input = event.currentTarget;
     const file = input.files?.[0] ?? null;
     const fileName = file?.name ?? '';
-    if (disabled) {
-      input.value = '';
-      return;
-    }
-    setReading(true);
     try {
-      const result = await readPickedVocabularyFile(file);
-      if (result.status === 'picked') onPick(result.bytes, fileName);
-      if (result.status === 'error') onError(result.message);
+      await runPickedVocabularyFileRead(file, {
+        onReadStart: () => {
+          if (disabled || !onReadStart()) return false;
+          setReading(true);
+          return true;
+        },
+        onReadFinish: () => {
+          try {
+            onReadFinish();
+          } finally {
+            if (mountedRef.current) setReading(false);
+          }
+        },
+        onPick: (bytes) => onPick(bytes, fileName),
+        onError,
+      });
     } finally {
       input.value = '';
-      if (mountedRef.current) setReading(false);
     }
   };
 

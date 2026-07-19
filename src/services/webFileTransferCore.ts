@@ -12,6 +12,13 @@ interface PickedVocabularyFile {
   arrayBuffer(): Promise<ArrayBuffer>;
 }
 
+interface PickedVocabularyFileReadCallbacks {
+  onReadStart(): boolean;
+  onReadFinish(): void;
+  onPick(bytes: Uint8Array): void;
+  onError(message: string): void;
+}
+
 export const vocabularyBackupFilename = (exportedAt: string) =>
   `nihongo-path-vocabulary-${exportedAt.slice(0, 10)}.json`;
 
@@ -36,5 +43,20 @@ export const readPickedVocabularyFile = async (
         ? cause.message
         : 'Could not read the selected file.',
     };
+  }
+};
+
+export const runPickedVocabularyFileRead = async (
+  file: PickedVocabularyFile | null,
+  callbacks: PickedVocabularyFileReadCallbacks,
+): Promise<void> => {
+  if (!callbacks.onReadStart()) return;
+
+  try {
+    const result = await readPickedVocabularyFile(file);
+    if (result.status === 'picked') callbacks.onPick(result.bytes);
+    if (result.status === 'error') callbacks.onError(result.message);
+  } finally {
+    callbacks.onReadFinish();
   }
 };

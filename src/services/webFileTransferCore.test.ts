@@ -9,6 +9,7 @@ import {
 import {
   isUserCancellation,
   readPickedVocabularyFile,
+  runPickedVocabularyFileRead,
   type VocabularyTransferResult,
   vocabularyBackupFilename,
 } from './webFileTransferCore';
@@ -220,6 +221,78 @@ describe('web vocabulary file transfer', () => {
 });
 
 describe('vocabulary transfer helpers', () => {
+  it('does not read when the parent picker lock is unavailable', async () => {
+    const file = fakePickedFile(3, new Uint8Array([1, 2, 3]));
+    const onReadFinish = vi.fn();
+    const onPick = vi.fn();
+
+    await runPickedVocabularyFileRead(file, {
+      onReadStart: () => false,
+      onReadFinish,
+      onPick,
+      onError: vi.fn(),
+    });
+
+    expect(file.arrayBuffer).not.toHaveBeenCalled();
+    expect(onPick).not.toHaveBeenCalled();
+    expect(onReadFinish).not.toHaveBeenCalled();
+  });
+
+  it('holds the parent picker lock through the picked callback', async () => {
+    const order: string[] = [];
+    let resolveRead!: (bytes: ArrayBuffer) => void;
+    const file = {
+      size: 3,
+      arrayBuffer: vi.fn(() => new Promise<ArrayBuffer>((resolve) => {
+        resolveRead = resolve;
+      })),
+    };
+    const work = runPickedVocabularyFileRead(file, {
+      onReadStart: () => {
+        order.push('start');
+        return true;
+      },
+      onReadFinish: () => order.push('finish'),
+      onPick: (bytes) => order.push(`pick:${[...bytes].join(',')}`),
+      onError: (message) => order.push(`error:${message}`),
+    });
+
+    expect(order).toEqual(['start']);
+    expect(file.arrayBuffer).toHaveBeenCalledTimes(1);
+    resolveRead(new Uint8Array([1, 2, 3]).buffer);
+    await work;
+    expect(order).toEqual(['start', 'pick:1,2,3', 'finish']);
+  });
+
+  it('releases the parent picker lock after cancellation and read error', async () => {
+    const cancelledOrder: string[] = [];
+    await runPickedVocabularyFileRead(null, {
+      onReadStart: () => {
+        cancelledOrder.push('start');
+        return true;
+      },
+      onReadFinish: () => cancelledOrder.push('finish'),
+      onPick: () => cancelledOrder.push('pick'),
+      onError: () => cancelledOrder.push('error'),
+    });
+    expect(cancelledOrder).toEqual(['start', 'finish']);
+
+    const errorOrder: string[] = [];
+    await runPickedVocabularyFileRead({
+      size: 1,
+      arrayBuffer: vi.fn(async () => { throw new Error('read failed'); }),
+    }, {
+      onReadStart: () => {
+        errorOrder.push('start');
+        return true;
+      },
+      onReadFinish: () => errorOrder.push('finish'),
+      onPick: () => errorOrder.push('pick'),
+      onError: (message) => errorOrder.push(`error:${message}`),
+    });
+    expect(errorOrder).toEqual(['start', 'error:read failed', 'finish']);
+  });
+
   it('treats a cancelled picker as cancellation', async () => {
     await expect(readPickedVocabularyFile(null)).resolves.toEqual({ status: 'cancelled' });
   });

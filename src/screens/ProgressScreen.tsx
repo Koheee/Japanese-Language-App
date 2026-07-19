@@ -17,6 +17,7 @@ import { exportVocabularyBackupFile } from '../services/webFileTransfer';
 import { isUserCancellation } from '../services/webFileTransferCore';
 import { useStudy } from '../state/StudyContext';
 import { colors, radii, spacing, typography } from '../theme/tokens';
+import { createExclusiveActionCoordinator } from './importLifecycle';
 
 type Props = CompositeScreenProps<
   BottomTabScreenProps<RootTabParamList, 'Progress'>,
@@ -35,7 +36,11 @@ export function ProgressScreen({ navigation }: Props) {
   const isFocused = useIsFocused();
   const focusedRef = useRef(isFocused);
   const mountedRef = useRef(true);
-  const busyRef = useRef(false);
+  const actionCoordinatorRef = useRef<ReturnType<
+    typeof createExclusiveActionCoordinator<BusyAction>
+  > | null>(null);
+  const actionCoordinator = actionCoordinatorRef.current ??=
+    createExclusiveActionCoordinator<BusyAction>();
   const [busyAction, setBusyAction] = useState<BusyAction | null>(null);
   const [transferMessage, setTransferMessage] = useState<string | null>(null);
   const [transferIsError, setTransferIsError] = useState(false);
@@ -56,13 +61,12 @@ export function ProgressScreen({ navigation }: Props) {
   const { reviewedActive } = getReviewStats(state.reviewCards);
 
   const runAction = async (action: BusyAction, operation: () => Promise<void>) => {
-    if (busyRef.current) return;
-    busyRef.current = true;
+    if (!actionCoordinator.claim(action)) return;
     setBusyAction(action);
     try {
       await operation();
     } finally {
-      busyRef.current = false;
+      actionCoordinator.release(action);
       if (mountedRef.current) setBusyAction(null);
     }
   };
@@ -92,28 +96,41 @@ export function ProgressScreen({ navigation }: Props) {
   });
 
   const handlePickedFile = (bytes: Uint8Array, _fileName: string) => {
-    if (busyRef.current || !focusedRef.current) return;
-    busyRef.current = true;
-    setBusyAction('import');
-    try {
-      const result = prepareVocabularyImport(bytes);
-      if (result.ok) {
-        setImportIssues([]);
-        navigation.navigate('ImportPreview');
-      } else {
-        clearVocabularyImportPreview();
-        setImportIssues(result.issues);
-      }
-    } finally {
-      busyRef.current = false;
-      if (mountedRef.current) setBusyAction(null);
+    if (
+      !actionCoordinator.owns('import')
+      || !mountedRef.current
+      || !focusedRef.current
+    ) return;
+    const result = prepareVocabularyImport(bytes);
+    if (result.ok) {
+      setImportIssues([]);
+      navigation.navigate('ImportPreview');
+    } else {
+      clearVocabularyImportPreview();
+      setImportIssues(result.issues);
     }
   };
 
   const handlePickerError = (message: string) => {
-    if (busyRef.current || !focusedRef.current) return;
+    if (
+      !actionCoordinator.owns('import')
+      || !mountedRef.current
+      || !focusedRef.current
+    ) return;
     clearVocabularyImportPreview();
     setImportIssues([message]);
+  };
+
+  const handlePickerReadStart = () => {
+    if (!mountedRef.current || !focusedRef.current) return false;
+    if (!actionCoordinator.claim('import')) return false;
+    setBusyAction('import');
+    return true;
+  };
+
+  const handlePickerReadFinish = () => {
+    if (!actionCoordinator.release('import')) return;
+    if (mountedRef.current) setBusyAction(null);
   };
 
   const undoImport = async () => runAction('undo', async () => {
@@ -164,6 +181,8 @@ export function ProgressScreen({ navigation }: Props) {
               disabled={busyAction !== null}
               onError={handlePickerError}
               onPick={handlePickedFile}
+              onReadFinish={handlePickerReadFinish}
+              onReadStart={handlePickerReadStart}
             />
           </View>
           <PrimaryButton

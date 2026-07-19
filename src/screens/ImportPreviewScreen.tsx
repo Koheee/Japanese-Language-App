@@ -5,9 +5,13 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { PrimaryButton } from '../components/PrimaryButton';
 import { RootStackParamList } from '../navigation/types';
-import { createActionLock } from '../state/appStateCommitter';
 import { useStudy } from '../state/StudyContext';
 import { colors, radii, spacing, typography } from '../theme/tokens';
+import {
+  buildImportSuccessNavigationAction,
+  createImportConfirmationController,
+  handleImportPreviewBeforeRemove,
+} from './importLifecycle';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ImportPreview'>;
 
@@ -19,8 +23,11 @@ export function ImportPreviewScreen({ navigation }: Props) {
   } = useStudy();
   const [isConfirming, setIsConfirming] = useState(false);
   const mountedRef = useRef(true);
-  const confirmLockRef = useRef<ReturnType<typeof createActionLock> | null>(null);
-  const confirmLock = confirmLockRef.current ??= createActionLock();
+  const confirmationControllerRef = useRef<ReturnType<
+    typeof createImportConfirmationController
+  > | null>(null);
+  const confirmationController = confirmationControllerRef.current ??=
+    createImportConfirmationController();
 
   useEffect(() => {
     mountedRef.current = true;
@@ -29,30 +36,36 @@ export function ImportPreviewScreen({ navigation }: Props) {
     };
   }, []);
 
-  useEffect(
-    () => navigation.addListener('beforeRemove', clearVocabularyImportPreview),
-    [clearVocabularyImportPreview, navigation],
-  );
+  useEffect(() => navigation.addListener('beforeRemove', (event) => {
+    handleImportPreviewBeforeRemove(
+      confirmationController,
+      event,
+      clearVocabularyImportPreview,
+    );
+  }), [clearVocabularyImportPreview, confirmationController, navigation]);
 
   const cancel = () => {
-    if (isConfirming) return;
+    if (confirmationController.isConfirming()) return;
     clearVocabularyImportPreview();
     navigation.goBack();
   };
 
   const replaceVocabulary = async () => {
-    const work = confirmLock.tryRun(async () => {
-      setIsConfirming(true);
-      try {
-        const result = await confirmVocabularyImport();
-        if (result.ok && mountedRef.current && navigation.isFocused()) {
-          navigation.navigate('MainTabs', { screen: 'Progress' });
+    if (!confirmationController.begin()) return;
+    setIsConfirming(true);
+    let committed = false;
+    try {
+      const result = await confirmVocabularyImport();
+      if (result.ok && confirmationController.allowRemovalAfterCommit()) {
+        committed = true;
+        if (mountedRef.current && navigation.isFocused()) {
+          navigation.dispatch(buildImportSuccessNavigationAction());
         }
-      } finally {
-        if (mountedRef.current) setIsConfirming(false);
       }
-    });
-    if (work) await work;
+    } finally {
+      if (!committed) confirmationController.finishFailure();
+      if (mountedRef.current) setIsConfirming(false);
+    }
   };
 
   return (
