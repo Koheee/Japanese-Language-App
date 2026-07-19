@@ -16,7 +16,9 @@ export const lessons: Lesson[] = authoredLessons.map((lesson) => ({
   ...lesson,
   grammar: lesson.grammar.map((point) => {
     const references = getGrammarReferences(point.id);
-    return references.length ? { ...point, furtherReading: [...references] } : point;
+    return references.length
+      ? { ...point, furtherReading: references.map((reference) => ({ ...reference })) }
+      : point;
   }),
 }));
 

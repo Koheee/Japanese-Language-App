@@ -33,8 +33,15 @@ describe('grammarReferences', () => {
     for (const point of lessons.flatMap((lesson) => lesson.grammar)) {
       const references = getGrammarReferences(point.id);
       if (references.length) {
-        expect(point.furtherReading).toEqual(references);
-        expect(point.furtherReading).not.toBe(references);
+        const attachedReferences = point.furtherReading;
+        expect(attachedReferences).toEqual(references);
+        expect(attachedReferences).not.toBe(references);
+        expect(attachedReferences).toBeDefined();
+        if (!attachedReferences) continue;
+        attachedReferences.forEach((reference, index) => {
+          expect(reference).toEqual(references[index]);
+          expect(reference).not.toBe(references[index]);
+        });
       } else {
         expect(point).not.toHaveProperty('furtherReading');
       }
