@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
+import { lessons } from '../data/lessons';
 import { Lesson } from '../models/content';
 import { LessonProgress, ReviewCard } from '../models/review';
-import { VocabularyOverrides } from '../models/vocabulary';
+import { emptyVocabularyOverrides, VocabularyOverrides } from '../models/vocabulary';
 import { reconcileReviewCards, vocabularyIdFromReviewCardId } from './reconcileReviewCards';
 
 const now = new Date('2026-07-19T04:00:00.000Z');
@@ -58,7 +59,7 @@ const unstartedLesson: Lesson = {
   exercises: [],
 };
 
-const lessons = [startedLesson, unstartedLesson];
+const fixtureLessons = [startedLesson, unstartedLesson];
 
 const progressFor = (lessonId: string, started: boolean): LessonProgress => ({
   lessonId,
@@ -213,19 +214,19 @@ const schedule = (card: {
 
 describe('reconcileReviewCards', () => {
   it('seeds every visible word and grammar point in a started lesson due now', () => {
-    const result = reconcileReviewCards({ lessons, progress: startedProgress, reviewCards: {}, vocabulary, now });
+    const result = reconcileReviewCards({ lessons: fixtureLessons, progress: startedProgress, reviewCards: {}, vocabulary, now });
     expect(result['review-course-word']).toMatchObject({ kind: 'vocabulary', dueAt: now.toISOString(), suspended: false });
     expect(result['review-custom:lesson-01:uuid-with-hyphens']).toMatchObject({ kind: 'vocabulary', dueAt: now.toISOString(), suspended: false });
     expect(result['review-grammar-point']).toMatchObject({ kind: 'grammar', dueAt: now.toISOString() });
   });
 
   it('does not seed an incoming word in an unstarted lesson', () => {
-    const result = reconcileReviewCards({ lessons, progress: startedProgress, reviewCards: {}, vocabulary, now });
+    const result = reconcileReviewCards({ lessons: fixtureLessons, progress: startedProgress, reviewCards: {}, vocabulary, now });
     expect(result['review-personal-deck:lesson-02:1']).toBeUndefined();
   });
 
   it('refreshes stale vocabulary and grammar presentation while preserving every schedule field', () => {
-    const result = reconcileReviewCards({ lessons, progress: startedProgress, reviewCards: staleCards, vocabulary, now });
+    const result = reconcileReviewCards({ lessons: fixtureLessons, progress: startedProgress, reviewCards: staleCards, vocabulary, now });
     expect(result['review-course-word']).toMatchObject({ prompt: '今', answer: 'now', supportingText: 'いま · Time' });
     expect(result['review-grammar-point']).toMatchObject({ prompt: 'A は B', answer: 'A is B', supportingText: 'Topic statement' });
     expect(schedule(result['review-course-word']!)).toEqual(schedule(staleCards['review-course-word']!));
@@ -233,16 +234,16 @@ describe('reconcileReviewCards', () => {
   });
 
   it('suspends hidden and orphaned cards, then restores a hidden card with its schedule', () => {
-    const hidden = reconcileReviewCards({ lessons, progress: startedProgress, reviewCards: staleCards, vocabulary: hiddenVocabulary, now });
+    const hidden = reconcileReviewCards({ lessons: fixtureLessons, progress: startedProgress, reviewCards: staleCards, vocabulary: hiddenVocabulary, now });
     expect(hidden['review-course-word']?.suspended).toBe(true);
     expect(hidden['review-removed-baseline-word']?.suspended).toBe(true);
-    const restored = reconcileReviewCards({ lessons, progress: startedProgress, reviewCards: hidden, vocabulary, now });
+    const restored = reconcileReviewCards({ lessons: fixtureLessons, progress: startedProgress, reviewCards: hidden, vocabulary, now });
     expect(restored['review-course-word']?.suspended).toBe(false);
     expect(schedule(restored['review-course-word']!)).toEqual(schedule(staleCards['review-course-word']!));
   });
 
   it('leaves unstarted cards untouched and reuses entries whose fields do not change', () => {
-    const result = reconcileReviewCards({ lessons, progress: startedProgress, reviewCards: staleCards, vocabulary, now });
+    const result = reconcileReviewCards({ lessons: fixtureLessons, progress: startedProgress, reviewCards: staleCards, vocabulary, now });
 
     expect(result).not.toBe(staleCards);
     expect(result['review-personal-deck:lesson-02:1']).toBe(staleCards['review-personal-deck:lesson-02:1']);
@@ -253,5 +254,53 @@ describe('reconcileReviewCards', () => {
   it('removes only the exact review- prefix from hyphenated vocabulary IDs', () => {
     expect(vocabularyIdFromReviewCardId({ ...staleCards['review-course-word']!, id: 'review-custom:lesson-01:uuid-with-hyphens' })).toBe('custom:lesson-01:uuid-with-hyphens');
     expect(vocabularyIdFromReviewCardId({ ...staleCards['review-course-word']!, id: 'custom:lesson-01:uuid-with-hyphens' })).toBeUndefined();
+  });
+
+  it('refreshes enriched grammar presentation and preserves every schedule field', () => {
+    const lesson = lessons.find(({ id }) => id === 'lesson-01');
+    const point = lesson?.grammar.find(({ id }) => id === 'l1-topic-copula');
+    expect(point?.title).toBe('Make a noun the topic, then identify it');
+    if (!point) throw new Error('Missing l1-topic-copula');
+
+    const stale: ReviewCard = {
+      id: 'review-l1-topic-copula',
+      lessonId: 'lesson-01',
+      kind: 'grammar',
+      prompt: 'A は old text',
+      answer: 'stale answer',
+      supportingText: 'Frame a topic, then describe it',
+      dueAt: '2026-09-12T03:04:05.000Z',
+      intervalDays: 17,
+      repetitions: 6,
+      ease: 2.35,
+      lastReviewedAt: '2026-08-26T03:04:05.000Z',
+    };
+    const result = reconcileReviewCards({
+      lessons,
+      progress: {
+        'lesson-01': {
+          lessonId: 'lesson-01',
+          started: true,
+          completedExerciseIds: ['l1-e01'],
+          correctAnswers: 1,
+          attempts: 1,
+        },
+      },
+      reviewCards: { [stale.id]: stale },
+      vocabulary: emptyVocabularyOverrides(),
+      now: new Date('2026-07-19T00:00:00.000Z'),
+    });
+    expect(result[stale.id]).toMatchObject({
+      prompt: point.pattern,
+      answer: point.plainEnglish,
+      supportingText: point.title,
+    });
+    expect(result[stale.id]).toMatchObject({
+      dueAt: stale.dueAt,
+      intervalDays: stale.intervalDays,
+      repetitions: stale.repetitions,
+      ease: stale.ease,
+      lastReviewedAt: stale.lastReviewedAt,
+    });
   });
 });

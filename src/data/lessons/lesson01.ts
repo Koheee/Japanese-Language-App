@@ -18,21 +18,22 @@ export const lesson01: Lesson = {
   grammar: [
     {
       id: 'l1-topic-copula',
-      title: 'Frame a topic, then describe it',
+      title: 'Make a noun the topic, then identify it',
       pattern: 'A は B です',
       plainEnglish: '“As for A, it is B.”',
       explanation:
-        'は marks what the sentence is about. です politely presents the description that follows. In this use, B can be a name, role, nationality, or other noun. The written は is pronounced “wa” when it is the topic particle.',
+        'Put the shared topic before は and the identifying noun before です. The topic frames what the comment is about; です closes the noun sentence politely.',
       whyItWorks:
-        'English usually starts with a grammatical subject and uses “am/is/are.” Japanese first places A on the conversation table, then comments on it. Think “Speaking of A…” rather than forcing は to mean “is.”',
+        'Japanese first establishes a conversational frame and then supplies the comment. It does not need an English-style subject plus “am/is/are” in every clause, so information already clear from context can stay unspoken.',
+      usageBoundary:
+        'Do not replace every English subject with は: は marks the chosen topic, while が has a different identifying role that this lesson only previews.',
       notes: [
-        'There is normally no “a” or “the” before B.',
-        'Once the topic is obvious, Japanese often leaves A unspoken.',
-        'です adds politeness; it is not a word-for-word match for every use of “is.”',
+        'Literal frame: “As for A, B.”',
+        'Keep the polite ending at the end of the complete sentence.',
       ],
       examples: [
-        { japanese: 'わたしは エマです。', reading: 'Watashi wa Ema desu.', english: 'I’m Emma.' },
-        { japanese: 'リーさんは デザイナーです。', reading: 'Rii-san wa dezainaa desu.', english: 'Lee is a designer.' },
+        { japanese: 'わたしは がくせいです。', reading: 'わたしは がくせいです。', english: 'I am a student.' },
+        { japanese: 'エマさんは けんきゅうしゃです。', reading: 'エマさんは けんきゅうしゃです。', english: 'Emma is a researcher.' },
       ],
       commonMistake: {
         avoid: 'わたし は です エマ。',
@@ -46,12 +47,14 @@ export const lesson01: Lesson = {
       pattern: 'A は B じゃありません',
       plainEnglish: '“A is not B.”',
       explanation:
-        'Replace です with じゃありません to make a polite negative noun sentence. ではありません is a more formal alternative; じゃありません is natural in ordinary polite conversation.',
+        'Use じゃありません instead of です to deny a noun identity politely. The whole ending marks the noun sentence as negative; it is not a separate action meaning “do not.”',
       whyItWorks:
-        'English inserts “not” after a form of “be.” Japanese changes the polite ending as one unit. Learn です and じゃありません as sentence endings instead of translating each piece.',
+        'Japanese keeps the identifying noun as the comment and changes the copular ending that evaluates it. Treat です and じゃありません as contrasting sentence endings rather than inserting an English “not.”',
+      usageBoundary:
+        'Use this form to deny an identity or category; negative action verbs use their own conjugation, which begins in Lesson 4.',
       examples: [
-        { japanese: 'わたしは せんせいじゃありません。', reading: 'Watashi wa sensei ja arimasen.', english: 'I’m not a teacher.' },
-        { japanese: 'ミナさんは がくせいじゃありません。', reading: 'Mina-san wa gakusei ja arimasen.', english: 'Mina is not a student.' },
+        { japanese: 'ルカさんは きょうしじゃありません。', reading: 'ルカさんは きょうしじゃありません。', english: 'Luca is not a teacher.' },
+        { japanese: 'エマさんは デザイナーじゃありません。', reading: 'エマさんは デザイナーじゃありません。', english: 'Emma is not a designer.' },
       ],
       commonMistake: {
         avoid: 'せんせい です じゃありません',
@@ -65,13 +68,15 @@ export const lesson01: Lesson = {
       pattern: 'A は B ですか',
       plainEnglish: '“Is A B?”',
       explanation:
-        'Add か to the polite sentence ending. The word order stays the same. In careful speech, the final か already signals a question, so you do not need English-style inversion.',
+        'Add sentence-final か after the complete polite noun sentence. The topic and comment stay in statement order because か, rather than word inversion, marks the utterance as a question.',
       whyItWorks:
-        'English moves words around: “You are…” becomes “Are you…?” Japanese keeps the information in place and adds a clear question signal at the end. Listen to the whole sentence before deciding its function.',
+        'Japanese lets the listener process the same topic-comment frame used for a statement and reveals the question at the end. This keeps the sentence structure stable while the final particle sets its conversational function.',
+      usageBoundary:
+        'In this lesson, attach か to a polite ending such as です; do not move the noun or omit the taught polite ending to imitate English question order.',
       notes: ['Answer はい for yes and いいえ for no, then repeat the useful part of the answer.', 'Avoid あなた when the person’s name or role is known.'],
       examples: [
-        { japanese: 'ノアさんは エンジニアですか。', reading: 'Noa-san wa enjinia desu ka.', english: 'Noah, are you an engineer?' },
-        { japanese: 'はい、エンジニアです。', reading: 'Hai, enjinia desu.', english: 'Yes, I am.' },
+        { japanese: 'サラさんは スタッフですか。', reading: 'サラさんは スタッフですか。', english: 'Sara, are you a staff member?' },
+        { japanese: 'ノアさんは エンジニアですか。', reading: 'ノアさんは エンジニアですか。', english: 'Noah, are you an engineer?' },
       ],
     },
     {
@@ -80,12 +85,14 @@ export const lesson01: Lesson = {
       pattern: 'A も B です',
       plainEnglish: '“A is also B.”',
       explanation:
-        'Use も in place of は when the new topic shares the same description as something already mentioned. It carries the sense of “too” or “also.”',
+        'Replace the topic particle は with も when the newly mentioned item belongs with an earlier item under the same comment. The particle attaches directly to the item being included.',
       whyItWorks:
-        'English can place “also” in several spots. Japanese marks the matching item itself. Swapping は for も shows that A joins an existing category.',
+        'Japanese marks the participant that joins an established set instead of placing a free-floating word for “also” elsewhere. The listener therefore looks backward for the description that both items share.',
+      usageBoundary:
+        'Use も only when the intended description truly matches the earlier one; keep は when you are introducing or contrasting a different comment.',
       examples: [
-        { japanese: 'わたしは カナダじんです。サムさんも カナダじんです。', reading: 'Watashi wa Kanada-jin desu. Samu-san mo Kanada-jin desu.', english: 'I’m Canadian. Sam is Canadian too.' },
-        { japanese: 'アキさんも スタッフです。', reading: 'Aki-san mo sutaffu desu.', english: 'Aki is also a staff member.' },
+        { japanese: 'ミナさんは デザイナーです。ユイさんも デザイナーです。', reading: 'ミナさんは デザイナーです。ユイさんも デザイナーです。', english: 'Mina is a designer. Yui is a designer too.' },
+        { japanese: 'わたしも シンガポールじんです。', reading: 'わたしも シンガポールじんです。', english: 'I am also Singaporean.' },
       ],
     },
     {
@@ -94,13 +101,15 @@ export const lesson01: Lesson = {
       pattern: 'A の B',
       plainEnglish: '“B connected with A”',
       explanation:
-        'の places one noun in front of another to show a relationship. Depending on context, A may be B’s organization, home country, subject area, owner, or category.',
+        'Place noun A before の to describe noun B. The final noun B is the head of the whole phrase, while A supplies a relationship such as organization, field, origin, category, or ownership.',
       whyItWorks:
-        'English often puts the main noun first (“a teacher from the studio”) or uses apostrophe-s. Japanese consistently puts the describing noun first. Find the final noun—B—to discover what the whole phrase actually is.',
-      notes: ['Do not assume の always means possession.', 'The phrase さくらスタジオの スタッフ means “a Sakura Studio staff member.”'],
+        'Japanese builds the description before naming the central thing. Reading toward the final noun prevents the English-speaking habit of treating the first noun as the phrase head or translating every の as an apostrophe.',
+      usageBoundary:
+        'Do not assume の always signals possession; this lesson uses noun-to-noun relationships only and defers explanatory の and nominalization.',
+      notes: ['In A の B, B is the head noun.', 'Choose the natural English relationship from context rather than assigning one fixed translation to の.'],
       examples: [
-        { japanese: 'みどりだいがくの がくせいです。', reading: 'Midori daigaku no gakusei desu.', english: 'I’m a student at Midori University.' },
-        { japanese: 'にほんごの せんせいです。', reading: 'Nihongo no sensei desu.', english: 'I’m a Japanese-language teacher.' },
+        { japanese: 'ひかりだいがくの けんきゅうしゃです。', reading: 'ひかりだいがくの けんきゅうしゃです。', english: 'I am a researcher at Hikari University.' },
+        { japanese: 'にほんごの きょうしです。', reading: 'にほんごの きょうしです。', english: 'I am a Japanese-language teacher.' },
       ],
     },
   ],
@@ -131,14 +140,14 @@ export const lesson01: Lesson = {
     { id: 'l1-v24', japanese: 'こちらは', reading: 'こちらは', english: 'this person is…', partOfSpeech: 'expression', note: 'A polite way to introduce someone beside you.' },
   ],
   dialogue: [
-    { id: 'l1-d01', speaker: 'Aki', japanese: 'はじめまして。さくらスタジオの あきです。', reading: 'Hajimemashite. Sakura Sutajio no Aki desu.', english: 'How do you do? I’m Aki from Sakura Studio.', grammarIds: ['l1-topic-copula', 'l1-connection'] },
-    { id: 'l1-d02', speaker: 'Emma', japanese: 'はじめまして。エマです。よろしく おねがいします。', reading: 'Hajimemashite. Ema desu. Yoroshiku onegai shimasu.', english: 'How do you do? I’m Emma. I look forward to working with you.', grammarIds: ['l1-topic-copula'] },
-    { id: 'l1-d03', speaker: 'Aki', japanese: 'エマさんは みどりだいがくの がくせいですか。', reading: 'Ema-san wa Midori daigaku no gakusei desu ka.', english: 'Emma, are you a student at Midori University?', grammarIds: ['l1-question', 'l1-connection'] },
-    { id: 'l1-d04', speaker: 'Emma', japanese: 'いいえ、がくせいじゃありません。けんきゅうしゃです。', reading: 'Iie, gakusei ja arimasen. Kenkyuusha desu.', english: 'No, I’m not a student. I’m a researcher.', grammarIds: ['l1-negative'] },
-    { id: 'l1-d05', speaker: 'Aki', japanese: 'そうですか。こちらは ノアさんです。', reading: 'Sou desu ka. Kochira wa Noa-san desu.', english: 'I see. This is Noah.' },
-    { id: 'l1-d06', speaker: 'Noah', japanese: 'ノアです。わたしも けんきゅうしゃです。', reading: 'Noa desu. Watashi mo kenkyuusha desu.', english: 'I’m Noah. I’m a researcher too.', grammarIds: ['l1-also'] },
-    { id: 'l1-d07', speaker: 'Emma', japanese: 'ノアさんも カナダじんですか。', reading: 'Noa-san mo Kanada-jin desu ka.', english: 'Are you Canadian too, Noah?', grammarIds: ['l1-also', 'l1-question'] },
-    { id: 'l1-d08', speaker: 'Noah', japanese: 'はい、カナダじんです。よろしく おねがいします。', reading: 'Hai, Kanada-jin desu. Yoroshiku onegai shimasu.', english: 'Yes, I’m Canadian. I look forward to working with you.' },
+    { id: 'l1-d01', speaker: 'Aki', japanese: 'はじめまして。さくらスタジオの あきです。', reading: 'はじめまして。さくらスタジオの あきです。', english: 'How do you do? I’m Aki from Sakura Studio.', grammarIds: ['l1-topic-copula', 'l1-connection'] },
+    { id: 'l1-d02', speaker: 'Emma', japanese: 'はじめまして。エマです。よろしく おねがいします。', reading: 'はじめまして。エマです。よろしく おねがいします。', english: 'How do you do? I’m Emma. I look forward to working with you.', grammarIds: ['l1-topic-copula'] },
+    { id: 'l1-d03', speaker: 'Aki', japanese: 'エマさんは みどりだいがくの がくせいですか。', reading: 'エマさんは みどりだいがくの がくせいですか。', english: 'Emma, are you a student at Midori University?', grammarIds: ['l1-question', 'l1-connection'] },
+    { id: 'l1-d04', speaker: 'Emma', japanese: 'いいえ、がくせいじゃありません。けんきゅうしゃです。', reading: 'いいえ、がくせいじゃありません。けんきゅうしゃです。', english: 'No, I’m not a student. I’m a researcher.', grammarIds: ['l1-negative'] },
+    { id: 'l1-d05', speaker: 'Aki', japanese: 'そうですか。こちらは ノアさんです。', reading: 'そうですか。こちらは ノアさんです。', english: 'I see. This is Noah.' },
+    { id: 'l1-d06', speaker: 'Noah', japanese: 'ノアです。わたしも けんきゅうしゃです。', reading: 'ノアです。わたしも けんきゅうしゃです。', english: 'I’m Noah. I’m a researcher too.', grammarIds: ['l1-also'] },
+    { id: 'l1-d07', speaker: 'Emma', japanese: 'ノアさんも カナダじんですか。', reading: 'ノアさんも カナダじんですか。', english: 'Are you Canadian too, Noah?', grammarIds: ['l1-also', 'l1-question'] },
+    { id: 'l1-d08', speaker: 'Noah', japanese: 'はい、カナダじんです。よろしく おねがいします。', reading: 'はい、カナダじんです。よろしく おねがいします。', english: 'Yes, I’m Canadian. I look forward to working with you.' },
   ],
   exercises: [
     {

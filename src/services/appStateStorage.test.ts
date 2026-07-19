@@ -119,6 +119,53 @@ describe('writeAppStateV2', () => {
 });
 
 describe('hydrateAppStateV2', () => {
+  it('hydrates stale V1 grammar presentation into V2 without changing its schedule', async () => {
+    const v1 = structuredClone(v1Fixture);
+    const stale = {
+      id: 'review-l1-topic-copula',
+      lessonId: 'lesson-01',
+      kind: 'grammar' as const,
+      prompt: 'A は old text',
+      answer: 'stale answer',
+      supportingText: 'Frame a topic, then describe it',
+      dueAt: '2026-09-12T03:04:05.000Z',
+      intervalDays: 17,
+      repetitions: 6,
+      ease: 2.35,
+      lastReviewedAt: '2026-08-26T03:04:05.000Z',
+    };
+    v1.progress['lesson-01'] = {
+      lessonId: 'lesson-01', started: true, completedExerciseIds: [], correctAnswers: 0, attempts: 0,
+    };
+    v1.reviewCards['review-l1-topic-copula'] = stale;
+    const originalV1 = JSON.stringify(v1);
+    const values = new Map<string, string>([[V1_STUDY_STORAGE_KEY, originalV1]]);
+    const storage = {
+      getItem: async (key: string) => values.get(key) ?? null,
+      setItem: async (key: string, value: string) => { values.set(key, value); },
+    };
+
+    const result = await hydrateAppStateV2({
+      storage,
+      lessons,
+      now: new Date('2026-07-19T00:00:00.000Z'),
+    });
+    expect(result.status).toBe('ready');
+    if (result.status !== 'ready') throw new Error(result.message);
+    expect(result.source).toBe('v1');
+    expect(result.state.reviewCards[stale.id]).toMatchObject({
+      prompt: 'A は B です',
+      answer: '“As for A, it is B.”',
+      supportingText: 'Make a noun the topic, then identify it',
+      dueAt: stale.dueAt,
+      intervalDays: stale.intervalDays,
+      repetitions: stale.repetitions,
+      ease: stale.ease,
+      lastReviewedAt: stale.lastReviewedAt,
+    });
+    expect(values.get(V1_STUDY_STORAGE_KEY)).toBe(originalV1);
+  });
+
   it('migrates the frozen V1 once, verifies V2, and never writes or removes V1', async () => {
     const originalV1 = JSON.stringify(v1Fixture);
     const storage = memoryStorage({ [V1_STUDY_STORAGE_KEY]: originalV1 });
