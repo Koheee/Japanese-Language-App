@@ -118,6 +118,31 @@ pnpm ios
 pnpm export:web
 ```
 
+## Personal vocabulary and the public boundary
+
+The public app includes the vocabulary manager, backup schema, and kana-authored course baseline. It does not include any private deck record, source identifier, source package, or deck media. Parsing an `.apkg` is a local development operation and is never part of the shipped app.
+
+To prepare a private deck locally, keep the source package outside the repository and enter its location only at the PowerShell prompt:
+
+```powershell
+$privateApkg = Read-Host 'Absolute path to the private APKG'
+pnpm.cmd vocabulary:generate -- --source $privateApkg --output '.local/vocabulary/personal-vocabulary-v1.json'
+pnpm.cmd vocabulary:verify -- --source $privateApkg --output '.local/vocabulary/personal-vocabulary-v1.json'
+```
+
+The generated output is exactly `.local/vocabulary/personal-vocabulary-v1.json`. It remains gitignored and is read only when you explicitly run the local privacy audit:
+
+```powershell
+pnpm.cmd export:web
+pnpm.cmd audit:public:local
+```
+
+Redistributing a generated vocabulary file requires separately documented permission or a license covering its text, glosses, categories, and arrangement. Personal use alone does not grant redistribution rights.
+
+Vocabulary import is an explicit replacement: inspect the preview, then confirm before any device-local vocabulary is replaced. Backup transfer between devices is manual. In Progress, Windows export downloads a JSON file; move that file to the iPhone with a method you trust, then choose it with the iPhone file picker. On iPhone, export uses Web Share when available so the backup can be saved to Files or sent through another chosen destination. **Undo last import** survives reload, but a later vocabulary change or review of an affected card invalidates it.
+
+Personal vocabulary, review schedules, and progress stay in that browser installation. Clearing browser data or removing the installed PWA can remove those local changes, so keep a current exported backup.
+
 ## Host on GitHub Pages and install on iPhone
 
 The workflow in `.github/workflows/deploy-pages.yml` validates and publishes the app whenever `main` is pushed. Follow [GITHUB_PAGES.md](./GITHUB_PAGES.md) to create the repository, enable Pages, and add the deployed app to an iPhone home screen from Safari.

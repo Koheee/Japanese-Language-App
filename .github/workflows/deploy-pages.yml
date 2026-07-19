@@ -56,6 +56,9 @@ jobs:
           EXPO_BASE_URL: ${{ steps.base.outputs.url }}
         run: pnpm export:web
 
+      - name: Verify public artifact boundary
+        run: pnpm audit:public -- --tracked --dist dist
+
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
