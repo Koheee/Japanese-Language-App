@@ -26,6 +26,7 @@ const tabs: { id: Tab; label: string }[] = [
 
 export function LessonDetailScreen({ navigation, route }: Props) {
   const [activeTab, setActiveTab] = useState<Tab>('overview');
+  const [isStarting, setIsStarting] = useState(false);
   const { startLesson, getProgress } = useStudy();
   const lesson = getLesson(route.params.lessonId);
   const outline = getLessonOutline(route.params.lessonId);
@@ -72,9 +73,12 @@ export function LessonDetailScreen({ navigation, route }: Props) {
     );
   }
 
-  const beginPractice = () => {
-    startLesson(lesson.id);
-    navigation.navigate('Exercise', { lessonId: lesson.id });
+  const beginPractice = async () => {
+    if (isStarting) return;
+    setIsStarting(true);
+    const result = await startLesson(lesson.id);
+    if (result.ok) navigation.navigate('Exercise', { lessonId: lesson.id });
+    setIsStarting(false);
   };
 
   return (
@@ -181,7 +185,11 @@ export function LessonDetailScreen({ navigation, route }: Props) {
           <Text style={styles.practiceEyebrow}>READY TO RETRIEVE?</Text>
           <Text style={styles.practiceTitle}>{progress?.started ? 'Continue your practice' : 'Make it stick'}</Text>
         </View>
-        <PrimaryButton label={progress?.started ? 'Continue exercises' : `Start ${lesson.exercises.length} exercises`} onPress={beginPractice} />
+        <PrimaryButton
+          label={isStarting ? 'Saving…' : progress?.started ? 'Continue exercises' : `Start ${lesson.exercises.length} exercises`}
+          disabled={isStarting}
+          onPress={beginPractice}
+        />
       </View>
     </Screen>
   );

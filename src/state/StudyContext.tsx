@@ -6,148 +6,210 @@ import React, {
   useContext,
   useEffect,
   useMemo,
-  useReducer,
+  useRef,
+  useState,
 } from 'react';
 
-import { getLesson } from '../data/lessons';
-import { LessonProgress, ReviewRating, StudyState } from '../models/review';
-import { buildReviewCards, getDueCards, scheduleReview } from '../services/srs';
+import { AUTHORED_BASELINE_VERSION } from '../data/authoredBaseline';
+import { lessons } from '../data/lessons';
+import { PersistedAppStateV2 } from '../models/appState';
+import { LessonProgress, ReviewCard, ReviewRating } from '../models/review';
+import { emptyVocabularyOverrides } from '../models/vocabulary';
+import { hydrateAppStateV2, writeAppStateV2 } from '../services/appStateStorage';
+import { validatePersistedAppStateV2 } from '../services/appStateValidation';
+import { getDueCards } from '../services/srs';
+import {
+  AppStateCommitter,
+  CommitResult,
+  createAppStateCommitter,
+  createSingleFlight,
+} from './appStateCommitter';
+import {
+  buildRateReviewState,
+  buildRecordExerciseState,
+  buildStartLessonState,
+} from './studyTransitions';
 
-const STORAGE_KEY = '@nihongo-path/study-state/v1';
-
-const initialState: StudyState = {
-  hydrated: false,
-  progress: {},
-  reviewCards: {},
-};
-
-type Action =
-  | { type: 'hydrate'; payload: Omit<StudyState, 'hydrated'> }
-  | { type: 'start-lesson'; lessonId: string }
-  | { type: 'record-exercise'; lessonId: string; exerciseId: string; correct: boolean }
-  | { type: 'rate-review'; cardId: string; rating: ReviewRating };
-
-const createProgress = (lessonId: string): LessonProgress => ({
-  lessonId,
-  started: true,
-  completedExerciseIds: [],
-  correctAnswers: 0,
-  attempts: 0,
-});
-
-const reducer = (state: StudyState, action: Action): StudyState => {
-  if (action.type === 'hydrate') {
-    return { ...action.payload, hydrated: true };
-  }
-
-  if (action.type === 'start-lesson') {
-    const lesson = getLesson(action.lessonId);
-    if (!lesson) return state;
-
-    const nextCards = { ...state.reviewCards };
-    buildReviewCards(lesson).forEach((card) => {
-      if (!nextCards[card.id]) nextCards[card.id] = card;
-    });
-
-    return {
-      ...state,
-      progress: {
-        ...state.progress,
-        [action.lessonId]: state.progress[action.lessonId] ?? createProgress(action.lessonId),
-      },
-      reviewCards: nextCards,
-    };
-  }
-
-  if (action.type === 'record-exercise') {
-    const current = state.progress[action.lessonId] ?? createProgress(action.lessonId);
-    const firstCompletion = !current.completedExerciseIds.includes(action.exerciseId);
-    return {
-      ...state,
-      progress: {
-        ...state.progress,
-        [action.lessonId]: {
-          ...current,
-          completedExerciseIds: firstCompletion
-            ? [...current.completedExerciseIds, action.exerciseId]
-            : current.completedExerciseIds,
-          correctAnswers: current.correctAnswers + (action.correct ? 1 : 0),
-          attempts: current.attempts + 1,
-        },
-      },
-    };
-  }
-
-  const card = state.reviewCards[action.cardId];
-  if (!card) return state;
-  return {
-    ...state,
-    reviewCards: {
-      ...state.reviewCards,
-      [card.id]: scheduleReview(card, action.rating),
-    },
-  };
-};
+type HydrationStatus = 'loading' | 'ready' | 'recovery';
 
 interface StudyContextValue {
-  state: StudyState;
-  dueCards: ReturnType<typeof getDueCards>;
-  startLesson: (lessonId: string) => void;
-  recordExercise: (lessonId: string, exerciseId: string, correct: boolean) => void;
-  rateReview: (cardId: string, rating: ReviewRating) => void;
+  hydrationStatus: HydrationStatus;
+  hydrationMessage: string | null;
+  state: PersistedAppStateV2;
+  storageError: string | null;
+  dueCards: ReviewCard[];
+  retryHydration: () => Promise<void>;
+  commitAppState: AppStateCommitter['commit'];
+  startLesson: (lessonId: string) => Promise<CommitResult>;
+  recordExercise: (
+    lessonId: string,
+    exerciseId: string,
+    correct: boolean,
+  ) => Promise<CommitResult>;
+  rateReview: (cardId: string, rating: ReviewRating) => Promise<CommitResult>;
   getProgress: (lessonId: string) => LessonProgress | undefined;
 }
+
+const emptyState = (): PersistedAppStateV2 => ({
+  schemaVersion: 2,
+  authoredBaselineVersion: AUTHORED_BASELINE_VERSION,
+  progress: {},
+  reviewCards: {},
+  vocabulary: emptyVocabularyOverrides(),
+});
 
 const StudyContext = createContext<StudyContextValue | null>(null);
 
 export function StudyProvider({ children }: PropsWithChildren) {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, setState] = useState<PersistedAppStateV2>(emptyState);
+  const [hydrationStatus, setHydrationStatus] = useState<HydrationStatus>('loading');
+  const [hydrationMessage, setHydrationMessage] = useState<string | null>(null);
+  const [storageError, setStorageError] = useState<string | null>(null);
+  const stateRef = useRef(state);
+  const committerRef = useRef<AppStateCommitter | null>(null);
+  const mountedRef = useRef(false);
 
-  useEffect(() => {
-    AsyncStorage.getItem(STORAGE_KEY)
-      .then((saved) => {
-        const parsed = saved ? (JSON.parse(saved) as Omit<StudyState, 'hydrated'>) : null;
-        dispatch({
-          type: 'hydrate',
-          payload: parsed ?? { progress: {}, reviewCards: {} },
-        });
-      })
-      .catch(() => dispatch({ type: 'hydrate', payload: { progress: {}, reviewCards: {} } }));
+  const publish = useCallback((candidate: PersistedAppStateV2) => {
+    stateRef.current = candidate;
+    if (!mountedRef.current) return;
+    setState(candidate);
+    setStorageError(null);
   }, []);
 
-  useEffect(() => {
-    if (!state.hydrated) return;
-    const { hydrated: _hydrated, ...persisted } = state;
-    AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(persisted)).catch(() => {
-      // Progress remains usable in memory if device storage is unavailable.
-    });
-  }, [state]);
-
-  const startLesson = useCallback((lessonId: string) => {
-    dispatch({ type: 'start-lesson', lessonId });
-  }, []);
-
-  const recordExercise = useCallback(
-    (lessonId: string, exerciseId: string, correct: boolean) => {
-      dispatch({ type: 'record-exercise', lessonId, exerciseId, correct });
+  const createCommitter = useCallback(() => createAppStateCommitter({
+    getCurrent: () => stateRef.current,
+    validate: (candidate) => {
+      const validation = validatePersistedAppStateV2(candidate);
+      if (!validation.ok) throw new Error(`${validation.path}: ${validation.message}`);
+      return validation.value;
     },
-    [],
+    persist: (candidate) => writeAppStateV2(AsyncStorage, candidate),
+    publish,
+  }), [publish]);
+
+  const performHydration = useCallback(async () => {
+    committerRef.current = null;
+    if (mountedRef.current) {
+      setHydrationStatus('loading');
+      setHydrationMessage(null);
+    }
+
+    let result: Awaited<ReturnType<typeof hydrateAppStateV2>>;
+    try {
+      result = await hydrateAppStateV2({ storage: AsyncStorage, lessons });
+    } catch (cause) {
+      if (!mountedRef.current) return;
+      setHydrationMessage(cause instanceof Error ? cause.message : String(cause));
+      setHydrationStatus('recovery');
+      return;
+    }
+    if (!mountedRef.current) return;
+
+    if (result.status === 'recovery') {
+      committerRef.current = null;
+      setHydrationMessage(result.message);
+      setHydrationStatus('recovery');
+      return;
+    }
+
+    committerRef.current = createCommitter();
+    publish(result.state);
+    setHydrationMessage(null);
+    setHydrationStatus('ready');
+  }, [createCommitter, publish]);
+
+  const runHydration = useMemo(
+    () => createSingleFlight(performHydration),
+    [performHydration],
   );
 
-  const rateReview = useCallback((cardId: string, rating: ReviewRating) => {
-    dispatch({ type: 'rate-review', cardId, rating });
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      committerRef.current = null;
+    };
   }, []);
+
+  useEffect(() => {
+    runHydration().catch((cause: unknown) => {
+      if (!mountedRef.current) return;
+      const message = cause instanceof Error ? cause.message : String(cause);
+      setHydrationMessage(message);
+      setHydrationStatus('recovery');
+    });
+  }, [runHydration]);
+
+  const commitAppState = useCallback<AppStateCommitter['commit']>(async (transition) => {
+    const committer = committerRef.current;
+    if (!committer) {
+      return { ok: false, error: new Error('Saved study state is not ready.') };
+    }
+
+    const result = await committer.commit(transition);
+    if (!result.ok && mountedRef.current) setStorageError(result.error.message);
+    return result;
+  }, []);
+
+  const retryHydration = useCallback(
+    () => committerRef.current ? Promise.resolve() : runHydration(),
+    [runHydration],
+  );
+
+  const startLesson = useCallback(
+    (lessonId: string) => commitAppState(
+      (current) => buildStartLessonState(current, lessonId, lessons),
+    ),
+    [commitAppState],
+  );
+
+  const recordExercise = useCallback(
+    (lessonId: string, exerciseId: string, correct: boolean) => commitAppState(
+      (current) => buildRecordExerciseState(current, lessonId, exerciseId, correct),
+    ),
+    [commitAppState],
+  );
+
+  const rateReview = useCallback(
+    (cardId: string, rating: ReviewRating) => commitAppState(
+      (current) => buildRateReviewState(current, cardId, rating),
+    ),
+    [commitAppState],
+  );
+
+  const dueCards = useMemo(() => getDueCards(state.reviewCards), [state.reviewCards]);
+  const getProgress = useCallback(
+    (lessonId: string) => state.progress[lessonId],
+    [state.progress],
+  );
 
   const value = useMemo<StudyContextValue>(
     () => ({
+      hydrationStatus,
+      hydrationMessage,
       state,
-      dueCards: getDueCards(state.reviewCards),
+      storageError,
+      dueCards,
+      retryHydration,
+      commitAppState,
       startLesson,
       recordExercise,
       rateReview,
-      getProgress: (lessonId) => state.progress[lessonId],
+      getProgress,
     }),
-    [rateReview, recordExercise, startLesson, state],
+    [
+      commitAppState,
+      dueCards,
+      getProgress,
+      hydrationMessage,
+      hydrationStatus,
+      rateReview,
+      recordExercise,
+      retryHydration,
+      startLesson,
+      state,
+      storageError,
+    ],
   );
 
   return <StudyContext.Provider value={value}>{children}</StudyContext.Provider>;

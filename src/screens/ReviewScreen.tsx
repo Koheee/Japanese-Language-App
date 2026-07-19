@@ -18,14 +18,11 @@ const ratings: { id: ReviewRating; label: string; color: string }[] = [
 export function ReviewScreen() {
   const { state, dueCards, rateReview } = useStudy();
   const [revealed, setRevealed] = useState(false);
+  const [isRating, setIsRating] = useState(false);
   const card = dueCards[0];
   const reviewedCount = Object.values(state.reviewCards).filter((item) => item.lastReviewedAt).length;
 
   useEffect(() => setRevealed(false), [card?.id]);
-
-  if (!state.hydrated) {
-    return <Screen contentStyle={styles.center}><Text style={styles.loading}>Preparing your review deck…</Text></Screen>;
-  }
 
   if (!card) {
     return (
@@ -42,6 +39,14 @@ export function ReviewScreen() {
       </Screen>
     );
   }
+
+  const handleRating = async (rating: ReviewRating) => {
+    if (isRating) return;
+    setIsRating(true);
+    const result = await rateReview(card.id, rating);
+    if (result.ok) setRevealed(false);
+    setIsRating(false);
+  };
 
   return (
     <Screen scroll contentStyle={styles.page}>
@@ -80,7 +85,12 @@ export function ReviewScreen() {
           <Text style={styles.ratingPrompt}>How available was the memory?</Text>
           <View style={styles.ratingRow}>
             {ratings.map((rating) => (
-              <Pressable key={rating.id} onPress={() => rateReview(card.id, rating.id)} style={styles.ratingButton}>
+              <Pressable
+                key={rating.id}
+                disabled={isRating}
+                onPress={() => handleRating(rating.id)}
+                style={[styles.ratingButton, isRating && styles.ratingButtonDisabled]}
+              >
                 <Text style={[styles.ratingLabel, { color: rating.color }]}>{rating.label}</Text>
                 <Text style={styles.interval}>{formatInterval(rating.id, card)}</Text>
               </Pressable>
@@ -96,8 +106,6 @@ export function ReviewScreen() {
 
 const styles = StyleSheet.create({
   page: { flexGrow: 1, paddingHorizontal: spacing.lg, paddingTop: spacing.huge, paddingBottom: spacing.huge },
-  center: { alignItems: 'center', justifyContent: 'center' },
-  loading: { color: colors.inkMuted, fontSize: typography.small },
   headerRow: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: spacing.lg },
   brand: { color: colors.coral, fontSize: typography.micro, fontWeight: '900', letterSpacing: 1.8 },
   title: { marginTop: spacing.sm, color: colors.ink, fontSize: typography.title, fontWeight: '900' },
@@ -122,6 +130,7 @@ const styles = StyleSheet.create({
   ratingPrompt: { color: colors.inkMuted, fontSize: typography.small, textAlign: 'center' },
   ratingRow: { flexDirection: 'row', gap: spacing.sm },
   ratingButton: { flex: 1, alignItems: 'center', paddingVertical: spacing.md, gap: 2, backgroundColor: colors.surface, borderRadius: radii.md, borderWidth: 1, borderColor: colors.line },
+  ratingButtonDisabled: { opacity: 0.5 },
   ratingLabel: { fontSize: typography.small, fontWeight: '900' },
   interval: { color: colors.inkMuted, fontSize: typography.micro, fontWeight: '600' },
   instruction: { marginTop: spacing.xl, paddingHorizontal: spacing.xl, color: colors.inkMuted, fontSize: typography.small, lineHeight: 20, textAlign: 'center' },

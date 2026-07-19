@@ -2,6 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { HydrationGate } from './src/components/HydrationGate';
 import { AppNavigator } from './src/navigation/AppNavigator';
 import { StudyProvider } from './src/state/StudyContext';
 
@@ -11,8 +12,10 @@ export default function App() {
       <View style={styles.appFrame}>
         <SafeAreaProvider>
           <StudyProvider>
-            <StatusBar style="dark" />
-            <AppNavigator />
+            <HydrationGate>
+              <StatusBar style="dark" />
+              <AppNavigator />
+            </HydrationGate>
           </StudyProvider>
         </SafeAreaProvider>
       </View>

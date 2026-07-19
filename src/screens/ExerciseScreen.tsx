@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Alert, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { PrimaryButton } from '../components/PrimaryButton';
@@ -23,7 +23,7 @@ const typeLabels: Record<Exercise['type'], string> = {
 
 export function ExerciseScreen({ navigation, route }: Props) {
   const lesson = getLesson(route.params.lessonId);
-  const { startLesson, recordExercise } = useStudy();
+  const { getProgress, recordExercise } = useStudy();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [response, setResponse] = useState('');
   const [checked, setChecked] = useState(false);
@@ -31,10 +31,8 @@ export function ExerciseScreen({ navigation, route }: Props) {
   const [score, setScore] = useState(0);
   const [finished, setFinished] = useState(false);
   const [audioPlayed, setAudioPlayed] = useState(false);
-
-  useEffect(() => {
-    if (lesson) startLesson(lesson.id);
-  }, [lesson, startLesson]);
+  const [isSaving, setIsSaving] = useState(false);
+  const lessonProgress = getProgress(route.params.lessonId);
 
   const exercise = lesson?.exercises[currentIndex];
   const total = lesson?.exercises.length ?? 0;
@@ -45,15 +43,19 @@ export function ExerciseScreen({ navigation, route }: Props) {
     [exercise],
   );
 
-  if (!lesson || !exercise) return null;
+  if (!lesson || !exercise || lessonProgress?.started !== true) return null;
 
-  const check = () => {
-    if (!response.trim()) return;
+  const check = async () => {
+    if (!response.trim() || isSaving) return;
     const correct = checkExerciseAnswer(exercise, response);
-    setChecked(true);
-    setWasCorrect(correct);
-    if (correct) setScore((current) => current + 1);
-    recordExercise(lesson.id, exercise.id, correct);
+    setIsSaving(true);
+    const result = await recordExercise(lesson.id, exercise.id, correct);
+    if (result.ok) {
+      setChecked(true);
+      setWasCorrect(correct);
+      if (correct) setScore((current) => current + 1);
+    }
+    setIsSaving(false);
   };
 
   const next = () => {
@@ -187,7 +189,11 @@ export function ExerciseScreen({ navigation, route }: Props) {
       ) : null}
 
       <View style={styles.action}>
-        <PrimaryButton label={checked ? (currentIndex === total - 1 ? 'See results' : 'Continue') : 'Check answer'} disabled={!checked && !response.trim()} onPress={checked ? next : check} />
+        <PrimaryButton
+          label={isSaving ? 'Saving…' : checked ? (currentIndex === total - 1 ? 'See results' : 'Continue') : 'Check answer'}
+          disabled={isSaving || (!checked && !response.trim())}
+          onPress={checked ? next : check}
+        />
       </View>
     </Screen>
   );
