@@ -1,11 +1,12 @@
 import type { RootStackParamList } from '../navigation/types';
 
-type ConfirmationPhase = 'idle' | 'confirming' | 'committed';
+type ConfirmationPhase = 'idle' | 'confirming' | 'committed' | 'removal-allowed';
 
 export interface ImportConfirmationController {
   begin(): boolean;
   finishFailure(): boolean;
-  allowRemovalAfterCommit(): boolean;
+  commitSuccess(): boolean;
+  takeSuccessNavigation(): boolean;
   isConfirming(): boolean;
   shouldPreventRemoval(): boolean;
 }
@@ -24,21 +25,36 @@ export const createImportConfirmationController = (): ImportConfirmationControll
       phase = 'idle';
       return true;
     },
-    allowRemovalAfterCommit() {
+    commitSuccess() {
       if (phase !== 'confirming') return false;
       phase = 'committed';
       return true;
     },
+    takeSuccessNavigation() {
+      if (phase !== 'committed') return false;
+      phase = 'removal-allowed';
+      return true;
+    },
     isConfirming: () => phase === 'confirming',
-    shouldPreventRemoval: () => phase === 'confirming',
+    shouldPreventRemoval: () => phase === 'confirming' || phase === 'committed',
   };
+};
+
+export const requestImportPreviewCancel = (
+  controller: ImportConfirmationController,
+  goBack: () => void,
+): boolean => {
+  if (controller.shouldPreventRemoval()) return false;
+  goBack();
+  return true;
 };
 
 export const handleImportPreviewBeforeRemove = (
   controller: ImportConfirmationController,
-  event: { preventDefault(): void },
+  event: { defaultPrevented?: boolean; preventDefault(): void },
   onRemovalAllowed: () => void,
 ): boolean => {
+  if (event.defaultPrevented) return false;
   if (controller.shouldPreventRemoval()) {
     event.preventDefault();
     return false;

@@ -2,6 +2,8 @@ import {
   CommonActions,
   StackRouter,
 } from '../../node_modules/.pnpm/node_modules/@react-navigation/routers';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
 
 import {
@@ -9,6 +11,7 @@ import {
   createExclusiveActionCoordinator,
   createImportConfirmationController,
   handleImportPreviewBeforeRemove,
+  requestImportPreviewCancel,
 } from './importLifecycle';
 
 describe('import confirmation lifecycle', () => {
@@ -31,20 +34,51 @@ describe('import confirmation lifecycle', () => {
     expect(clearPreview).toHaveBeenCalledTimes(1);
   });
 
-  it('allows route removal only after an explicit successful commit', () => {
+  it('keeps direct removal blocked after commit until deferred navigation claims it once', () => {
     const controller = createImportConfirmationController();
     const clearPreview = vi.fn();
     const beforeRemove = { preventDefault: vi.fn() };
 
+    expect(controller.begin()).toBe(true);
+    expect(controller.commitSuccess()).toBe(true);
+    expect(controller.isConfirming()).toBe(false);
+    expect(handleImportPreviewBeforeRemove(controller, beforeRemove, clearPreview)).toBe(false);
+    expect(beforeRemove.preventDefault).toHaveBeenCalledTimes(1);
+    expect(clearPreview).not.toHaveBeenCalled();
+
+    expect(controller.takeSuccessNavigation()).toBe(true);
+    expect(controller.takeSuccessNavigation()).toBe(false);
     expect(handleImportPreviewBeforeRemove(controller, beforeRemove, clearPreview)).toBe(true);
     expect(clearPreview).toHaveBeenCalledTimes(1);
+  });
 
-    expect(controller.begin()).toBe(true);
-    expect(controller.allowRemovalAfterCommit()).toBe(true);
-    expect(controller.isConfirming()).toBe(false);
-    expect(handleImportPreviewBeforeRemove(controller, beforeRemove, clearPreview)).toBe(true);
-    expect(beforeRemove.preventDefault).not.toHaveBeenCalled();
-    expect(clearPreview).toHaveBeenCalledTimes(2);
+  it('lets beforeRemove perform the only preview clear for Cancel', () => {
+    const controller = createImportConfirmationController();
+    const goBack = vi.fn();
+    const clearPreview = vi.fn();
+
+    expect(requestImportPreviewCancel(controller, goBack)).toBe(true);
+    expect(goBack).toHaveBeenCalledTimes(1);
+    expect(clearPreview).not.toHaveBeenCalled();
+
+    expect(handleImportPreviewBeforeRemove(
+      controller,
+      { preventDefault: vi.fn() },
+      clearPreview,
+    )).toBe(true);
+    expect(clearPreview).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not clear preview when another listener already prevented removal', () => {
+    const controller = createImportConfirmationController();
+    const clearPreview = vi.fn();
+
+    expect(handleImportPreviewBeforeRemove(
+      controller,
+      { defaultPrevented: true, preventDefault: vi.fn() },
+      clearPreview,
+    )).toBe(false);
+    expect(clearPreview).not.toHaveBeenCalled();
   });
 });
 
@@ -97,5 +131,37 @@ describe('installed root stack router', () => {
         params: { screen: 'Progress' },
       });
     }
+  });
+});
+
+describe('installed native-stack removal contract', () => {
+  it('connects ImportPreview prevention to the native iOS dismissal prop', () => {
+    const screenSource = readFileSync(
+      join(import.meta.dirname, 'ImportPreviewScreen.tsx'),
+      'utf8',
+    );
+    const nativeStackSource = readFileSync(join(
+      process.cwd(),
+      'node_modules/@react-navigation/native-stack/src/views/NativeStackView.native.tsx',
+    ), 'utf8');
+    const preventRemoveHookSource = readFileSync(join(
+      process.cwd(),
+      'node_modules/.pnpm/node_modules/@react-navigation/core/src/usePreventRemove.tsx',
+    ), 'utf8');
+
+    expect(screenSource).toContain(
+      "import { usePreventRemove } from '@react-navigation/native';",
+    );
+    expect(screenSource).toContain('usePreventRemove(isConfirming');
+    expect(screenSource).toContain("navigation.addListener('beforeRemove'");
+    expect(preventRemoveHookSource).toContain(
+      'setPreventRemove(id, routeKey, preventRemove);',
+    );
+    expect(nativeStackSource).toContain(
+      'const { preventedRoutes } = usePreventRemoveContext();',
+    );
+    expect(nativeStackSource).toContain(
+      'preventNativeDismiss={isRemovePrevented} // on iOS',
+    );
   });
 });

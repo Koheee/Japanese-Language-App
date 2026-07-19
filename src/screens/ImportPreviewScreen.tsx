@@ -1,3 +1,4 @@
+import { usePreventRemove } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -11,9 +12,11 @@ import {
   buildImportSuccessNavigationAction,
   createImportConfirmationController,
   handleImportPreviewBeforeRemove,
+  requestImportPreviewCancel,
 } from './importLifecycle';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ImportPreview'>;
+type DeferredSuccessPhase = 'none' | 'releasing-native-prevention' | 'ready';
 
 export function ImportPreviewScreen({ navigation }: Props) {
   const {
@@ -22,12 +25,17 @@ export function ImportPreviewScreen({ navigation }: Props) {
     vocabularyImportPreview,
   } = useStudy();
   const [isConfirming, setIsConfirming] = useState(false);
+  const [deferredSuccessPhase, setDeferredSuccessPhase] =
+    useState<DeferredSuccessPhase>('none');
   const mountedRef = useRef(true);
   const confirmationControllerRef = useRef<ReturnType<
     typeof createImportConfirmationController
   > | null>(null);
   const confirmationController = confirmationControllerRef.current ??=
     createImportConfirmationController();
+  const isReplacing = isConfirming || deferredSuccessPhase !== 'none';
+
+  usePreventRemove(isConfirming, () => undefined);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -44,26 +52,46 @@ export function ImportPreviewScreen({ navigation }: Props) {
     );
   }), [clearVocabularyImportPreview, confirmationController, navigation]);
 
+  useEffect(() => {
+    if (deferredSuccessPhase === 'releasing-native-prevention') {
+      if (!navigation.isFocused()) {
+        confirmationController.takeSuccessNavigation();
+        setDeferredSuccessPhase('none');
+        return;
+      }
+
+      setDeferredSuccessPhase('ready');
+      return;
+    }
+
+    if (deferredSuccessPhase !== 'ready') return;
+
+    setDeferredSuccessPhase('none');
+    if (!confirmationController.takeSuccessNavigation()) return;
+    if (!mountedRef.current || !navigation.isFocused()) return;
+    navigation.dispatch(buildImportSuccessNavigationAction());
+  }, [confirmationController, deferredSuccessPhase, navigation]);
+
   const cancel = () => {
-    if (confirmationController.isConfirming()) return;
-    clearVocabularyImportPreview();
-    navigation.goBack();
+    requestImportPreviewCancel(confirmationController, () => navigation.goBack());
   };
 
   const replaceVocabulary = async () => {
     if (!confirmationController.begin()) return;
     setIsConfirming(true);
-    let committed = false;
     try {
       const result = await confirmVocabularyImport();
-      if (result.ok && confirmationController.allowRemovalAfterCommit()) {
-        committed = true;
-        if (mountedRef.current && navigation.isFocused()) {
-          navigation.dispatch(buildImportSuccessNavigationAction());
+      if (result.ok && confirmationController.commitSuccess()) {
+        if (mountedRef.current) {
+          setDeferredSuccessPhase('releasing-native-prevention');
+        } else {
+          confirmationController.takeSuccessNavigation();
         }
       }
     } finally {
-      if (!committed) confirmationController.finishFailure();
+      if (confirmationController.isConfirming()) {
+        confirmationController.finishFailure();
+      }
       if (mountedRef.current) setIsConfirming(false);
     }
   };
@@ -79,6 +107,7 @@ export function ImportPreviewScreen({ navigation }: Props) {
             <PrimaryButton
               accessibilityHint="Closes the import preview without importing"
               accessibilityLabel="Cancel vocabulary import"
+              disabled={isReplacing}
               label="Cancel"
               onPress={cancel}
               variant="secondary"
@@ -114,7 +143,7 @@ export function ImportPreviewScreen({ navigation }: Props) {
               <PrimaryButton
                 accessibilityHint="Closes this preview without replacing device vocabulary"
                 accessibilityLabel="Cancel vocabulary import"
-                disabled={isConfirming}
+                disabled={isReplacing}
                 label="Cancel"
                 onPress={cancel}
                 style={styles.action}
@@ -123,8 +152,8 @@ export function ImportPreviewScreen({ navigation }: Props) {
               <PrimaryButton
                 accessibilityHint="Replaces all device vocabulary with this validated backup"
                 accessibilityLabel="Replace device vocabulary"
-                disabled={isConfirming}
-                label={isConfirming ? 'Replacing...' : 'Replace device vocabulary'}
+                disabled={isReplacing}
+                label={isReplacing ? 'Replacing...' : 'Replace device vocabulary'}
                 onPress={replaceVocabulary}
                 style={styles.action}
               />
