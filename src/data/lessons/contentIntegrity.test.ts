@@ -1,10 +1,13 @@
 import { createHash } from 'node:crypto';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, expectTypeOf, it } from 'vitest';
 
+import type { GrammarPoint } from '../../models/content';
 import authoredV1 from '../../test/fixtures/authored-vocabulary-v1.json';
 import { AUTHORED_BASELINE_FINGERPRINT, canonicalizeAuthoredVocabulary } from '../authoredBaseline';
 import { curriculum } from '../curriculum';
-import { isKanaReading } from '../../services/vocabularyText';
+import { containsHan, containsLatinLetters, isKanaReading } from '../../services/vocabularyText';
+import { getGrammarReferences } from '../grammarReferences';
+import { FROZEN_GRAMMAR_IDS, GRAMMAR_IDS_BY_LESSON } from './grammarInventory';
 import { lessons } from '.';
 
 describe('complete curriculum', () => {
@@ -64,6 +67,64 @@ describe('complete curriculum', () => {
         exerciseIds: lesson.exercises.map(({ id }) => id),
       })),
     ).toMatchSnapshot();
+  });
+
+  it('requires usageBoundary in the GrammarPoint type', () => {
+    expectTypeOf<GrammarPoint>().toMatchTypeOf<{ usageBoundary: string }>();
+  });
+
+  it('locks the complete enriched grammar inventory and readings', () => {
+    expect(lessons).toHaveLength(25);
+    expect(lessons.map(({ number }) => number)).toEqual(
+      Array.from({ length: 25 }, (_, index) => index + 1),
+    );
+    expect(lessons.map((lesson) => lesson.grammar.map(({ id }) => id))).toEqual(
+      GRAMMAR_IDS_BY_LESSON,
+    );
+
+    const points = lessons.flatMap(({ grammar }) => grammar);
+    const examples = points.flatMap(({ examples: pointExamples }) => pointExamples);
+    const dialogue = lessons.flatMap(({ dialogue: turns }) => turns);
+    expect(points.map(({ id }) => id)).toEqual(FROZEN_GRAMMAR_IDS);
+    expect(points).toHaveLength(101);
+    expect(examples).toHaveLength(202);
+    expect(dialogue).toHaveLength(173);
+
+    for (const point of points) {
+      expect(point.explanation.trim().length).toBeGreaterThan(40);
+      expect(point.whyItWorks.trim().length).toBeGreaterThan(40);
+      expect(point.usageBoundary.trim().length).toBeGreaterThan(20);
+      expect(point.examples).toHaveLength(2);
+      const references = getGrammarReferences(point.id);
+      if (references.length) expect(point.furtherReading).toEqual(references);
+      else expect(point).not.toHaveProperty('furtherReading');
+      if (point.commonMistake) {
+        expect(point.commonMistake.avoid.trim()).not.toBe('');
+        expect(point.commonMistake.prefer.trim()).not.toBe('');
+        expect(point.commonMistake.reason.trim()).not.toBe('');
+      }
+      for (const example of point.examples) {
+        expect(example.japanese.trim()).not.toBe('');
+        expect(example.english.trim()).not.toBe('');
+        if (containsHan(example.japanese)) expect(example.reading?.trim()).toBeTruthy();
+        if (example.reading) {
+          expect(isKanaReading(example.reading)).toBe(true);
+          expect(containsLatinLetters(example.reading)).toBe(false);
+        }
+      }
+    }
+
+    for (const lesson of lessons) {
+      expect(lesson.grammar.some(({ whyItWorks }) => whyItWorks.trim().length > 40)).toBe(true);
+      const sameLessonGrammarIds = new Set(lesson.grammar.map(({ id }) => id));
+      for (const turn of lesson.dialogue) {
+        expect(isKanaReading(turn.reading)).toBe(true);
+        expect(containsLatinLetters(turn.reading)).toBe(false);
+        for (const grammarId of turn.grammarIds ?? []) {
+          expect(sameLessonGrammarIds.has(grammarId)).toBe(true);
+        }
+      }
+    }
   });
 
   it.each(Array.from({ length: 25 }, (_, index) => index + 1))(
