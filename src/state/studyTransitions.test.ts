@@ -48,6 +48,7 @@ const lesson: Lesson = {
       plainEnglish: 'As for A, B',
       explanation: 'Marks the topic.',
       whyItWorks: 'Introduces shared context.',
+      usageBoundary: 'A topic frame guides the listener; it does not always name the sentence subject.',
       examples: [],
     },
   ],

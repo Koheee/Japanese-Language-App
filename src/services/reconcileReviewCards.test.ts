@@ -36,6 +36,7 @@ const startedLesson: Lesson = {
       plainEnglish: 'A is B',
       explanation: 'Marks A as the topic.',
       whyItWorks: 'は introduces the topic.',
+      usageBoundary: 'A topic frame sets context; it does not automatically identify the grammatical subject.',
       examples: [],
     },
   ],

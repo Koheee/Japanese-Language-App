@@ -77,6 +77,7 @@ const lessons: readonly Lesson[] = [
       plainEnglish: 'A is B',
       explanation: 'Fixture explanation',
       whyItWorks: 'Fixture reason',
+      usageBoundary: 'A topic marker frames shared context; it does not replace every English subject.',
       examples: [],
     }],
   ),
