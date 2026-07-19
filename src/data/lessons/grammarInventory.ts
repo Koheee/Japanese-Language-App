@@ -1,0 +1,30 @@
+export const GRAMMAR_IDS_BY_LESSON = [
+  ['l1-topic-copula', 'l1-negative', 'l1-question', 'l1-also', 'l1-connection'],
+  ['l2-things', 'l2-noun-pointing', 'l2-owner', 'l2-confirm'],
+  ['l3-places', 'l3-where', 'l3-location', 'l3-polite-direction'],
+  ['l4-nonpast', 'l4-past', 'l4-time-ni', 'l4-bounds'],
+  ['l5-destination', 'l5-transport', 'l5-companion', 'l5-when'],
+  ['l6-object', 'l6-action-place', 'l6-invite', 'l6-suggest'],
+  ['l7-means', 'l7-give', 'l7-receive', 'l7-status'],
+  ['l8-i-adjectives', 'l8-na-adjectives', 'l8-degree', 'l8-what-kind'],
+  ['l9-preference', 'l9-skill', 'l9-understand', 'l9-reason'],
+  ['l10-existence-verbs', 'l10-place-new-entity', 'l10-known-location', 'l10-position-words'],
+  ['l11-counters', 'l11-duration', 'l11-frequency', 'l11-quantity-questions'],
+  ['l12-i-adjective-past', 'l12-na-noun-past', 'l12-yori-comparison', 'l12-choice-best'],
+  ['l13-hoshii', 'l13-tai', 'l13-purpose-movement', 'l13-indefinites'],
+  ['l14-te-form', 'l14-request', 'l14-action-progress', 'l14-offer'],
+  ['l15-permission', 'l15-prohibition', 'l15-continuing-state', 'l15-knowing'],
+  ['l16-action-sequence', 'l16-after-action', 'l16-description-linking', 'l16-how-to'],
+  ['l17-nai-form', 'l17-negative-request', 'l17-obligation', 'l17-not-necessary'],
+  ['l18-dictionary-form', 'l18-ability', 'l18-hobby', 'l18-before'],
+  ['l19-ta-form', 'l19-experience', 'l19-representative-actions', 'l19-change'],
+  ['l20-plain-verbs', 'l20-plain-descriptions', 'l20-casual-questions', 'l20-final-particles'],
+  ['l21-think', 'l21-say', 'l21-probability', 'l21-topic-about'],
+  ['l22-relative-clause', 'l22-inner-subject', 'l22-tense-negative', 'l22-time-for-action'],
+  ['l23-when-forms', 'l23-timing-viewpoint', 'l23-automatic-to', 'l23-path-particle'],
+  ['l24-te-ageru', 'l24-te-morau', 'l24-te-kureru', 'l24-viewpoint'],
+  ['l25-tara-condition', 'l25-after-tara', 'l25-even-if', 'l25-moshi'],
+] as const;
+
+export type GrammarId = (typeof GRAMMAR_IDS_BY_LESSON)[number][number];
+export const FROZEN_GRAMMAR_IDS: readonly GrammarId[] = GRAMMAR_IDS_BY_LESSON.flat();

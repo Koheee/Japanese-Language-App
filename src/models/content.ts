@@ -6,6 +6,11 @@ export interface JapaneseExample {
   english: string;
 }
 
+export interface FurtherReading {
+  title: string;
+  url: string;
+}
+
 export interface GrammarPoint {
   id: string;
   title: string;
@@ -13,8 +18,11 @@ export interface GrammarPoint {
   plainEnglish: string;
   explanation: string;
   whyItWorks: string;
+  // Optional only across the three local range commits; Task 6 makes it required.
+  usageBoundary?: string;
   notes?: string[];
   examples: JapaneseExample[];
+  furtherReading?: FurtherReading[];
   commonMistake?: {
     avoid: string;
     prefer: string;

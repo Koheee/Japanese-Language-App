@@ -50,6 +50,22 @@ describe('complete curriculum', () => {
     expect(hash).toBe(AUTHORED_BASELINE_FINGERPRINT);
   });
 
+  it('freezes dialogue presentation and exercise IDs before kana migration', () => {
+    expect(
+      lessons.map((lesson) => ({
+        lessonId: lesson.id,
+        dialogue: lesson.dialogue.map(({ id, speaker, japanese, english, grammarIds }) => ({
+          id,
+          speaker,
+          japanese,
+          english,
+          grammarIds: grammarIds ?? [],
+        })),
+        exerciseIds: lesson.exercises.map(({ id }) => id),
+      })),
+    ).toMatchSnapshot();
+  });
+
   it.each(Array.from({ length: 25 }, (_, index) => index + 1))(
     'Lesson %i meets the complete-content contract',
     (lessonNumber) => {

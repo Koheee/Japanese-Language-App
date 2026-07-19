@@ -1,0 +1,1938 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`complete curriculum > freezes dialogue presentation and exercise IDs before kana migration 1`] = `
+[
+  {
+    "dialogue": [
+      {
+        "english": "How do you do? I’m Aki from Sakura Studio.",
+        "grammarIds": [
+          "l1-topic-copula",
+          "l1-connection",
+        ],
+        "id": "l1-d01",
+        "japanese": "はじめまして。さくらスタジオの あきです。",
+        "speaker": "Aki",
+      },
+      {
+        "english": "How do you do? I’m Emma. I look forward to working with you.",
+        "grammarIds": [
+          "l1-topic-copula",
+        ],
+        "id": "l1-d02",
+        "japanese": "はじめまして。エマです。よろしく おねがいします。",
+        "speaker": "Emma",
+      },
+      {
+        "english": "Emma, are you a student at Midori University?",
+        "grammarIds": [
+          "l1-question",
+          "l1-connection",
+        ],
+        "id": "l1-d03",
+        "japanese": "エマさんは みどりだいがくの がくせいですか。",
+        "speaker": "Aki",
+      },
+      {
+        "english": "No, I’m not a student. I’m a researcher.",
+        "grammarIds": [
+          "l1-negative",
+        ],
+        "id": "l1-d04",
+        "japanese": "いいえ、がくせいじゃありません。けんきゅうしゃです。",
+        "speaker": "Emma",
+      },
+      {
+        "english": "I see. This is Noah.",
+        "grammarIds": [],
+        "id": "l1-d05",
+        "japanese": "そうですか。こちらは ノアさんです。",
+        "speaker": "Aki",
+      },
+      {
+        "english": "I’m Noah. I’m a researcher too.",
+        "grammarIds": [
+          "l1-also",
+        ],
+        "id": "l1-d06",
+        "japanese": "ノアです。わたしも けんきゅうしゃです。",
+        "speaker": "Noah",
+      },
+      {
+        "english": "Are you Canadian too, Noah?",
+        "grammarIds": [
+          "l1-also",
+          "l1-question",
+        ],
+        "id": "l1-d07",
+        "japanese": "ノアさんも カナダじんですか。",
+        "speaker": "Emma",
+      },
+      {
+        "english": "Yes, I’m Canadian. I look forward to working with you.",
+        "grammarIds": [],
+        "id": "l1-d08",
+        "japanese": "はい、カナダじんです。よろしく おねがいします。",
+        "speaker": "Noah",
+      },
+    ],
+    "exerciseIds": [
+      "l1-e01",
+      "l1-e02",
+      "l1-e03",
+      "l1-e04",
+      "l1-e05",
+      "l1-e06",
+      "l1-e07",
+      "l1-e08",
+    ],
+    "lessonId": "lesson-01",
+  },
+  {
+    "dialogue": [
+      {
+        "english": "Excuse me. Is this Luca’s notebook?",
+        "grammarIds": [
+          "l2-things",
+          "l2-owner",
+        ],
+        "id": "l2-d01",
+        "japanese": "すみません。これは ルカさんの ノートですか。",
+        "speaker": "Mina",
+      },
+      {
+        "english": "No, it isn’t. My notebook is that blue one by you.",
+        "grammarIds": [
+          "l2-confirm",
+          "l2-noun-pointing",
+        ],
+        "id": "l2-d02",
+        "japanese": "いいえ、そうじゃありません。わたしの ノートは その あおい ノートです。",
+        "speaker": "Luca",
+      },
+      {
+        "english": "I see. Then whose is this notebook?",
+        "grammarIds": [
+          "l2-noun-pointing",
+          "l2-owner",
+        ],
+        "id": "l2-d03",
+        "japanese": "そうですか。では、この ノートは だれのですか。",
+        "speaker": "Mina",
+      },
+      {
+        "english": "Oh, it is Yui’s. Look, her name is on it.",
+        "grammarIds": [
+          "l2-owner",
+        ],
+        "id": "l2-d04",
+        "japanese": "あ、ユイさんのです。ほら、なまえが あります。",
+        "speaker": "Luca",
+      },
+      {
+        "english": "It is my notebook! Thank you very much.",
+        "grammarIds": [
+          "l2-owner",
+        ],
+        "id": "l2-d05",
+        "japanese": "わたしの ノートです！ ありがとうございます。",
+        "speaker": "Yui",
+      },
+      {
+        "english": "Is this eraser also yours, Yui?",
+        "grammarIds": [
+          "l2-noun-pointing",
+          "l2-owner",
+        ],
+        "id": "l2-d06",
+        "japanese": "この けしゴムも ユイさんのですか。",
+        "speaker": "Mina",
+      },
+      {
+        "english": "Yes, that’s right. But that umbrella over there is not mine.",
+        "grammarIds": [
+          "l2-confirm",
+          "l2-noun-pointing",
+        ],
+        "id": "l2-d07",
+        "japanese": "はい、そうです。でも、あの かさは わたしのじゃありません。",
+        "speaker": "Yui",
+      },
+      {
+        "english": "That umbrella is mine.",
+        "grammarIds": [
+          "l2-owner",
+        ],
+        "id": "l2-d08",
+        "japanese": "あの かさは わたしのです。",
+        "speaker": "Luca",
+      },
+    ],
+    "exerciseIds": [
+      "l2-e01",
+      "l2-e02",
+      "l2-e03",
+      "l2-e04",
+      "l2-e05",
+      "l2-e06",
+      "l2-e07",
+      "l2-e08",
+    ],
+    "lessonId": "lesson-02",
+  },
+  {
+    "dialogue": [
+      {
+        "english": "Excuse me. Where is the workshop reception?",
+        "grammarIds": [
+          "l3-where",
+        ],
+        "id": "l3-d01",
+        "japanese": "すみません。ワークショップの うけつけは どこですか。",
+        "speaker": "Visitor",
+      },
+      {
+        "english": "Reception is this way.",
+        "grammarIds": [
+          "l3-polite-direction",
+        ],
+        "id": "l3-d02",
+        "japanese": "うけつけは こちらです。",
+        "speaker": "Staff",
+      },
+      {
+        "english": "Thank you. Is the classroom here?",
+        "grammarIds": [
+          "l3-places",
+          "l3-location",
+        ],
+        "id": "l3-d03",
+        "japanese": "ありがとうございます。きょうしつは ここですか。",
+        "speaker": "Visitor",
+      },
+      {
+        "english": "No, the classroom is on the third floor.",
+        "grammarIds": [
+          "l3-location",
+        ],
+        "id": "l3-d04",
+        "japanese": "いいえ、きょうしつは 3かいです。",
+        "speaker": "Staff",
+      },
+      {
+        "english": "Where is the elevator?",
+        "grammarIds": [
+          "l3-polite-direction",
+        ],
+        "id": "l3-d05",
+        "japanese": "エレベーターは どちらですか。",
+        "speaker": "Visitor",
+      },
+      {
+        "english": "It is over that way, beside the stairs.",
+        "grammarIds": [
+          "l3-polite-direction",
+        ],
+        "id": "l3-d06",
+        "japanese": "あちらです。かいだんの となりです。",
+        "speaker": "Staff",
+      },
+      {
+        "english": "Is the café also on the third floor?",
+        "grammarIds": [
+          "l3-location",
+        ],
+        "id": "l3-d07",
+        "japanese": "カフェも 3かいですか。",
+        "speaker": "Visitor",
+      },
+      {
+        "english": "No, the café is on basement level one.",
+        "grammarIds": [
+          "l3-location",
+        ],
+        "id": "l3-d08",
+        "japanese": "いいえ、カフェは ちか 1かいです。",
+        "speaker": "Staff",
+      },
+    ],
+    "exerciseIds": [
+      "l3-e01",
+      "l3-e02",
+      "l3-e03",
+      "l3-e04",
+      "l3-e05",
+      "l3-e06",
+      "l3-e07",
+      "l3-e08",
+    ],
+    "lessonId": "lesson-03",
+  },
+  {
+    "dialogue": [
+      {
+        "english": "Mina, what time do you get up every morning?",
+        "grammarIds": [
+          "l4-time-ni",
+          "l4-nonpast",
+        ],
+        "id": "l4-d01",
+        "japanese": "ミナさんは まいあさ なんじに おきますか。",
+        "speaker": "Ren",
+      },
+      {
+        "english": "I get up at 6:30. I leave home at seven.",
+        "grammarIds": [
+          "l4-time-ni",
+        ],
+        "id": "l4-d02",
+        "japanese": "6じはんに おきます。7じに うちを でます。",
+        "speaker": "Mina",
+      },
+      {
+        "english": "What time does the radio work start?",
+        "grammarIds": [
+          "l4-bounds",
+        ],
+        "id": "l4-d03",
+        "japanese": "ラジオの しごとは なんじからですか。",
+        "speaker": "Ren",
+      },
+      {
+        "english": "It is from eight to eleven. Today I will work until twelve.",
+        "grammarIds": [
+          "l4-bounds",
+          "l4-nonpast",
+        ],
+        "id": "l4-d04",
+        "japanese": "8じから 11じまでです。きょうは 12じまで はたらきます。",
+        "speaker": "Mina",
+      },
+      {
+        "english": "Did you work yesterday too?",
+        "grammarIds": [
+          "l4-past",
+        ],
+        "id": "l4-d05",
+        "japanese": "きのうも はたらきましたか。",
+        "speaker": "Ren",
+      },
+      {
+        "english": "No, I did not work. I studied at home.",
+        "grammarIds": [
+          "l4-past",
+        ],
+        "id": "l4-d06",
+        "japanese": "いいえ、はたらきませんでした。うちで べんきょうしました。",
+        "speaker": "Mina",
+      },
+      {
+        "english": "What time will you go to bed tonight?",
+        "grammarIds": [
+          "l4-time-ni",
+          "l4-nonpast",
+        ],
+        "id": "l4-d07",
+        "japanese": "こんやは なんじに ねますか。",
+        "speaker": "Ren",
+      },
+      {
+        "english": "I will probably go to bed at 10:30.",
+        "grammarIds": [
+          "l4-time-ni",
+        ],
+        "id": "l4-d08",
+        "japanese": "たぶん 10じはんに ねます。",
+        "speaker": "Mina",
+      },
+    ],
+    "exerciseIds": [
+      "l4-e01",
+      "l4-e02",
+      "l4-e03",
+      "l4-e04",
+      "l4-e05",
+      "l4-e06",
+      "l4-e07",
+      "l4-e08",
+    ],
+    "lessonId": "lesson-04",
+  },
+  {
+    "dialogue": [
+      {
+        "english": "Ken, are you going to the museum on Sunday?",
+        "grammarIds": [
+          "l5-destination",
+        ],
+        "id": "l5-d01",
+        "japanese": "ケンさん、にちようびに はくぶつかんへ 行きますか。",
+        "speaker": "Aya",
+      },
+      {
+        "english": "Yes, I am. Are you going too, Aya?",
+        "grammarIds": [
+          "l5-destination",
+        ],
+        "id": "l5-d02",
+        "japanese": "はい、行きます。アヤさんも 行きますか。",
+        "speaker": "Ken",
+      },
+      {
+        "english": "Yes. I am going with a friend. What about you?",
+        "grammarIds": [
+          "l5-companion",
+        ],
+        "id": "l5-d03",
+        "japanese": "はい。ともだちと 行きます。ケンさんは？",
+        "speaker": "Aya",
+      },
+      {
+        "english": "I am going alone. What time will you go?",
+        "grammarIds": [
+          "l5-companion",
+        ],
+        "id": "l5-d04",
+        "japanese": "わたしは ひとりで 行きます。なんじに 行きますか。",
+        "speaker": "Ken",
+      },
+      {
+        "english": "We will go at ten. We will go from the station by bus.",
+        "grammarIds": [
+          "l5-transport",
+        ],
+        "id": "l5-d05",
+        "japanese": "10じに 行きます。えきから バスで 行きます。",
+        "speaker": "Aya",
+      },
+      {
+        "english": "I will go by bicycle.",
+        "grammarIds": [
+          "l5-transport",
+        ],
+        "id": "l5-d06",
+        "japanese": "わたしは じてんしゃで 行きます。",
+        "speaker": "Ken",
+      },
+      {
+        "english": "When will you go home?",
+        "grammarIds": [
+          "l5-when",
+          "l5-destination",
+        ],
+        "id": "l5-d07",
+        "japanese": "いつ うちへ 帰りますか。",
+        "speaker": "Aya",
+      },
+      {
+        "english": "Probably at five. See you at the museum!",
+        "grammarIds": [
+          "l5-destination",
+        ],
+        "id": "l5-d08",
+        "japanese": "たぶん 5じに 帰ります。では、はくぶつかんで！",
+        "speaker": "Ken",
+      },
+    ],
+    "exerciseIds": [
+      "l5-e01",
+      "l5-e02",
+      "l5-e03",
+      "l5-e04",
+      "l5-e05",
+      "l5-e06",
+      "l5-e07",
+      "l5-e08",
+    ],
+    "lessonId": "lesson-05",
+  },
+  {
+    "dialogue": [
+      {
+        "english": "Mei, I am watching a film near the station tonight.",
+        "grammarIds": [
+          "l6-action-place",
+          "l6-object",
+        ],
+        "id": "l6-d01",
+        "japanese": "メイさん、こんや えきまえで えいがを 見ます。",
+        "speaker": "Riku",
+      },
+      {
+        "english": "Oh? What kind of film is it?",
+        "grammarIds": [],
+        "id": "l6-d02",
+        "japanese": "そうですか。どんな えいがですか。",
+        "speaker": "Mei",
+      },
+      {
+        "english": "It is a Japanese animated film. Would you like to watch it together?",
+        "grammarIds": [
+          "l6-invite",
+        ],
+        "id": "l6-d03",
+        "japanese": "日本の アニメです。いっしょに 見ませんか。",
+        "speaker": "Riku",
+      },
+      {
+        "english": "That sounds good. I would definitely like to see it.",
+        "grammarIds": [],
+        "id": "l6-d04",
+        "japanese": "いいですね。ぜひ 見たいです。",
+        "speaker": "Mei",
+      },
+      {
+        "english": "Before the film, would you like to eat dinner at a café?",
+        "grammarIds": [
+          "l6-action-place",
+          "l6-object",
+          "l6-invite",
+        ],
+        "id": "l6-d05",
+        "japanese": "えいがの まえに、カフェで ばんごはんを 食べませんか。",
+        "speaker": "Riku",
+      },
+      {
+        "english": "Yes. Let’s meet at the café at six.",
+        "grammarIds": [
+          "l6-suggest",
+        ],
+        "id": "l6-d06",
+        "japanese": "はい。6じに カフェで 会いましょう。",
+        "speaker": "Mei",
+      },
+      {
+        "english": "All right. What will you eat at the café?",
+        "grammarIds": [
+          "l6-action-place",
+          "l6-object",
+        ],
+        "id": "l6-d07",
+        "japanese": "わかりました。カフェで なにを 食べますか。",
+        "speaker": "Riku",
+      },
+      {
+        "english": "I will eat a sandwich. Let’s have coffee too.",
+        "grammarIds": [
+          "l6-object",
+          "l6-suggest",
+        ],
+        "id": "l6-d08",
+        "japanese": "サンドイッチを 食べます。コーヒーも 飲みましょう。",
+        "speaker": "Mei",
+      },
+    ],
+    "exerciseIds": [
+      "l6-e01",
+      "l6-e02",
+      "l6-e03",
+      "l6-e04",
+      "l6-e05",
+      "l6-e06",
+      "l6-e07",
+      "l6-e08",
+    ],
+    "lessonId": "lesson-06",
+  },
+  {
+    "dialogue": [
+      {
+        "english": "Have you made the teacher’s gift already?",
+        "grammarIds": [
+          "l7-status",
+        ],
+        "id": "l7-d01",
+        "japanese": "もう 先生の プレゼントを 作りましたか。",
+        "speaker": "Nao",
+      },
+      {
+        "english": "Yes, I already made it. I cut the paper with these scissors.",
+        "grammarIds": [
+          "l7-status",
+          "l7-means",
+        ],
+        "id": "l7-d02",
+        "japanese": "はい、もう 作りました。この はさみで 紙を 切りました。",
+        "speaker": "Owen",
+      },
+      {
+        "english": "It is beautiful. I will write a card in Japanese.",
+        "grammarIds": [
+          "l7-means",
+        ],
+        "id": "l7-d03",
+        "japanese": "きれいですね。わたしは 日本語で カードを 書きます。",
+        "speaker": "Nao",
+      },
+      {
+        "english": "Will you give that card to the teacher?",
+        "grammarIds": [
+          "l7-give",
+        ],
+        "id": "l7-d04",
+        "japanese": "先生に その カードを あげますか。",
+        "speaker": "Owen",
+      },
+      {
+        "english": "Yes. What will you give, Owen?",
+        "grammarIds": [
+          "l7-give",
+        ],
+        "id": "l7-d05",
+        "japanese": "はい。オーウェンさんは なにを あげますか。",
+        "speaker": "Nao",
+      },
+      {
+        "english": "I will give the teacher a photo of everyone.",
+        "grammarIds": [
+          "l7-give",
+        ],
+        "id": "l7-d06",
+        "japanese": "先生に みんなの 写真を あげます。",
+        "speaker": "Owen",
+      },
+      {
+        "english": "Nice. I also received some beautiful flowers from Mina. I will give them to the teacher.",
+        "grammarIds": [
+          "l7-receive",
+          "l7-give",
+        ],
+        "id": "l7-d07",
+        "japanese": "いいですね。わたしは ミナさんに きれいな 花も もらいました。先生に あげます。",
+        "speaker": "Nao",
+      },
+      {
+        "english": "I see. Then let’s send the card, photo, and flowers together.",
+        "grammarIds": [],
+        "id": "l7-d08",
+        "japanese": "そうですか。では、カードと 写真と 花を いっしょに 送りましょう。",
+        "speaker": "Owen",
+      },
+    ],
+    "exerciseIds": [
+      "l7-e01",
+      "l7-e02",
+      "l7-e03",
+      "l7-e04",
+      "l7-e05",
+      "l7-e06",
+      "l7-e07",
+      "l7-e08",
+    ],
+    "lessonId": "lesson-07",
+  },
+  {
+    "dialogue": [
+      {
+        "english": "Which café shall we study at tomorrow?",
+        "grammarIds": [],
+        "id": "l8-d01",
+        "japanese": "あした、どの カフェで べんきょうしますか。",
+        "speaker": "Sara",
+      },
+      {
+        "english": "How about Sakura Café?",
+        "grammarIds": [],
+        "id": "l8-d02",
+        "japanese": "さくらカフェは どうですか。",
+        "speaker": "Jun",
+      },
+      {
+        "english": "What kind of place is Sakura Café?",
+        "grammarIds": [
+          "l8-what-kind",
+        ],
+        "id": "l8-d03",
+        "japanese": "さくらカフェは どんな ところですか。",
+        "speaker": "Sara",
+      },
+      {
+        "english": "It is a quiet café. The shop is also very clean.",
+        "grammarIds": [
+          "l8-na-adjectives",
+          "l8-degree",
+        ],
+        "id": "l8-d04",
+        "japanese": "しずかな カフェです。店も とても きれいです。",
+        "speaker": "Jun",
+      },
+      {
+        "english": "Is the coffee good?",
+        "grammarIds": [
+          "l8-i-adjectives",
+        ],
+        "id": "l8-d05",
+        "japanese": "コーヒーは おいしいですか。",
+        "speaker": "Sara",
+      },
+      {
+        "english": "Yes, it is very good. But the cake is a little expensive.",
+        "grammarIds": [
+          "l8-degree",
+          "l8-i-adjectives",
+        ],
+        "id": "l8-d06",
+        "japanese": "はい、とても おいしいです。でも、ケーキは すこし たかいです。",
+        "speaker": "Jun",
+      },
+      {
+        "english": "Is it far from the station?",
+        "grammarIds": [
+          "l8-i-adjectives",
+        ],
+        "id": "l8-d07",
+        "japanese": "えきから とおいですか。",
+        "speaker": "Sara",
+      },
+      {
+        "english": "No, it is not very far. It is a convenient place.",
+        "grammarIds": [
+          "l8-degree",
+          "l8-na-adjectives",
+        ],
+        "id": "l8-d08",
+        "japanese": "いいえ、あまり とおくないです。べんりな ところですよ。",
+        "speaker": "Jun",
+      },
+    ],
+    "exerciseIds": [
+      "l8-e01",
+      "l8-e02",
+      "l8-e03",
+      "l8-e04",
+      "l8-e05",
+      "l8-e06",
+      "l8-e07",
+      "l8-e08",
+    ],
+    "lessonId": "lesson-08",
+  },
+  {
+    "dialogue": [
+      {
+        "english": "Noah, what kind of music do you like?",
+        "grammarIds": [
+          "l9-preference",
+        ],
+        "id": "l9-d01",
+        "japanese": "ノアさんは どんな 音楽が すきですか。",
+        "speaker": "Hana",
+      },
+      {
+        "english": "I love music. I especially like jazz.",
+        "grammarIds": [
+          "l9-preference",
+        ],
+        "id": "l9-d02",
+        "japanese": "音楽が だいすきです。とくに ジャズが すきです。",
+        "speaker": "Noah",
+      },
+      {
+        "english": "Are you good at musical instruments too?",
+        "grammarIds": [
+          "l9-skill",
+        ],
+        "id": "l9-d03",
+        "japanese": "楽器も じょうずですか。",
+        "speaker": "Hana",
+      },
+      {
+        "english": "No, I am not very good at guitar. But I like singing.",
+        "grammarIds": [
+          "l9-skill",
+          "l9-preference",
+        ],
+        "id": "l9-d04",
+        "japanese": "いいえ、ギターは あまり じょうずじゃありません。でも、歌が すきです。",
+        "speaker": "Noah",
+      },
+      {
+        "english": "Do you understand Japanese songs?",
+        "grammarIds": [
+          "l9-understand",
+        ],
+        "id": "l9-d05",
+        "japanese": "日本の 歌が わかりますか。",
+        "speaker": "Hana",
+      },
+      {
+        "english": "I understand a little, because the words are simple.",
+        "grammarIds": [
+          "l9-understand",
+          "l9-reason",
+        ],
+        "id": "l9-d06",
+        "japanese": "すこし わかります。ことばが やさしいですから。",
+        "speaker": "Noah",
+      },
+      {
+        "english": "Would you like to go to a concert together next time?",
+        "grammarIds": [],
+        "id": "l9-d07",
+        "japanese": "こんど、いっしょに コンサートへ 行きませんか。",
+        "speaker": "Hana",
+      },
+      {
+        "english": "Definitely! Because I like jazz, I am looking forward to it.",
+        "grammarIds": [
+          "l9-reason",
+          "l9-preference",
+        ],
+        "id": "l9-d08",
+        "japanese": "ぜひ！ ジャズが すきですから、たのしみです。",
+        "speaker": "Noah",
+      },
+    ],
+    "exerciseIds": [
+      "l9-e01",
+      "l9-e02",
+      "l9-e03",
+      "l9-e04",
+      "l9-e05",
+      "l9-e06",
+      "l9-e07",
+      "l9-e08",
+    ],
+    "lessonId": "lesson-09",
+  },
+  {
+    "dialogue": [
+      {
+        "english": "Oh, where is the room key?",
+        "grammarIds": [
+          "l10-known-location",
+        ],
+        "id": "l10-d01",
+        "japanese": "あれ、へやの かぎは どこに ありますか。",
+        "speaker": "Mina",
+      },
+      {
+        "english": "It is on the shelf in the entryway.",
+        "grammarIds": [
+          "l10-position-words",
+        ],
+        "id": "l10-d02",
+        "japanese": "げんかんの たなの うえに ありますよ。",
+        "speaker": "Leo",
+      },
+      {
+        "english": "It is not there. There is a cat on the shelf.",
+        "grammarIds": [
+          "l10-place-new-entity",
+          "l10-existence-verbs",
+        ],
+        "id": "l10-d03",
+        "japanese": "ありません。たなの うえに ねこが います。",
+        "speaker": "Mina",
+      },
+      {
+        "english": "Really? Then, how about under the sofa?",
+        "grammarIds": [],
+        "id": "l10-d04",
+        "japanese": "ほんとうですか。じゃ、ソファの したは？",
+        "speaker": "Leo",
+      },
+      {
+        "english": "There is a remote under the sofa, but the key is not there.",
+        "grammarIds": [
+          "l10-place-new-entity",
+          "l10-position-words",
+        ],
+        "id": "l10-d05",
+        "japanese": "ソファの したに リモコンが あります。でも、かぎは ありません。",
+        "speaker": "Mina",
+      },
+      {
+        "english": "Oh, it is inside my pocket. Sorry.",
+        "grammarIds": [
+          "l10-known-location",
+          "l10-position-words",
+        ],
+        "id": "l10-d06",
+        "japanese": "あ、わたしの ポケットの なかに あります。ごめんなさい。",
+        "speaker": "Leo",
+      },
+    ],
+    "exerciseIds": [
+      "l10-e01",
+      "l10-e02",
+      "l10-e03",
+      "l10-e04",
+      "l10-e05",
+      "l10-e06",
+      "l10-e07",
+      "l10-e08",
+    ],
+    "lessonId": "lesson-10",
+  },
+  {
+    "dialogue": [
+      {
+        "english": "Welcome. What are you sending today?",
+        "grammarIds": [],
+        "id": "l11-d01",
+        "japanese": "いらっしゃいませ。きょうは 何を おくりますか。",
+        "speaker": "Clerk",
+      },
+      {
+        "english": "I am sending these three postcards and one parcel.",
+        "grammarIds": [
+          "l11-counters",
+        ],
+        "id": "l11-d02",
+        "japanese": "この はがきを さんまいと、にもつを ひとつ おくります。",
+        "speaker": "Kai",
+      },
+      {
+        "english": "How many stamps do you need?",
+        "grammarIds": [
+          "l11-quantity-questions",
+        ],
+        "id": "l11-d03",
+        "japanese": "きっては 何まい いりますか。",
+        "speaker": "Clerk",
+      },
+      {
+        "english": "Three, please. About how long will the parcel take to Singapore?",
+        "grammarIds": [
+          "l11-quantity-questions",
+        ],
+        "id": "l11-d04",
+        "japanese": "さんまい おねがいします。にもつは シンガポールまで どのくらい かかりますか。",
+        "speaker": "Kai",
+      },
+      {
+        "english": "It takes about five days.",
+        "grammarIds": [
+          "l11-duration",
+        ],
+        "id": "l11-d05",
+        "japanese": "だいたい 五日 かかります。",
+        "speaker": "Clerk",
+      },
+      {
+        "english": "Got it. I send a parcel to this club four times a year. Please process everything, then.",
+        "grammarIds": [
+          "l11-frequency",
+        ],
+        "id": "l11-d06",
+        "japanese": "わかりました。この クラブへ 一年に 四回 にもつを おくります。では、ぜんぶ おねがいします。",
+        "speaker": "Kai",
+      },
+    ],
+    "exerciseIds": [
+      "l11-e01",
+      "l11-e02",
+      "l11-e03",
+      "l11-e04",
+      "l11-e05",
+      "l11-e06",
+      "l11-e07",
+      "l11-e08",
+    ],
+    "lessonId": "lesson-11",
+  },
+  {
+    "dialogue": [
+      {
+        "english": "How was last week’s mountain trip?",
+        "grammarIds": [],
+        "id": "l12-d01",
+        "japanese": "先週の 山の りょこうは どうでしたか。",
+        "speaker": "Rina",
+      },
+      {
+        "english": "It was great fun. The scenery was beautiful too.",
+        "grammarIds": [
+          "l12-i-adjective-past",
+          "l12-na-noun-past",
+        ],
+        "id": "l12-d02",
+        "japanese": "とても たのしかったです。けしきも きれいでした。",
+        "speaker": "Owen",
+      },
+      {
+        "english": "But the weather was not very good, was it?",
+        "grammarIds": [
+          "l12-i-adjective-past",
+        ],
+        "id": "l12-d03",
+        "japanese": "でも、てんきは あまり よくなかったですね。",
+        "speaker": "Rina",
+      },
+      {
+        "english": "Right. But the mountains were cooler than the seaside.",
+        "grammarIds": [
+          "l12-yori-comparison",
+        ],
+        "id": "l12-d04",
+        "japanese": "ええ。でも、山は うみより すずしかったです。",
+        "speaker": "Owen",
+      },
+      {
+        "english": "Which do you prefer, the mountains or the seaside?",
+        "grammarIds": [
+          "l12-choice-best",
+        ],
+        "id": "l12-d05",
+        "japanese": "山と うみと どちらが すきですか。",
+        "speaker": "Rina",
+      },
+      {
+        "english": "I prefer the mountains. In particular, the mountains are most beautiful in autumn.",
+        "grammarIds": [
+          "l12-choice-best",
+        ],
+        "id": "l12-d06",
+        "japanese": "山の ほうが すきです。とくに、秋の 山が いちばん きれいです。",
+        "speaker": "Owen",
+      },
+    ],
+    "exerciseIds": [
+      "l12-e01",
+      "l12-e02",
+      "l12-e03",
+      "l12-e04",
+      "l12-e05",
+      "l12-e06",
+      "l12-e07",
+      "l12-e08",
+    ],
+    "lessonId": "lesson-12",
+  },
+  {
+    "dialogue": [
+      {
+        "english": "Do you want to go somewhere on Saturday?",
+        "grammarIds": [
+          "l13-indefinites",
+          "l13-tai",
+        ],
+        "id": "l13-d01",
+        "japanese": "土曜日、どこかへ 行きたいですか。",
+        "speaker": "Aya",
+      },
+      {
+        "english": "Yes. I want to go to the market by the river.",
+        "grammarIds": [
+          "l13-tai",
+        ],
+        "id": "l13-d02",
+        "japanese": "はい。川の そばの 市場へ 行きたいです。",
+        "speaker": "Ben",
+      },
+      {
+        "english": "What will you go to the market to do?",
+        "grammarIds": [
+          "l13-purpose-movement",
+        ],
+        "id": "l13-d03",
+        "japanese": "市場へ 何を しに 行きますか。",
+        "speaker": "Aya",
+      },
+      {
+        "english": "I am going to look for a gift for my younger sister. I want a handmade wallet.",
+        "grammarIds": [
+          "l13-purpose-movement",
+          "l13-hoshii",
+        ],
+        "id": "l13-d04",
+        "japanese": "妹の おみやげを さがしに 行きます。てづくりの さいふが ほしいです。",
+        "speaker": "Ben",
+      },
+      {
+        "english": "I want to see the pottery. Then let’s eat something.",
+        "grammarIds": [
+          "l13-tai",
+          "l13-indefinites",
+        ],
+        "id": "l13-d05",
+        "japanese": "わたしは やきものを 見たいです。それから、何か 食べましょう。",
+        "speaker": "Aya",
+      },
+      {
+        "english": "Sounds good. I am hungry, so let’s also go to the market to eat lunch.",
+        "grammarIds": [
+          "l13-purpose-movement",
+        ],
+        "id": "l13-d06",
+        "japanese": "いいですね。おなかが すきましたから、市場へ 昼ごはんも 食べに 行きましょう。",
+        "speaker": "Ben",
+      },
+    ],
+    "exerciseIds": [
+      "l13-e01",
+      "l13-e02",
+      "l13-e03",
+      "l13-e04",
+      "l13-e05",
+      "l13-e06",
+      "l13-e07",
+      "l13-e08",
+    ],
+    "lessonId": "lesson-13",
+  },
+  {
+    "dialogue": [
+      {
+        "english": "I am putting a poster up at the entrance now. Please hold that side.",
+        "grammarIds": [
+          "l14-action-progress",
+          "l14-request",
+        ],
+        "id": "l14-d01",
+        "japanese": "今、入口に ポスターを はっています。そちらを もってください。",
+        "speaker": "Sora",
+      },
+      {
+        "english": "Okay. A little higher?",
+        "grammarIds": [],
+        "id": "l14-d02",
+        "japanese": "はい。もう 少し 上ですか。",
+        "speaker": "Nina",
+      },
+      {
+        "english": "Yes, please raise it slowly.",
+        "grammarIds": [
+          "l14-request",
+        ],
+        "id": "l14-d03",
+        "japanese": "ええ、ゆっくり 上げてください。",
+        "speaker": "Sora",
+      },
+      {
+        "english": "Got it. Shall I arrange the chairs next?",
+        "grammarIds": [
+          "l14-offer",
+        ],
+        "id": "l14-d04",
+        "japanese": "わかりました。つぎは いすを ならべましょうか。",
+        "speaker": "Nina",
+      },
+      {
+        "english": "Please do. Ken is carrying tables in the next room.",
+        "grammarIds": [
+          "l14-action-progress",
+        ],
+        "id": "l14-d05",
+        "japanese": "お願いします。ケンさんが となりの へやで つくえを はこんでいます。",
+        "speaker": "Sora",
+      },
+      {
+        "english": "The room is dark. Shall I turn on the light?",
+        "grammarIds": [
+          "l14-offer",
+        ],
+        "id": "l14-d06",
+        "japanese": "へやが くらいですね。でんきを つけましょうか。",
+        "speaker": "Nina",
+      },
+      {
+        "english": "Yes, please turn it on. Thank you.",
+        "grammarIds": [
+          "l14-request",
+        ],
+        "id": "l14-d07",
+        "japanese": "ええ、つけてください。ありがとうございます。",
+        "speaker": "Sora",
+      },
+    ],
+    "exerciseIds": [
+      "l14-e01",
+      "l14-e02",
+      "l14-e03",
+      "l14-e04",
+      "l14-e05",
+      "l14-e06",
+      "l14-e07",
+      "l14-e08",
+    ],
+    "lessonId": "lesson-14",
+  },
+  {
+    "dialogue": [
+      {
+        "english": "Excuse me. May I use this lounge?",
+        "grammarIds": [
+          "l15-permission",
+        ],
+        "id": "l15-d01",
+        "japanese": "すみません。この ラウンジを つかっても いいですか。",
+        "speaker": "Iris",
+      },
+      {
+        "english": "Yes, members may use it. Please show your membership card.",
+        "grammarIds": [
+          "l15-permission",
+        ],
+        "id": "l15-d02",
+        "japanese": "はい、会員は つかっても いいです。会員カードを 見せてください。",
+        "speaker": "Staff",
+      },
+      {
+        "english": "Here you are. May I drink coffee here?",
+        "grammarIds": [
+          "l15-permission",
+        ],
+        "id": "l15-d03",
+        "japanese": "どうぞ。ここで コーヒーを のんでも いいですか。",
+        "speaker": "Iris",
+      },
+      {
+        "english": "I am sorry, but you must not drink coffee or eat food in this room. Please use the break room.",
+        "grammarIds": [
+          "l15-prohibition",
+        ],
+        "id": "l15-d04",
+        "japanese": "ざんねんですが、この へやで コーヒーを のんでは いけません。食べものも 食べては いけません。休けい室を つかってください。",
+        "speaker": "Staff",
+      },
+      {
+        "english": "Understood. Does Mina work here too?",
+        "grammarIds": [
+          "l15-continuing-state",
+        ],
+        "id": "l15-d05",
+        "japanese": "わかりました。ミナさんも ここで 働いていますか。",
+        "speaker": "Iris",
+      },
+      {
+        "english": "Yes. Do you know Mina?",
+        "grammarIds": [
+          "l15-knowing",
+        ],
+        "id": "l15-d06",
+        "japanese": "はい。ミナさんを 知っていますか。",
+        "speaker": "Staff",
+      },
+      {
+        "english": "Yes, I know her. We live in the same town.",
+        "grammarIds": [
+          "l15-knowing",
+          "l15-continuing-state",
+        ],
+        "id": "l15-d07",
+        "japanese": "はい、知っています。同じ 町に 住んでいます。",
+        "speaker": "Iris",
+      },
+    ],
+    "exerciseIds": [
+      "l15-e01",
+      "l15-e02",
+      "l15-e03",
+      "l15-e04",
+      "l15-e05",
+      "l15-e06",
+      "l15-e07",
+      "l15-e08",
+    ],
+    "lessonId": "lesson-15",
+  },
+  {
+    "dialogue": [
+      {
+        "english": "Excuse me. How do I become a member of this gym?",
+        "grammarIds": [
+          "l16-how-to",
+        ],
+        "id": "l16-d01",
+        "japanese": "すみません。どうやって この ジムの 会員に なりますか。",
+        "speaker": "Tariq",
+      },
+      {
+        "english": "Get this form at reception and write your name and address.",
+        "grammarIds": [
+          "l16-action-sequence",
+        ],
+        "id": "l16-d02",
+        "japanese": "受付で この 紙を もらって、名前と 住所を 書いてください。",
+        "speaker": "Staff",
+      },
+      {
+        "english": "What do I do after filling it out?",
+        "grammarIds": [
+          "l16-after-action",
+        ],
+        "id": "l16-d03",
+        "japanese": "書いてから、何を しますか。",
+        "speaker": "Tariq",
+      },
+      {
+        "english": "After receiving your card, go to the locker room on the second floor.",
+        "grammarIds": [
+          "l16-after-action",
+        ],
+        "id": "l16-d04",
+        "japanese": "カードを もらってから、二階の ロッカー室へ 行きます。",
+        "speaker": "Staff",
+      },
+      {
+        "english": "How do I get to the pool?",
+        "grammarIds": [
+          "l16-how-to",
+        ],
+        "id": "l16-d05",
+        "japanese": "プールへは どうやって 行きますか。",
+        "speaker": "Tariq",
+      },
+      {
+        "english": "Go up the stairs, turn right, and go straight.",
+        "grammarIds": [
+          "l16-action-sequence",
+        ],
+        "id": "l16-d06",
+        "japanese": "かいだんを 上がって、右へ まがって、まっすぐ 行ってください。",
+        "speaker": "Staff",
+      },
+      {
+        "english": "Thank you. This gym is spacious and bright.",
+        "grammarIds": [
+          "l16-description-linking",
+        ],
+        "id": "l16-d07",
+        "japanese": "ありがとうございます。この ジムは 広くて、明るいですね。",
+        "speaker": "Tariq",
+      },
+    ],
+    "exerciseIds": [
+      "l16-e01",
+      "l16-e02",
+      "l16-e03",
+      "l16-e04",
+      "l16-e05",
+      "l16-e06",
+      "l16-e07",
+      "l16-e08",
+    ],
+    "lessonId": "lesson-16",
+  },
+  {
+    "dialogue": [
+      {
+        "english": "Does your leg still hurt?",
+        "grammarIds": [],
+        "id": "l17-d01",
+        "japanese": "足は まだ いたいですか。",
+        "speaker": "Doctor",
+      },
+      {
+        "english": "Yes, it hurts a little. May I go to work tomorrow?",
+        "grammarIds": [],
+        "id": "l17-d02",
+        "japanese": "はい、少し いたいです。あした 仕事へ 行っても いいですか。",
+        "speaker": "Luca",
+      },
+      {
+        "english": "Please do not overdo it tomorrow. You must rest at home.",
+        "grammarIds": [
+          "l17-negative-request",
+          "l17-obligation",
+        ],
+        "id": "l17-d03",
+        "japanese": "あしたは むりを しないでください。家で 休まなければ なりません。",
+        "speaker": "Doctor",
+      },
+      {
+        "english": "Understood. When should I take the medicine?",
+        "grammarIds": [],
+        "id": "l17-d04",
+        "japanese": "わかりました。くすりは いつ 飲みますか。",
+        "speaker": "Luca",
+      },
+      {
+        "english": "You must take it after breakfast and dinner. You do not need to take it at lunchtime.",
+        "grammarIds": [
+          "l17-obligation",
+          "l17-not-necessary",
+        ],
+        "id": "l17-d05",
+        "japanese": "朝ごはんと 晩ごはんの あとで 飲まなければ なりません。お昼は 飲まなくても いいです。",
+        "speaker": "Doctor",
+      },
+      {
+        "english": "Do I have to make the next appointment today?",
+        "grammarIds": [
+          "l17-obligation",
+        ],
+        "id": "l17-d06",
+        "japanese": "つぎの よやくは きょう しなければ なりませんか。",
+        "speaker": "Luca",
+      },
+      {
+        "english": "No, you do not have to do it today. Please call next week. Also, please do not forget your insurance card.",
+        "grammarIds": [
+          "l17-not-necessary",
+          "l17-negative-request",
+        ],
+        "id": "l17-d07",
+        "japanese": "いいえ、きょうは しなくても いいです。来週、電話してください。それから、ほけんしょうを わすれないでください。",
+        "speaker": "Doctor",
+      },
+      {
+        "english": "Okay. Thank you very much.",
+        "grammarIds": [],
+        "id": "l17-d08",
+        "japanese": "はい。ありがとうございました。",
+        "speaker": "Luca",
+      },
+    ],
+    "exerciseIds": [
+      "l17-e01",
+      "l17-e02",
+      "l17-e03",
+      "l17-e04",
+      "l17-e05",
+      "l17-e06",
+      "l17-e07",
+      "l17-e08",
+    ],
+    "lessonId": "lesson-17",
+  },
+  {
+    "dialogue": [
+      {
+        "english": "Will you join Sunday’s exchange gathering?",
+        "grammarIds": [],
+        "id": "l18-d01",
+        "japanese": "にちようびの こうりゅうかいに さんかしますか。",
+        "speaker": "Aya",
+      },
+      {
+        "english": "Yes. But what should I present?",
+        "grammarIds": [],
+        "id": "l18-d02",
+        "japanese": "はい。でも、なにを しょうかいしましょうか。",
+        "speaker": "Leo",
+      },
+      {
+        "english": "Leo, can you play any instrument?",
+        "grammarIds": [
+          "l18-ability",
+        ],
+        "id": "l18-d03",
+        "japanese": "レオさんは なにか がっきを ひくことが できますか。",
+        "speaker": "Aya",
+      },
+      {
+        "english": "I can play guitar. My hobby is writing songs.",
+        "grammarIds": [
+          "l18-ability",
+          "l18-hobby",
+        ],
+        "id": "l18-d04",
+        "japanese": "ギターを ひくことが できます。しゅみは うたを つくることです。",
+        "speaker": "Leo",
+      },
+      {
+        "english": "That sounds great. Shall we practice together before the gathering?",
+        "grammarIds": [
+          "l18-before",
+        ],
+        "id": "l18-d05",
+        "japanese": "すてきですね。こうりゅうかいの まえに、いっしょに れんしゅうしませんか。",
+        "speaker": "Aya",
+      },
+      {
+        "english": "Definitely. Before we practice, I’ll reserve a room.",
+        "grammarIds": [
+          "l18-before",
+        ],
+        "id": "l18-d06",
+        "japanese": "ぜひ。れんしゅうする まえに、へやを よやくします。",
+        "speaker": "Leo",
+      },
+    ],
+    "exerciseIds": [
+      "l18-e01",
+      "l18-e02",
+      "l18-e03",
+      "l18-e04",
+      "l18-e05",
+      "l18-e06",
+      "l18-e07",
+      "l18-e08",
+    ],
+    "lessonId": "lesson-18",
+  },
+  {
+    "dialogue": [
+      {
+        "english": "Sam, have you ever climbed Mount Midori?",
+        "grammarIds": [
+          "l19-experience",
+        ],
+        "id": "l19-d01",
+        "japanese": "サムさんは みどり山に のぼったことが ありますか。",
+        "speaker": "Mika",
+      },
+      {
+        "english": "No, I haven’t. But I have stayed in a tent.",
+        "grammarIds": [
+          "l19-experience",
+        ],
+        "id": "l19-d02",
+        "japanese": "いいえ、ありません。でも、テントに とまったことは あります。",
+        "speaker": "Sam",
+      },
+      {
+        "english": "Would you like to go together this weekend?",
+        "grammarIds": [],
+        "id": "l19-d03",
+        "japanese": "こんどの しゅうまつ、いっしょに いきませんか。",
+        "speaker": "Mika",
+      },
+      {
+        "english": "Sounds good. What will we do in the mountains?",
+        "grammarIds": [],
+        "id": "l19-d04",
+        "japanese": "いいですね。山で なにを しますか。",
+        "speaker": "Sam",
+      },
+      {
+        "english": "We’ll do things like walk in the woods and photograph the scenery.",
+        "grammarIds": [
+          "l19-representative-actions",
+        ],
+        "id": "l19-d05",
+        "japanese": "もりを あるいたり、けしきの しゃしんを とったり します。",
+        "speaker": "Mika",
+      },
+      {
+        "english": "I’m looking forward to it. I’ve become physically stronger recently.",
+        "grammarIds": [
+          "l19-change",
+        ],
+        "id": "l19-d06",
+        "japanese": "たのしみです。さいきん からだが つよく なりました。",
+        "speaker": "Sam",
+      },
+    ],
+    "exerciseIds": [
+      "l19-e01",
+      "l19-e02",
+      "l19-e03",
+      "l19-e04",
+      "l19-e05",
+      "l19-e06",
+      "l19-e07",
+      "l19-e08",
+    ],
+    "lessonId": "lesson-19",
+  },
+  {
+    "dialogue": [
+      {
+        "english": "Are you free tomorrow evening?",
+        "grammarIds": [
+          "l20-casual-questions",
+          "l20-plain-descriptions",
+        ],
+        "id": "l20-d01",
+        "japanese": "あしたの よる、ひま？",
+        "speaker": "Riku",
+      },
+      {
+        "english": "Yeah, I’m free. What’s up?",
+        "grammarIds": [
+          "l20-final-particles",
+        ],
+        "id": "l20-d02",
+        "japanese": "うん、ひまだよ。どうしたの？",
+        "speaker": "Nora",
+      },
+      {
+        "english": "We’re playing board games at my place. Are you coming too?",
+        "grammarIds": [
+          "l20-plain-verbs",
+          "l20-casual-questions",
+        ],
+        "id": "l20-d03",
+        "japanese": "うちで ボードゲームを する。ノラも くる？",
+        "speaker": "Riku",
+      },
+      {
+        "english": "I’ll come! Who’s coming?",
+        "grammarIds": [
+          "l20-casual-questions",
+        ],
+        "id": "l20-d04",
+        "japanese": "いく！ だれが くる？",
+        "speaker": "Nora",
+      },
+      {
+        "english": "Yu and Mei are coming. The games aren’t difficult, you know.",
+        "grammarIds": [
+          "l20-plain-descriptions",
+          "l20-final-particles",
+        ],
+        "id": "l20-d05",
+        "japanese": "ユウと メイが くるよ。ゲームは むずかしくないよ。",
+        "speaker": "Riku",
+      },
+      {
+        "english": "Great. Then I’ll bring snacks, okay?",
+        "grammarIds": [
+          "l20-final-particles",
+        ],
+        "id": "l20-d06",
+        "japanese": "よかった。じゃ、おかしを もっていくね。",
+        "speaker": "Nora",
+      },
+    ],
+    "exerciseIds": [
+      "l20-e01",
+      "l20-e02",
+      "l20-e03",
+      "l20-e04",
+      "l20-e05",
+      "l20-e06",
+      "l20-e07",
+      "l20-e08",
+    ],
+    "lessonId": "lesson-20",
+  },
+  {
+    "dialogue": [
+      {
+        "english": "What do you think about the upcoming eco-fair?",
+        "grammarIds": [
+          "l21-topic-about",
+          "l21-think",
+        ],
+        "id": "l21-d01",
+        "japanese": "こんどの エコフェアについて、どう おもいますか。",
+        "speaker": "Emi",
+      },
+      {
+        "english": "I think it is an interesting plan.",
+        "grammarIds": [
+          "l21-think",
+        ],
+        "id": "l21-d02",
+        "japanese": "おもしろい けいかくだと おもいます。",
+        "speaker": "Jon",
+      },
+      {
+        "english": "The weather forecast said it would be sunny on Saturday.",
+        "grammarIds": [
+          "l21-say",
+        ],
+        "id": "l21-d03",
+        "japanese": "てんきよほうで、どようびは はれると いっていました。",
+        "speaker": "Emi",
+      },
+      {
+        "english": "Then a lot of people will probably come.",
+        "grammarIds": [
+          "l21-probability",
+        ],
+        "id": "l21-d04",
+        "japanese": "じゃあ、たくさんの ひとが くるでしょう。",
+        "speaker": "Jon",
+      },
+      {
+        "english": "The staff said, “Please bring your own bottle.”",
+        "grammarIds": [
+          "l21-say",
+        ],
+        "id": "l21-d05",
+        "japanese": "スタッフは「マイボトルを もってきてください」と いいました。",
+        "speaker": "Emi",
+      },
+      {
+        "english": "Good idea. I think we can reduce waste.",
+        "grammarIds": [
+          "l21-think",
+        ],
+        "id": "l21-d06",
+        "japanese": "いいですね。ごみを へらすことが できると おもいます。",
+        "speaker": "Jon",
+      },
+    ],
+    "exerciseIds": [
+      "l21-e01",
+      "l21-e02",
+      "l21-e03",
+      "l21-e04",
+      "l21-e05",
+      "l21-e06",
+      "l21-e07",
+      "l21-e08",
+    ],
+    "lessonId": "lesson-21",
+  },
+  {
+    "dialogue": [
+      {
+        "english": "Who is the person over there wearing a blue hat?",
+        "grammarIds": [
+          "l22-relative-clause",
+        ],
+        "id": "l22-d01",
+        "japanese": "あそこで あおい ぼうしを かぶっている ひとは だれですか。",
+        "speaker": "Hana",
+      },
+      {
+        "english": "That is Mio, who makes artwork in this studio.",
+        "grammarIds": [
+          "l22-relative-clause",
+        ],
+        "id": "l22-d02",
+        "japanese": "この スタジオで さくひんを つくっている ミオさんです。",
+        "speaker": "Ken",
+      },
+      {
+        "english": "This plate that Mio made is light, isn’t it?",
+        "grammarIds": [
+          "l22-inner-subject",
+        ],
+        "id": "l22-d03",
+        "japanese": "ミオさんが つくった この さらは かるいですね。",
+        "speaker": "Hana",
+      },
+      {
+        "english": "Yes. There are also plates that have not been painted yet.",
+        "grammarIds": [
+          "l22-tense-negative",
+        ],
+        "id": "l22-d04",
+        "japanese": "ええ。まだ いろを ぬっていない さらも あります。",
+        "speaker": "Ken",
+      },
+      {
+        "english": "I want time to make art too.",
+        "grammarIds": [
+          "l22-time-for-action",
+        ],
+        "id": "l22-d05",
+        "japanese": "わたしも さくひんを つくる じかんが ほしいです。",
+        "speaker": "Hana",
+      },
+      {
+        "english": "Next door there is a room with large windows. I’ll show it to you next time.",
+        "grammarIds": [
+          "l22-inner-subject",
+        ],
+        "id": "l22-d06",
+        "japanese": "となりに まどが おおきい へやが あります。こんど しょうかいしますよ。",
+        "speaker": "Ken",
+      },
+    ],
+    "exerciseIds": [
+      "l22-e01",
+      "l22-e02",
+      "l22-e03",
+      "l22-e04",
+      "l22-e05",
+      "l22-e06",
+      "l22-e07",
+      "l22-e08",
+    ],
+    "lessonId": "lesson-22",
+  },
+  {
+    "dialogue": [
+      {
+        "english": "When using this printer, what do I do first?",
+        "grammarIds": [
+          "l23-when-forms",
+        ],
+        "id": "l23-d01",
+        "japanese": "この プリンターを つかう とき、まず なにを しますか。",
+        "speaker": "Sora",
+      },
+      {
+        "english": "When you are about to use it, first load the paper.",
+        "grammarIds": [
+          "l23-timing-viewpoint",
+        ],
+        "id": "l23-d02",
+        "japanese": "つかう ときは、はじめに かみを いれてください。",
+        "speaker": "Mai",
+      },
+      {
+        "english": "Then, is it this green button?",
+        "grammarIds": [],
+        "id": "l23-d03",
+        "japanese": "それから、この みどりの ボタンですか。",
+        "speaker": "Sora",
+      },
+      {
+        "english": "Yes. When you press the button, the printer starts.",
+        "grammarIds": [
+          "l23-automatic-to",
+        ],
+        "id": "l23-d04",
+        "japanese": "はい。ボタンを おすと、プリンターが うごきます。",
+        "speaker": "Mai",
+      },
+      {
+        "english": "What should I do when it makes a strange sound?",
+        "grammarIds": [
+          "l23-when-forms",
+          "l23-timing-viewpoint",
+        ],
+        "id": "l23-d05",
+        "japanese": "へんな おとが した ときは、どうしますか。",
+        "speaker": "Sora",
+      },
+      {
+        "english": "Do not touch the machine; call a staff member. During a malfunction, pressing the red button stops it.",
+        "grammarIds": [
+          "l23-when-forms",
+          "l23-automatic-to",
+        ],
+        "id": "l23-d06",
+        "japanese": "きかいに さわらないで、スタッフを よんでください。こしょうの ときは あかい ボタンを おすと、とまります。",
+        "speaker": "Mai",
+      },
+    ],
+    "exerciseIds": [
+      "l23-e01",
+      "l23-e02",
+      "l23-e03",
+      "l23-e04",
+      "l23-e05",
+      "l23-e06",
+      "l23-e07",
+      "l23-e08",
+    ],
+    "lessonId": "lesson-23",
+  },
+  {
+    "dialogue": [
+      {
+        "english": "Are the preparations for the garden done yet?",
+        "grammarIds": [],
+        "id": "l24-d01",
+        "japanese": "にわの じゅんびは もう できましたか。",
+        "speaker": "Kei",
+      },
+      {
+        "english": "It is mostly done. Sota brought the tools for us.",
+        "grammarIds": [
+          "l24-te-kureru",
+        ],
+        "id": "l24-d02",
+        "japanese": "だいたい できました。ソウタさんが どうぐを もってきてくれました。",
+        "speaker": "Mina",
+      },
+      {
+        "english": "Great. I had Aya teach me how to plant vegetables.",
+        "grammarIds": [
+          "l24-te-morau",
+        ],
+        "id": "l24-d03",
+        "japanese": "よかった。わたしは アヤさんに やさいの うえかたを おしえてもらいました。",
+        "speaker": "Kei",
+      },
+      {
+        "english": "I’ll carry that large box for you.",
+        "grammarIds": [
+          "l24-te-ageru",
+        ],
+        "id": "l24-d04",
+        "japanese": "その おおきい はこは、わたしが はこんであげます。",
+        "speaker": "Mina",
+      },
+      {
+        "english": "Thanks. Then I’ll put up your sign for you.",
+        "grammarIds": [
+          "l24-te-ageru",
+        ],
+        "id": "l24-d05",
+        "japanese": "ありがとう。じゃあ、わたしは ミナさんの かんばんを つけてあげます。",
+        "speaker": "Kei",
+      },
+      {
+        "english": "That helps. A neighbor repaired the bench for us too. Let’s thank everyone.",
+        "grammarIds": [
+          "l24-te-kureru",
+        ],
+        "id": "l24-d06",
+        "japanese": "たすかります。きんじょの かたも ベンチを なおしてくれました。みんなに おれいを いいましょう。",
+        "speaker": "Mina",
+      },
+    ],
+    "exerciseIds": [
+      "l24-e01",
+      "l24-e02",
+      "l24-e03",
+      "l24-e04",
+      "l24-e05",
+      "l24-e06",
+      "l24-e07",
+      "l24-e08",
+    ],
+    "lessonId": "lesson-24",
+  },
+  {
+    "dialogue": [
+      {
+        "english": "It has been decided that I’ll transfer to Osaka next month.",
+        "grammarIds": [],
+        "id": "l25-d01",
+        "japanese": "らいげつ、おおさかへ てんきんすることに なりました。",
+        "speaker": "Aya",
+      },
+      {
+        "english": "I see. When you arrive in Osaka, what will you do first?",
+        "grammarIds": [
+          "l25-after-tara",
+        ],
+        "id": "l25-d02",
+        "japanese": "そうですか。おおさかに ついたら、まず なにを しますか。",
+        "speaker": "Ben",
+      },
+      {
+        "english": "Once the move is finished, I’ll walk around the neighborhood.",
+        "grammarIds": [
+          "l25-after-tara",
+        ],
+        "id": "l25-d03",
+        "japanese": "ひっこしが おわったら、ちかくを あるきます。",
+        "speaker": "Aya",
+      },
+      {
+        "english": "Even if work is busy, please send photos.",
+        "grammarIds": [
+          "l25-even-if",
+        ],
+        "id": "l25-d04",
+        "japanese": "しごとが いそがしくても、しゃしんを おくってくださいね。",
+        "speaker": "Ben",
+      },
+      {
+        "english": "Of course. If you happen to be free on a weekend, please come visit.",
+        "grammarIds": [
+          "l25-moshi",
+          "l25-tara-condition",
+        ],
+        "id": "l25-d05",
+        "japanese": "もちろん。もし しゅうまつ ひまだったら、あそびに きてください。",
+        "speaker": "Aya",
+      },
+      {
+        "english": "Yes. Even if we live in different cities, I’ll definitely stay in touch.",
+        "grammarIds": [
+          "l25-even-if",
+        ],
+        "id": "l25-d06",
+        "japanese": "はい。べつべつの まちに すんでも、かならず れんらくします。",
+        "speaker": "Ben",
+      },
+    ],
+    "exerciseIds": [
+      "l25-e01",
+      "l25-e02",
+      "l25-e03",
+      "l25-e04",
+      "l25-e05",
+      "l25-e06",
+      "l25-e07",
+      "l25-e08",
+    ],
+    "lessonId": "lesson-25",
+  },
+]
+`;
