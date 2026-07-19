@@ -82,6 +82,7 @@ export const getDueCards = (
   now = new Date(),
 ) =>
   Object.values(cards)
+    .filter((card) => card.suspended !== true)
     .filter((card) => new Date(card.dueAt).getTime() <= now.getTime())
     .sort((a, b) => a.dueAt.localeCompare(b.dueAt));
 
