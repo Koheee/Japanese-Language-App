@@ -36,6 +36,7 @@ describe('reduceVocabularyManagerUi', () => {
     const succeeded = reduceVocabularyManagerUi(queried, {
       type: 'reversible-mutation-succeeded',
       token: hideToken,
+      startedAtGeneration: 0,
     });
     expect(succeeded.undoToken).toBe(hideToken);
   });
@@ -56,6 +57,7 @@ describe('reduceVocabularyManagerUi', () => {
       draftQuery: 'teacher',
       appliedQuery: 'teacher',
       undoToken: hideToken,
+      routeGeneration: 0,
     });
   });
 
@@ -63,8 +65,74 @@ describe('reduceVocabularyManagerUi', () => {
     const next = reduceVocabularyManagerUi(withUndo(), {
       type: 'reversible-mutation-succeeded',
       token: restoreToken,
+      startedAtGeneration: 0,
     });
     expect(next.undoToken).toBe(restoreToken);
+  });
+
+  it('publishes only a reversible success started in the current route generation', () => {
+    const currentSuccess = reduceVocabularyManagerUi(initialVocabularyManagerUiState, {
+      type: 'reversible-mutation-succeeded',
+      token: hideToken,
+      startedAtGeneration: 0,
+    });
+    expect(currentSuccess.undoToken).toBe(hideToken);
+
+    const blurred = reduceVocabularyManagerUi(currentSuccess, { type: 'route-blurred' });
+    const staleSuccess = reduceVocabularyManagerUi(blurred, {
+      type: 'reversible-mutation-succeeded',
+      token: restoreToken,
+      startedAtGeneration: 0,
+    });
+
+    expect(blurred.routeGeneration).toBe(1);
+    expect(staleSuccess.undoToken).toBeNull();
+  });
+
+  it('advances the route generation on every blur even without a current token', () => {
+    const firstBlur = reduceVocabularyManagerUi(
+      initialVocabularyManagerUiState,
+      { type: 'route-blurred' },
+    );
+    const secondBlur = reduceVocabularyManagerUi(firstBlur, { type: 'route-blurred' });
+
+    expect(firstBlur.routeGeneration).toBe(1);
+    expect(secondBlur.routeGeneration).toBe(2);
+    expect(secondBlur.undoToken).toBeNull();
+  });
+
+  it('expires the current token without invalidating an in-flight mutation on the same route', () => {
+    const expired = reduceVocabularyManagerUi(withUndo(), {
+      type: 'undo-expired',
+      expectedVocabularyUpdatedAt: hideToken.expectedVocabularyUpdatedAt,
+    });
+    const laterSuccess = reduceVocabularyManagerUi(expired, {
+      type: 'reversible-mutation-succeeded',
+      token: restoreToken,
+      startedAtGeneration: 0,
+    });
+
+    expect(expired).toMatchObject({ routeGeneration: 0, undoToken: null });
+    expect(laterSuccess.undoToken).toBe(restoreToken);
+  });
+
+  it('does not let an older timer expire a replacement undo token', () => {
+    const replaced = reduceVocabularyManagerUi(withUndo(), {
+      type: 'reversible-mutation-succeeded',
+      token: restoreToken,
+      startedAtGeneration: 0,
+    });
+    const oldTimer = reduceVocabularyManagerUi(replaced, {
+      type: 'undo-expired',
+      expectedVocabularyUpdatedAt: hideToken.expectedVocabularyUpdatedAt,
+    });
+    const currentTimer = reduceVocabularyManagerUi(oldTimer, {
+      type: 'undo-expired',
+      expectedVocabularyUpdatedAt: restoreToken.expectedVocabularyUpdatedAt,
+    });
+
+    expect(oldTimer.undoToken).toBe(restoreToken);
+    expect(currentTimer.undoToken).toBeNull();
   });
 
   it.each([
@@ -80,6 +148,7 @@ describe('reduceVocabularyManagerUi', () => {
     expect(Object.keys(next).sort()).toEqual([
       'appliedQuery',
       'draftQuery',
+      'routeGeneration',
       'undoToken',
       'view',
     ]);

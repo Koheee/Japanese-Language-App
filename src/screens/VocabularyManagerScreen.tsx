@@ -55,7 +55,11 @@ export function VocabularyManagerScreen({ navigation, route }: Props) {
 
   useEffect(() => {
     if (!ui.undoToken) return undefined;
-    const timer = setTimeout(() => dispatch({ type: 'route-blurred' }), 6_000);
+    const { expectedVocabularyUpdatedAt } = ui.undoToken;
+    const timer = setTimeout(() => dispatch({
+      type: 'undo-expired',
+      expectedVocabularyUpdatedAt,
+    }), 6_000);
     return () => clearTimeout(timer);
   }, [ui.undoToken]);
 
@@ -76,6 +80,7 @@ export function VocabularyManagerScreen({ navigation, route }: Props) {
   }
 
   const runReversibleMutation = async (vocabularyId: string, action: 'hide' | 'restore') => {
+    const startedAtGeneration = ui.routeGeneration;
     const work = actionLock.tryRun(async () => {
       setPendingAction(vocabularyId);
       setMutationError(null);
@@ -84,7 +89,11 @@ export function VocabularyManagerScreen({ navigation, route }: Props) {
           ? await hideVocabulary(lesson.id, vocabularyId)
           : await restoreVocabulary(lesson.id, vocabularyId);
         if (result.ok) {
-          dispatch({ type: 'reversible-mutation-succeeded', token: result.undoToken });
+          dispatch({
+            type: 'reversible-mutation-succeeded',
+            token: result.undoToken,
+            startedAtGeneration,
+          });
         } else {
           setMutationError(result.error.message);
         }
