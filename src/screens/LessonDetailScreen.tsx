@@ -33,7 +33,12 @@ type Tab = 'overview' | 'grammar' | 'dialogue';
 
 interface WebSearchTargetAnchor {
   focus?: () => void;
-  scrollIntoView?: (options: { behavior: 'smooth'; block: 'start' }) => void;
+  scrollIntoView?: (options: { behavior: 'auto'; block: 'start' }) => void;
+}
+
+function getWebSearchTargetAnchor(): WebSearchTargetAnchor | null {
+  if (typeof document === 'undefined') return null;
+  return document.querySelector('[aria-label^="Search match in "]') as WebSearchTargetAnchor | null;
 }
 
 const tabs: { id: Tab; label: string }[] = [
@@ -75,31 +80,47 @@ export function LessonDetailScreen({ navigation, route }: Props) {
     setSearchTargetTop(null);
     setHighlightedRequestToken(null);
 
+    let fallbackWebScrollTimer: ReturnType<typeof setTimeout> | null = null;
     const fallbackTimer = setTimeout(() => {
       if (!shouldRunSearchLanding(consumedRequestTokenRef.current, searchTarget)) return;
       consumedRequestTokenRef.current = searchTarget!.requestToken;
+      if (Platform.OS === 'web') {
+        setHighlightedRequestToken(searchTarget!.requestToken);
+        fallbackWebScrollTimer = setTimeout(() => {
+          const renderedTargetAnchor = getWebSearchTargetAnchor();
+          renderedTargetAnchor?.scrollIntoView?.({ behavior: 'auto', block: 'start' });
+          renderedTargetAnchor?.focus?.();
+        }, 0);
+        return;
+      }
       screenScrollRef.current?.scrollTo({ y: 0, animated: true });
     }, 2_000);
 
-    return () => clearTimeout(fallbackTimer);
+    return () => {
+      clearTimeout(fallbackTimer);
+      if (fallbackWebScrollTimer) clearTimeout(fallbackWebScrollTimer);
+    };
   }, [route.params.lessonId, searchTarget?.requestToken]);
 
   useEffect(() => {
     if (targetY === null || !shouldRunSearchLanding(consumedRequestTokenRef.current, searchTarget)) return;
 
     consumedRequestTokenRef.current = searchTarget!.requestToken;
-    const webTargetAnchor = targetAnchorRef.current as unknown as WebSearchTargetAnchor | null;
-    if (Platform.OS === 'web' && webTargetAnchor?.scrollIntoView) {
-      webTargetAnchor.scrollIntoView?.({ behavior: 'smooth', block: 'start' });
-    } else {
+    setHighlightedRequestToken(searchTarget!.requestToken);
+
+    const webScrollTimer = Platform.OS === 'web'
+      ? setTimeout(() => {
+          screenScrollRef.current?.scrollTo({ y: targetY, animated: false });
+        }, 100)
+      : null;
+    if (Platform.OS !== 'web') {
       screenScrollRef.current?.scrollTo({ y: targetY, animated: true });
     }
-    setHighlightedRequestToken(searchTarget!.requestToken);
 
     const focusTimer = setTimeout(() => {
       const targetAnchor = targetAnchorRef.current;
       if (Platform.OS === 'web') {
-        (targetAnchor as unknown as WebSearchTargetAnchor | null)?.focus?.();
+        getWebSearchTargetAnchor()?.focus?.();
         return;
       }
       const targetHandle = findNodeHandle(targetAnchor);
@@ -110,6 +131,7 @@ export function LessonDetailScreen({ navigation, route }: Props) {
     }, 2_500);
 
     return () => {
+      if (webScrollTimer) clearTimeout(webScrollTimer);
       clearTimeout(focusTimer);
       clearTimeout(highlightTimer);
     };
