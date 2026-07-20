@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import {
   AccessibilityInfo,
   findNodeHandle,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -86,7 +87,12 @@ export function LessonDetailScreen({ navigation, route }: Props) {
     setHighlightedRequestToken(searchTarget!.requestToken);
 
     const focusTimer = setTimeout(() => {
-      const targetHandle = findNodeHandle(targetAnchorRef.current);
+      const targetAnchor = targetAnchorRef.current;
+      if (Platform.OS === 'web') {
+        (targetAnchor as unknown as { focus?: () => void } | null)?.focus?.();
+        return;
+      }
+      const targetHandle = findNodeHandle(targetAnchor);
       if (targetHandle) AccessibilityInfo.setAccessibilityFocus(targetHandle);
     }, 350);
     const highlightTimer = setTimeout(() => {

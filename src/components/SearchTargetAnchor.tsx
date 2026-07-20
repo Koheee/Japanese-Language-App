@@ -21,6 +21,7 @@ export const SearchTargetAnchor = forwardRef<View, Props>(function SearchTargetA
       onLayout={onLayout}
       ref={ref}
       style={[styles.anchor, highlighted && styles.highlighted]}
+      tabIndex={highlighted ? -1 : undefined}
     >
       {children}
     </View>
@@ -36,4 +37,3 @@ const styles = StyleSheet.create({
     backgroundColor: colors.goldSoft,
   },
 });
-

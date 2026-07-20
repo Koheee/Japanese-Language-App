@@ -16,7 +16,12 @@ describe('search target landing presentation', () => {
     expect(source).toContain('scrollTo({ y: 0, animated: true })');
     expect(source).toContain('SearchTargetAnchor');
     expect(source).toContain('AccessibilityInfo.setAccessibilityFocus');
+    expect(source).toContain("Platform.OS === 'web'");
+    expect(source).toContain('focus?.()');
     expect(source).toContain('2_500');
+
+    const anchor = read('components/SearchTargetAnchor.tsx');
+    expect(anchor).toContain('tabIndex={highlighted ? -1 : undefined}');
   });
 
   it('passes subsection landing intent into grammar and dialogue content', () => {
@@ -31,4 +36,3 @@ describe('search target landing presentation', () => {
     expect(dialogue).toContain('initialGrammarId');
   });
 });
-
