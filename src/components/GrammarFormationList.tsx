@@ -44,7 +44,6 @@ const styles = StyleSheet.create({
   formulaPanel: {
     width: '100%',
     flexShrink: 1,
-    minWidth: 0,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.md,
     backgroundColor: colors.forestSoft,

@@ -111,11 +111,14 @@ export function GrammarCard({ point, index }: { point: GrammarPoint; index: numb
             <Text style={styles.insightText}>{presentation.insight.whyItWorks}</Text>
           </View>
         ) : null}
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionLabel}>WHEN IT FITS</Text>
-        <Text style={styles.body}>{point.usageBoundary}</Text>
+        <View style={styles.boundarySection}>
+          <Text style={styles.sectionLabel}>WHEN IT FITS</Text>
+          <Text style={styles.body}>
+            {presentation.insight
+              ? presentation.insight.usageBoundary
+              : point.usageBoundary}
+          </Text>
+        </View>
       </View>
 
       <View style={styles.compareBox}>
@@ -192,6 +195,7 @@ const styles = StyleSheet.create({
   translation: { alignSelf: 'flex-start', maxWidth: '100%', paddingHorizontal: spacing.md, paddingVertical: spacing.sm, backgroundColor: colors.coralSoft, borderRadius: radii.sm },
   translationText: { flexShrink: 1, color: colors.ink, fontSize: typography.small, fontWeight: '700' },
   section: { width: '100%', gap: spacing.md },
+  boundarySection: { width: '100%', gap: spacing.md },
   sectionLabel: { color: colors.inkMuted, fontSize: typography.micro, fontWeight: '900', letterSpacing: 1 },
   body: { color: colors.ink, fontSize: typography.body, lineHeight: 25 },
   toggle: {
@@ -208,7 +212,7 @@ const styles = StyleSheet.create({
     borderColor: colors.line,
     backgroundColor: colors.surfaceStrong,
   },
-  toggleFocused: { borderColor: colors.gold },
+  toggleFocused: { borderColor: colors.forest },
   togglePressed: { opacity: 0.78 },
   toggleLabel: { flex: 1, color: colors.ink, fontSize: typography.small, fontWeight: '900', letterSpacing: 0.5 },
   toggleGlyph: { color: colors.coral, fontSize: typography.heading, fontWeight: '800' },

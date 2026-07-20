@@ -188,40 +188,258 @@ const collect = <T extends ts.Node>(
   return matches;
 };
 
+const getJsxAttribute = (
+  node: ts.JsxOpeningElement | ts.JsxSelfClosingElement,
+  name: string,
+) => node.attributes.properties.find(
+  (property): property is ts.JsxAttribute => ts.isJsxAttribute(property)
+    && property.name.getText(node.getSourceFile()) === name,
+);
+
+const getJsxAttributeExpression = (
+  node: ts.JsxOpeningElement | ts.JsxSelfClosingElement,
+  name: string,
+) => {
+  const initializer = getJsxAttribute(node, name)?.initializer;
+  return initializer && ts.isJsxExpression(initializer) && initializer.expression
+    ? initializer.expression.getText(node.getSourceFile())
+    : null;
+};
+
+const getJsxAttributeText = (
+  node: ts.JsxOpeningElement | ts.JsxSelfClosingElement,
+  name: string,
+) => {
+  const initializer = getJsxAttribute(node, name)?.initializer;
+  return initializer && ts.isStringLiteral(initializer) ? initializer.text : null;
+};
+
+const getElementStyleName = (element: ts.JsxElement) => {
+  const style = getJsxAttributeExpression(element.openingElement, 'style');
+  return style?.match(/^styles\.(\w+)$/)?.[1] ?? null;
+};
+
+const getElementsWithStyle = (
+  root: ts.Node,
+  styleName: string,
+) => collect(root, ts.isJsxElement).filter(
+  (element) => getElementStyleName(element) === styleName,
+);
+
+const propertyAccessTexts = (root: ts.Node) => collect(root, ts.isPropertyAccessExpression)
+  .map((node) => node.getText(root.getSourceFile()));
+
+const findAncestor = <T extends ts.Node>(
+  node: ts.Node,
+  predicate: (candidate: ts.Node) => candidate is T,
+): T | undefined => {
+  let current = node.parent;
+  while (current) {
+    if (predicate(current)) return current;
+    current = current.parent;
+  }
+  return undefined;
+};
+
+const getStyleObject = (
+  tree: ts.SourceFile,
+  styleName: string,
+): ts.ObjectLiteralExpression => {
+  const createCall = collect(tree, ts.isCallExpression).find(
+    (call) => call.expression.getText(tree) === 'StyleSheet.create',
+  );
+  const definitions = createCall?.arguments[0];
+  expect(definitions && ts.isObjectLiteralExpression(definitions)).toBe(true);
+  const style = (definitions as ts.ObjectLiteralExpression).properties.find(
+    (property): property is ts.PropertyAssignment => ts.isPropertyAssignment(property)
+      && property.name.getText(tree) === styleName,
+  );
+  expect(style && ts.isObjectLiteralExpression(style.initializer)).toBe(true);
+  return style!.initializer as ts.ObjectLiteralExpression;
+};
+
+const getStyleProperties = (style: ts.ObjectLiteralExpression) => new Map(
+  style.properties
+    .filter(ts.isPropertyAssignment)
+    .map((property) => [
+      property.name.getText(style.getSourceFile()),
+      property.initializer.getText(style.getSourceFile()),
+    ]),
+);
+
+const requireNode = <T,>(candidate: T | undefined, label: string): T => {
+  expect(candidate, label).toBeDefined();
+  return candidate!;
+};
+
 describe('GrammarCard teaching contract', () => {
   const card = parseTsx('GrammarCard.tsx');
+  const grammarCard = card.tree.statements.find(
+    (statement): statement is ts.FunctionDeclaration => ts.isFunctionDeclaration(statement)
+      && statement.name?.text === 'GrammarCard',
+  );
 
-  it('renders the complete teaching sequence in learner order', () => {
-    const labels = [
-      ...collect(card.tree, ts.isJsxText).map((node) => ({
-        position: node.pos,
-        text: node.text.trim(),
-      })),
-      ...collect(card.tree, ts.isJsxAttribute)
-        .filter((node) => node.name.getText(card.tree) === 'label'
-          && node.initializer
-          && ts.isStringLiteral(node.initializer))
-        .map((node) => ({
-          position: node.pos,
-          text: (node.initializer as ts.StringLiteral).text,
-        })),
-    ]
-      .filter(({ text }) => Boolean(text))
-      .sort((left, right) => left.position - right.position)
-      .map(({ text }) => text);
-    const expected = [
-      'THE BASICS',
-      'BUILD THE FORM',
-      'A JAPANESE-FIRST PICTURE',
-      'WHEN IT FITS',
-      'COMPARE IT',
-      'EXAMPLES',
-      'COMMON TURN',
-      'GO DEEPER',
+  const getSection = (styleName: string, label: string) => {
+    const section = getElementsWithStyle(grammarCard!, styleName).find((element) => {
+      const textLabels = collect(element, ts.isJsxText).map((node) => node.text.trim());
+      const componentLabels = [
+        ...collect(element, ts.isJsxOpeningElement),
+        ...collect(element, ts.isJsxSelfClosingElement),
+      ].map((node) => getJsxAttributeText(node, 'label'));
+      return [...textLabels, ...componentLabels].includes(label);
+    });
+    expect(section, `${label} should have its own ${styleName} section`).toBeDefined();
+    return section!;
+  };
+
+  it('ties the at-a-glance heading and plain-English pill to their content', () => {
+    const heading = requireNode(
+      getElementsWithStyle(grammarCard!, 'headingCopy')[0],
+      'at-a-glance heading',
+    );
+    const translation = requireNode(
+      getElementsWithStyle(grammarCard!, 'translation')[0],
+      'plain-English pill',
+    );
+
+    expect(propertyAccessTexts(heading)).toEqual(expect.arrayContaining([
+      'point.title',
+      'point.pattern',
+    ]));
+    expect(propertyAccessTexts(translation)).toContain('point.plainEnglish');
+  });
+
+  it('ties basics and formation payloads to their ordered sections', () => {
+    const basics = getSection('section', 'THE BASICS');
+    const formation = getSection('section', 'BUILD THE FORM');
+    const formationList = requireNode(
+      collect(formation, ts.isJsxSelfClosingElement).find(
+        (node) => node.tagName.getText(card.tree) === 'GrammarFormationList',
+      ),
+      'formation list inside BUILD THE FORM',
+    );
+
+    expect(propertyAccessTexts(basics)).toContain('point.explanation');
+    expect(getJsxAttributeExpression(formationList, 'formation')).toBe('point.formation');
+  });
+
+  it('ties the insight toggle and expanded picture to both projected insight fields', () => {
+    const insight = getSection('section', 'A JAPANESE-FIRST PICTURE');
+    const toggle = requireNode(
+      collect(insight, ts.isJsxSelfClosingElement).find(
+        (node) => node.tagName.getText(card.tree) === 'GrammarSectionToggle',
+      ),
+      'Japanese-first toggle',
+    );
+    const payloads = propertyAccessTexts(insight);
+    const whyPayload = requireNode(
+      collect(insight, ts.isPropertyAccessExpression).find(
+        (node) => node.getText(card.tree) === 'presentation.insight.whyItWorks',
+      ),
+      'expanded insight whyItWorks payload',
+    );
+    const boundaryPayload = requireNode(
+      collect(insight, ts.isPropertyAccessExpression).find(
+        (node) => node.getText(card.tree) === 'presentation.insight.usageBoundary',
+      ),
+      'expanded insight usageBoundary payload',
+    );
+
+    expect(getJsxAttributeExpression(toggle, 'presentation')).toBe('presentation.insightToggle');
+    expect(payloads).toEqual(expect.arrayContaining([
+      'presentation.insight',
+      'presentation.insight.whyItWorks',
+      'presentation.insight.usageBoundary',
+    ]));
+    expect(findAncestor(whyPayload, ts.isConditionalExpression)?.condition.getText(card.tree))
+      .toBe('presentation.insight');
+    expect(findAncestor(boundaryPayload, ts.isConditionalExpression)?.condition.getText(card.tree))
+      .toBe('presentation.insight');
+  });
+
+  it('keeps the usage boundary and contrast visible in their own sections', () => {
+    const boundary = getSection('boundarySection', 'WHEN IT FITS');
+    const contrast = getSection('compareBox', 'COMPARE IT');
+
+    expect(propertyAccessTexts(boundary)).toContain('point.usageBoundary');
+    expect(propertyAccessTexts(contrast)).toEqual(expect.arrayContaining([
+      'point.contrast.with',
+      'point.contrast.explanation',
+    ]));
+  });
+
+  it('maps every example field inside the examples section', () => {
+    const examples = getSection('section', 'EXAMPLES');
+    const mapCall = requireNode(
+      collect(examples, ts.isCallExpression).find(
+        (call) => call.expression.getText(card.tree) === 'point.examples.map',
+      ),
+      'point.examples map',
+    );
+    const callback = requireNode(mapCall.arguments[0], 'point.examples map callback');
+    const example = requireNode(
+      getElementsWithStyle(callback, 'example')[0],
+      'example row inside point.examples map',
+    );
+
+    expect(propertyAccessTexts(example)).toEqual(expect.arrayContaining([
+      'example.japanese',
+      'example.reading',
+      'example.english',
+    ]));
+  });
+
+  it('keeps the optional common mistake and deeper payloads in guarded branches', () => {
+    const mistake = getSection('mistake', 'COMMON TURN');
+    const deeper = getSection('section', 'GO DEEPER');
+    const mistakeBranch = findAncestor(mistake, ts.isConditionalExpression);
+    const deeperBranch = findAncestor(deeper, ts.isConditionalExpression);
+    const deeperPayloads = propertyAccessTexts(deeper);
+
+    expect(mistakeBranch?.condition.getText(card.tree)).toBe('point.commonMistake');
+    expect(propertyAccessTexts(mistake)).toEqual(expect.arrayContaining([
+      'point.commonMistake.avoid',
+      'point.commonMistake.prefer',
+      'point.commonMistake.reason',
+    ]));
+    expect(deeperBranch?.condition.getText(card.tree)).toBe('presentation.deeperToggle');
+    expect(deeperPayloads).toEqual(expect.arrayContaining([
+      'presentation.deeper',
+      'presentation.deeper.notes',
+      'presentation.deeper.beyondBasics',
+    ]));
+    const mapTargets = collect(deeper, ts.isCallExpression)
+      .map((call) => call.expression.getText(card.tree));
+    expect(mapTargets).toEqual(expect.arrayContaining([
+      'presentation.deeper.notes?.map',
+      'presentation.deeper.beyondBasics?.map',
+    ]));
+  });
+
+  it('orders the structural sections as one complete teaching sequence', () => {
+    const heading = requireNode(
+      getElementsWithStyle(grammarCard!, 'headingCopy')[0],
+      'ordered at-a-glance heading',
+    );
+    const translation = requireNode(
+      getElementsWithStyle(grammarCard!, 'translation')[0],
+      'ordered plain-English pill',
+    );
+    const anchors = [
+      heading,
+      translation,
+      getSection('section', 'THE BASICS'),
+      getSection('section', 'BUILD THE FORM'),
+      getSection('section', 'A JAPANESE-FIRST PICTURE'),
+      getSection('boundarySection', 'WHEN IT FITS'),
+      getSection('compareBox', 'COMPARE IT'),
+      getSection('section', 'EXAMPLES'),
+      getSection('mistake', 'COMMON TURN'),
+      getSection('section', 'GO DEEPER'),
     ];
 
-    const positions = expected.map((label) => labels.indexOf(label));
-    expect(positions.every((position) => position >= 0)).toBe(true);
+    expect(anchors.every(Boolean)).toBe(true);
+    const positions = anchors.map((node) => node!.pos);
     expect([...positions].sort((left, right) => left - right)).toEqual(positions);
   });
 
@@ -261,7 +479,8 @@ describe('GrammarCard teaching contract', () => {
     const baseStyle = card.source.match(/toggle:\s*\{[\s\S]*?\n\s*\},\n\s*toggleFocused:/)?.[0] ?? '';
     const focusedStyle = card.source.match(/toggleFocused:\s*\{[^}]*\}/)?.[0] ?? '';
     expect(baseStyle).toContain('borderWidth: 2');
-    expect(focusedStyle).toContain('borderColor: colors.gold');
+    expect(focusedStyle).toContain('borderColor: colors.forest');
+    expect(focusedStyle).not.toContain('colors.gold');
     expect(focusedStyle).not.toContain('borderWidth');
   });
 });
@@ -269,26 +488,45 @@ describe('GrammarCard teaching contract', () => {
 describe('GrammarFormationList narrow-screen contract', () => {
   const formation = parseTsx('GrammarFormationList.tsx');
 
-  it('renders every row field and makes formula text selectable', () => {
-    const properties = collect(formation.tree, ts.isPropertyAccessExpression)
-      .filter((node) => node.expression.getText(formation.tree) === 'row')
-      .map((node) => node.name.text);
-    const textTags = collect(formation.tree, ts.isJsxOpeningElement)
-      .filter((node) => node.tagName.getText(formation.tree) === 'Text')
-      .map((node) => node.getText(formation.tree));
-
-    expect(properties).toEqual(expect.arrayContaining(['label', 'formula', 'explanation']));
-    expect(textTags.some((tag) => tag.includes('selectable={true}'))).toBe(true);
+  it('maps every formation row into corresponding label, formula, and explanation structures', () => {
+    const list = requireNode(
+      getElementsWithStyle(formation.tree, 'list')[0],
+      'formation list container',
+    );
+    const mapCall = requireNode(
+      collect(list, ts.isCallExpression).find(
+        (call) => call.expression.getText(formation.tree) === 'formation.map',
+      ),
+      'formation.map',
+    );
+    const callback = requireNode(mapCall.arguments[0], 'formation.map callback');
+    const row = requireNode(getElementsWithStyle(callback, 'row')[0], 'formation row');
+    const label = requireNode(getElementsWithStyle(row, 'label')[0], 'formation label');
+    const panel = requireNode(
+      getElementsWithStyle(row, 'formulaPanel')[0],
+      'formation formula panel',
+    );
+    const formulaText = requireNode(
+      getElementsWithStyle(panel, 'formula')[0],
+      'formation formula text',
+    );
+    const explanation = requireNode(
+      getElementsWithStyle(row, 'explanation')[0],
+      'formation explanation',
+    );
+    expect(propertyAccessTexts(label)).toContain('row.label');
+    expect(propertyAccessTexts(formulaText)).toContain('row.formula');
+    expect(propertyAccessTexts(explanation)).toContain('row.explanation');
+    expect(getJsxAttributeExpression(formulaText.openingElement, 'selectable')).toBe('true');
   });
 
-  it('uses shrinkable full-width rows and formula panels without a fixed width', () => {
-    for (const styleName of ['row', 'formulaPanel', 'formula']) {
-      const style = formation.source.match(
-        new RegExp(`${styleName}:\\s*\\{[\\s\\S]*?\\n\\s*\\},`),
-      )?.[0] ?? '';
-      expect(style).toContain("width: '100%'");
-      expect(style).toContain('flexShrink: 1');
-      expect(style).not.toMatch(/width:\s*\d/);
+  it('ties each relevant JSX node to a shrinkable full-width style with no fixed constraints', () => {
+    for (const styleName of ['list', 'row', 'formulaPanel', 'formula']) {
+      const properties = getStyleProperties(getStyleObject(formation.tree, styleName));
+      expect(properties.get('width'), `${styleName} width`).toBe("'100%'");
+      expect(properties.get('flexShrink'), `${styleName} flexShrink`).toBe('1');
+      expect(properties.has('minWidth'), `${styleName} minWidth`).toBe(false);
+      expect(properties.has('maxWidth'), `${styleName} maxWidth`).toBe(false);
     }
   });
 });
