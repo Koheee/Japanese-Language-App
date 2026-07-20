@@ -15,6 +15,15 @@ describe('grammar enrichment for Lessons 10-17', () => {
     })).toEqual([]);
   });
 
+  it('makes conjugation and state contrasts explicit', () => {
+    const points = new Map(lessons.slice(9, 17).flatMap(({ grammar }) =>
+      grammar.map((point) => [point.id, point] as const)));
+
+    expect(points.get('l14-te-form')?.formation?.length).toBeGreaterThanOrEqual(4);
+    expect(points.get('l15-continuing-state')?.contrast?.with).toBe('action in progress compared with a continuing state');
+    expect(points.get('l17-obligation')?.formation?.some(({ formula }) => formula.includes('なければ'))).toBe(true);
+  });
+
   it('anchors the taught て-form and ない-form algorithms to familiar ～ます forms', () => {
     const points = new Map(
       lessons

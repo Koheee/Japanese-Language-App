@@ -24,6 +24,22 @@ const lesson10: Lesson = {
       explanation: 'Use あります for inanimate or conventionally non-moving entities, including objects, plants, places, and events. Use います for people and animals understood as animate movers. The predicate therefore classifies the entity while stating that it exists.',
       whyItWorks: 'Japanese chooses the existence predicate from the kind of entity being presented. Rather than starting from English “is” or “there is,” identify the entity first and let that Japanese category select あります or います.',
       usageBoundary: 'This is a conventional language distinction, not a biology test: plants and dolls take あります. This lesson stays with the polite forms and defers general plain-form conjugation.',
+      formation: [
+        {
+          label: 'Inanimate existence',
+          formula: 'thing／plant／place／event + が + あります',
+          explanation: 'Mark the entity that exists with が and choose あります when Japanese treats it as inanimate or non-moving.',
+        },
+        {
+          label: 'Animate existence',
+          formula: 'person／animal + が + います',
+          explanation: 'Mark the living mover with が and choose います for people and animals.',
+        },
+      ],
+      contrast: {
+        with: 'あります compared with います',
+        explanation: 'Choose あります for things, plants, places, and events, but います for people and animals; English “there is” does not show this split.',
+      },
       notes: ['A robot or doll normally takes あります; a real dog takes います.', 'A plant is alive biologically, but Japanese conventionally treats it with あります.'],
       examples: [
         { japanese: 'つくえが あります。', reading: 'つくえが あります。', english: 'There is a desk.' },
@@ -39,6 +55,17 @@ const lesson10: Lesson = {
       explanation: 'Put the existence location before に and mark the entity newly introduced there with が. Finish with あります or います according to the entity. This pattern answers what or who can be found at a place.',
       whyItWorks: 'Japanese first establishes the real location and then brings a new participant into the listener’s attention with が. There is no empty equivalent of English “there”; the sentence presents “at this location, N exists.”',
       usageBoundary: 'Use this location に plus new-entity が frame when introducing what is there. A known entity becomes the topic with は, while で marks the setting of an action rather than existence.',
+      formation: [
+        {
+          label: 'Place-first existence',
+          formula: 'place + に + newly introduced N + が + あります／います',
+          explanation: 'Set the existence location with に, introduce what is found there with が, and finish with the matching existence verb.',
+        },
+      ],
+      contrast: {
+        with: 'new-entity が compared with known-topic は',
+        explanation: 'Use が to present what has appeared at the location; use は when the listener already knows the entity and needs its location.',
+      },
       examples: [
         { japanese: 'だいどころに れいぞうこが あります。', reading: 'だいどころに れいぞうこが あります。', english: 'There is a refrigerator in the kitchen.' },
         { japanese: 'ベランダに とりが います。', reading: 'ベランダに とりが います。', english: 'There is a bird on the balcony.' },
@@ -52,6 +79,17 @@ const lesson10: Lesson = {
       explanation: 'Mark an already known person or object with は, place its existence location before に, and select あります or います. This arrangement naturally answers a question such as “Where is the key?”',
       whyItWorks: 'Japanese keeps the known entity as the conversational topic and comments on where it exists. The topic marker signals that the listener can already identify N; the location supplies the new information.',
       usageBoundary: 'Do not use this topic-first frame to introduce an unknown entity as new information. Keep に for its existence location; action locations use で instead.',
+      formation: [
+        {
+          label: 'Known entity location',
+          formula: 'known N + は + place + に + あります／います',
+          explanation: 'Name the familiar entity as the topic, then state the place where it exists and select the appropriate existence verb.',
+        },
+      ],
+      contrast: {
+        with: 'N は place に compared with place に N が',
+        explanation: 'Lead with N は to answer where a known entity is; lead with place に and use N が to answer what or who is there.',
+      },
       examples: [
         { japanese: 'かぎは げんかんに あります。', reading: 'かぎは げんかんに あります。', english: 'The key is in the entryway.' },
         { japanese: 'ミナさんは リビングに います。', reading: 'ミナさんは リビングに います。', english: 'Mina is in the living room.' },
@@ -66,6 +104,22 @@ const lesson10: Lesson = {
       explanation: 'Spatial expressions such as うえ, した, なか, まえ, うしろ, となり, and ちかく are nouns. Join the reference noun to the position noun with の, then add に when that completed location hosts existence.',
       whyItWorks: 'Japanese names a reference object first and then a position belonging to that reference: つくえのした. This noun-to-noun structure builds the location before the existence predicate uses it.',
       usageBoundary: 'Keep the order reference の position; reversing it changes which noun is the head. These are position nouns, not English-style prepositions, and this lesson does not expand into general particle stacking.',
+      formation: [
+        {
+          label: 'Position from one reference',
+          formula: 'reference N + の + position noun + に + あります／います',
+          explanation: 'Attach the position noun to its reference with の, then mark the completed existence location with に.',
+        },
+        {
+          label: 'Position between two references',
+          formula: 'A + と + B + の + あいだ + に + あります／います',
+          explanation: 'Name both boundaries with と, attach あいだ with の, and use the resulting phrase as the existence location.',
+        },
+      ],
+      contrast: {
+        with: 'reference の position compared with position の reference',
+        explanation: 'つくえの した makes the area under the desk the head noun, while したの つくえ makes the desk itself the head noun modified as “the lower desk.”',
+      },
       notes: ['となり is for members of the same broad category, such as one shop next to another.', 'あいだ normally names both boundaries with A と B の あいだ.'],
       examples: [
         { japanese: 'リモコンは ソファの したに あります。', reading: 'リモコンは ソファの したに あります。', english: 'The remote is under the sofa.' },
@@ -92,12 +146,25 @@ const lesson10: Lesson = {
     { id: 'l10-v16', japanese: 'とり', reading: 'とり', english: 'bird', partOfSpeech: 'noun' },
   ],
   dialogue: [
-    { id: 'l10-d01', speaker: 'Mina', japanese: 'あれ、へやの かぎは どこに ありますか。', reading: 'あれ、へやの かぎは どこに ありますか。', english: 'Oh, where is the room key?', grammarIds: ['l10-known-location'] },
-    { id: 'l10-d02', speaker: 'Leo', japanese: 'げんかんの たなの うえに ありますよ。', reading: 'げんかんの たなの うえに ありますよ。', english: 'It is on the shelf in the entryway.', grammarIds: ['l10-position-words'] },
-    { id: 'l10-d03', speaker: 'Mina', japanese: 'ありません。たなの うえに ねこが います。', reading: 'ありません。たなの うえに ねこが います。', english: 'It is not there. There is a cat on the shelf.', grammarIds: ['l10-place-new-entity', 'l10-existence-verbs'] },
+    { id: 'l10-d01', speaker: 'Mina', japanese: 'あれ、へやの かぎは どこに ありますか。', reading: 'あれ、へやの かぎは どこに ありますか。', english: 'Oh, where is the room key?', grammarIds: ['l10-known-location'], grammarNotes: [
+      { grammarId: 'l10-known-location', explanation: 'The room key is already identifiable, so Mina makes it the は topic and asks which に location completes the comment.' },
+    ] },
+    { id: 'l10-d02', speaker: 'Leo', japanese: 'げんかんの たなの うえに ありますよ。', reading: 'げんかんの たなの うえに ありますよ。', english: 'It is on the shelf in the entryway.', grammarIds: ['l10-position-words'], grammarNotes: [
+      { grammarId: 'l10-position-words', explanation: 'げんかんの たな narrows the reference shelf, and its うえ becomes the precise location before に.' },
+    ] },
+    { id: 'l10-d03', speaker: 'Mina', japanese: 'ありません。たなの うえに ねこが います。', reading: 'ありません。たなの うえに ねこが います。', english: 'It is not there. There is a cat on the shelf.', grammarIds: ['l10-place-new-entity', 'l10-existence-verbs'], grammarNotes: [
+      { grammarId: 'l10-place-new-entity', explanation: 'After ruling out the key, Mina presents a newly noticed cat with が at the shelf-top location marked by に.' },
+      { grammarId: 'l10-existence-verbs', explanation: 'Mina switches from ありません for the absent key to います because the entity she does find is a cat.' },
+    ] },
     { id: 'l10-d04', speaker: 'Leo', japanese: 'ほんとうですか。じゃ、ソファの したは？', reading: 'ほんとうですか。じゃ、ソファの したは？', english: 'Really? Then, how about under the sofa?' },
-    { id: 'l10-d05', speaker: 'Mina', japanese: 'ソファの したに リモコンが あります。でも、かぎは ありません。', reading: 'ソファの したに リモコンが あります。でも、かぎは ありません。', english: 'There is a remote under the sofa, but the key is not there.', grammarIds: ['l10-place-new-entity', 'l10-position-words'] },
-    { id: 'l10-d06', speaker: 'Leo', japanese: 'あ、わたしの ポケットの なかに あります。ごめんなさい。', reading: 'あ、わたしの ポケットの なかに あります。ごめんなさい。', english: 'Oh, it is inside my pocket. Sorry.', grammarIds: ['l10-known-location', 'l10-position-words'] },
+    { id: 'l10-d05', speaker: 'Mina', japanese: 'ソファの したに リモコンが あります。でも、かぎは ありません。', reading: 'ソファの したに リモコンが あります。でも、かぎは ありません。', english: 'There is a remote under the sofa, but the key is not there.', grammarIds: ['l10-place-new-entity', 'l10-position-words'], grammarNotes: [
+      { grammarId: 'l10-place-new-entity', explanation: 'リモコンが introduces the different object Mina discovers at the searched location rather than making it the prior topic.' },
+      { grammarId: 'l10-position-words', explanation: 'ソファの した builds “the sofa’s underside” as a position noun phrase, which に marks as an existence location.' },
+    ] },
+    { id: 'l10-d06', speaker: 'Leo', japanese: 'あ、わたしの ポケットの なかに あります。ごめんなさい。', reading: 'あ、わたしの ポケットの なかに あります。ごめんなさい。', english: 'Oh, it is inside my pocket. Sorry.', grammarIds: ['l10-known-location', 'l10-position-words'], grammarNotes: [
+      { grammarId: 'l10-known-location', explanation: 'Leo omits the known key from his answer and supplies only its newly discovered に location plus あります.' },
+      { grammarId: 'l10-position-words', explanation: 'わたしの ポケット is the reference object, and なか names the interior where Leo finally finds the key.' },
+    ] },
   ],
   exercises: [
     { id: 'l10-e01', type: 'fill-blank', prompt: 'Choose the existence verb for a cat.', sentence: 'ベランダに ねこが ___。', acceptedAnswers: ['います', 'imasu'], hint: 'A cat is animate.', explanation: 'Animals take います.' },
@@ -130,6 +197,22 @@ const lesson11: Lesson = {
       explanation: 'Attach an appropriate classifier to the number: ～枚 for flat items, ～本 for long items, ～人 for people, and ～台 for machines, while ひとつ through とお count many general objects. Put the completed quantity near the verb.',
       whyItWorks: 'Japanese leaves the noun unchanged and lets a counter describe how the number packages that noun. Choosing the classifier is therefore part of counting, and familiar sound changes make the number-counter unit easier to pronounce.',
       usageBoundary: 'Counter readings must be learned with their combinations: 一人 is ひとり, 二人 is ふたり, and ～本 includes いっぽん, さんぼん, ろっぽん, and はっぽん. This lesson does not attempt the exhaustive counter or date systems.',
+      formation: [
+        {
+          label: 'Specific classifier quantity',
+          formula: 'N + particle + number + matching counter + V',
+          explanation: 'Keep the noun unchanged, attach the counter suited to its class to the number, and place that quantity close to the verb.',
+        },
+        {
+          label: 'General object quantity',
+          formula: 'N + particle + ひとつ／ふたつ／…／とお + V',
+          explanation: 'Use the native ～つ series through ten when a general object count fits and no more specific classifier is needed.',
+        },
+      ],
+      contrast: {
+        with: 'number + counter compared with an English plural noun',
+        explanation: 'Japanese leaves N in one form and puts number plus classifier near the verb; it does not add a plural ending to N.',
+      },
       notes: ['一回 is いっかい, while 二回 is にかい.', 'For ～本, consonants and voicing change in forms such as いっぽん, さんぼん, ろっぽん, and はっぽん.'],
       examples: [
         { japanese: 'はがきを さんまい かいます。', reading: 'はがきを さんまい かいます。', english: 'I will buy three postcards.' },
@@ -144,6 +227,17 @@ const lesson11: Lesson = {
       explanation: 'Place a span such as 一時間, 三日, or 二週間 before the predicate to measure how long the action or state lasts. A simple duration is normally bare, with no particle equivalent to English “for.”',
       whyItWorks: 'Japanese can insert a measured span directly into the event. That span measures duration rather than counting affected objects, so it does not need a classifier tied to a noun or a location/time-point に.',
       usageBoundary: 'Do not add に to a simple duration. A bare duration measures the event, whereas number-plus-counter quantities count objects and a specific time point may take に.',
+      formation: [
+        {
+          label: 'Bare duration',
+          formula: 'time span + V',
+          explanation: 'Place the measured span before the predicate without a particle to say how long the event lasts.',
+        },
+      ],
+      contrast: {
+        with: 'duration without に compared with a time point marked by に',
+        explanation: '一時間 measures how long an event continues and stays bare, while 七時に targets the clock time when it occurs.',
+      },
       examples: [
         { japanese: 'まいにち 一時間 べんきょうします。', reading: 'まいにち いちじかん べんきょうします。', english: 'I study for one hour every day.' },
         { japanese: '大阪に 三日 いました。', reading: 'おおさかに みっか いました。', english: 'I stayed in Osaka for three days.' },
@@ -158,6 +252,17 @@ const lesson11: Lesson = {
       explanation: 'State the time frame, mark it with に, and count occurrences inside it with number plus 回. 一週間に二回 therefore places two instances of the event within one week.',
       whyItWorks: 'Japanese establishes a measuring frame before reporting how many events fit inside it. The period marked by に is the container, while ～回 counts repeated events rather than objects.',
       usageBoundary: 'Keep the stated period and the event count distinct: 一週間に二回 is frequency, but 二時間べんきょうします is a bare duration. This lesson does not expand into the complete calendar system.',
+      formation: [
+        {
+          label: 'Occurrences per period',
+          formula: 'period + に + number + 回 + V',
+          explanation: 'Mark the period that contains the repetitions with に, then state how many occurrences fit inside it with ～回.',
+        },
+      ],
+      contrast: {
+        with: 'frequency frame compared with a bare duration',
+        explanation: '一週間に 二回 counts two separate events within a week, whereas 二時間 measures one event’s length without に.',
+      },
       examples: [
         { japanese: '一週間に 二回 プールへ 行きます。', reading: 'いっしゅうかんに にかい プールへ いきます。', english: 'I go to the pool twice a week.' },
         { japanese: '一年に 一回 けんこうしんだんが あります。', reading: 'いちねんに いっかい けんこうしんだんが あります。', english: 'There is a health check once a year.' },
@@ -171,6 +276,27 @@ const lesson11: Lesson = {
       explanation: 'Choose a question expression that matches the quantity expected: いくつ for general objects, 何人・何枚・何本 for known classifier classes, and どのくらい for an open amount or duration. The answer occupies the same sentence position.',
       whyItWorks: 'Japanese asks through the shape of its expected answer. A counter question keeps the relevant classifier and replaces only the number with 何, while an unbounded span calls for どのくらい.',
       usageBoundary: 'Do not use one universal equivalent of “how many.” Match the counter and its reading, such as なんにん or なんぼん, and reserve どのくらい for open amounts or spans rather than an exhaustive counter system.',
+      formation: [
+        {
+          label: 'General object question',
+          formula: 'N + particle + いくつ + Vますか',
+          explanation: 'Put いくつ in the same quantity slot where a general ～つ answer would appear.',
+        },
+        {
+          label: 'Classifier question',
+          formula: 'N + particle + 何 + matching counter + Vますか',
+          explanation: 'Keep the expected classifier after 何 so the question names the kind of count the answer must provide.',
+        },
+        {
+          label: 'Open amount or span question',
+          formula: 'どのくらい + Vますか',
+          explanation: 'Use どのくらい when the answer is an open-ended amount, distance, cost, or duration rather than a counted object class.',
+        },
+      ],
+      contrast: {
+        with: '何 + counter compared with どのくらい',
+        explanation: 'Ask 何枚 or 何人 when the answer has a known classifier; ask どのくらい when the scale or span is open-ended.',
+      },
       examples: [
         { japanese: 'クラスに がくせいが 何人 いますか。', reading: 'クラスに がくせいが なんにん いますか。', english: 'How many students are in the class?' },
         { japanese: '東京から 京都まで どのくらい かかりますか。', reading: 'とうきょうから きょうとまで どのくらい かかりますか。', english: 'About how long does it take from Tokyo to Kyoto?' },
@@ -197,11 +323,21 @@ const lesson11: Lesson = {
   ],
   dialogue: [
     { id: 'l11-d01', speaker: 'Clerk', japanese: 'いらっしゃいませ。きょうは 何を おくりますか。', reading: 'いらっしゃいませ。きょうは なにを おくりますか。', english: 'Welcome. What are you sending today?' },
-    { id: 'l11-d02', speaker: 'Kai', japanese: 'この はがきを さんまいと、にもつを ひとつ おくります。', reading: 'この はがきを さんまいと、にもつを ひとつ おくります。', english: 'I am sending these three postcards and one parcel.', grammarIds: ['l11-counters'] },
-    { id: 'l11-d03', speaker: 'Clerk', japanese: 'きっては 何まい いりますか。', reading: 'きっては なんまい いりますか。', english: 'How many stamps do you need?', grammarIds: ['l11-quantity-questions'] },
-    { id: 'l11-d04', speaker: 'Kai', japanese: 'さんまい おねがいします。にもつは シンガポールまで どのくらい かかりますか。', reading: 'さんまい おねがいします。にもつは シンガポールまで どのくらい かかりますか。', english: 'Three, please. About how long will the parcel take to Singapore?', grammarIds: ['l11-quantity-questions'] },
-    { id: 'l11-d05', speaker: 'Clerk', japanese: 'だいたい 五日 かかります。', reading: 'だいたい いつか かかります。', english: 'It takes about five days.', grammarIds: ['l11-duration'] },
-    { id: 'l11-d06', speaker: 'Kai', japanese: 'わかりました。この クラブへ 一年に 四回 にもつを おくります。では、ぜんぶ おねがいします。', reading: 'わかりました。この クラブへ いちねんに よんかい にもつを おくります。では、ぜんぶ おねがいします。', english: 'Got it. I send a parcel to this club four times a year. Please process everything, then.', grammarIds: ['l11-frequency'] },
+    { id: 'l11-d02', speaker: 'Kai', japanese: 'この はがきを さんまいと、にもつを ひとつ おくります。', reading: 'この はがきを さんまいと、にもつを ひとつ おくります。', english: 'I am sending these three postcards and one parcel.', grammarIds: ['l11-counters'], grammarNotes: [
+      { grammarId: 'l11-counters', explanation: 'Kai chooses ～まい for the three flat postcards but the general count ひとつ for the single parcel.' },
+    ] },
+    { id: 'l11-d03', speaker: 'Clerk', japanese: 'きっては 何まい いりますか。', reading: 'きっては なんまい いりますか。', english: 'How many stamps do you need?', grammarIds: ['l11-quantity-questions'], grammarNotes: [
+      { grammarId: 'l11-quantity-questions', explanation: 'Because stamps take the flat-item counter ～まい, the clerk preserves that classifier after 何 in 何まい.' },
+    ] },
+    { id: 'l11-d04', speaker: 'Kai', japanese: 'さんまい おねがいします。にもつは シンガポールまで どのくらい かかりますか。', reading: 'さんまい おねがいします。にもつは シンガポールまで どのくらい かかりますか。', english: 'Three, please. About how long will the parcel take to Singapore?', grammarIds: ['l11-quantity-questions'], grammarNotes: [
+      { grammarId: 'l11-quantity-questions', explanation: 'Kai answers the stamp count in the matching ～まい shape, then uses どのくらい because the delivery span is open-ended.' },
+    ] },
+    { id: 'l11-d05', speaker: 'Clerk', japanese: 'だいたい 五日 かかります。', reading: 'だいたい いつか かかります。', english: 'It takes about five days.', grammarIds: ['l11-duration'], grammarNotes: [
+      { grammarId: 'l11-duration', explanation: '五日 stands bare before かかります to measure the parcel’s travel time; だいたい makes the estimate approximate.' },
+    ] },
+    { id: 'l11-d06', speaker: 'Kai', japanese: 'わかりました。この クラブへ 一年に 四回 にもつを おくります。では、ぜんぶ おねがいします。', reading: 'わかりました。この クラブへ いちねんに よんかい にもつを おくります。では、ぜんぶ おねがいします。', english: 'Got it. I send a parcel to this club four times a year. Please process everything, then.', grammarIds: ['l11-frequency'], grammarNotes: [
+      { grammarId: 'l11-frequency', explanation: '一年に establishes one year as the repetition frame, and 四回 counts the four parcel shipments inside it.' },
+    ] },
   ],
   exercises: [
     { id: 'l11-e01', type: 'fill-blank', prompt: 'Use the counter for flat things.', sentence: 'はがきを 三 ___ かいました。', acceptedAnswers: ['まい', '枚', 'mai'], hint: 'Postcards are flat.', explanation: '～枚 counts postcards and other flat objects.' },
@@ -234,6 +370,27 @@ const lesson12: Lesson = {
       explanation: 'For an affirmative past い-adjective, replace its final い with かった and add polite です. For the past negative, use ～くなかったです. The adjective いい follows the special stem よ-: よかったです and よくなかったです.',
       whyItWorks: 'An い-adjective carries polarity and tense in its own changing ending. Japanese therefore reshapes the adjective itself instead of leaving it unchanged and switching a separate equivalent of English “is” to “was.”',
       usageBoundary: 'Do not attach でした directly to an unchanged い-adjective. This lesson uses the ～かった／～くなかった grid and defers advanced comparison or advice constructions.',
+      formation: [
+        {
+          label: 'Affirmative past い-adjective',
+          formula: '～い → ～かったです',
+          explanation: 'Remove the final い, add かった, and finish with です for a polite affirmative past description.',
+        },
+        {
+          label: 'Negative past い-adjective',
+          formula: '～い → ～くなかったです',
+          explanation: 'Change the final い to くなかった and add です to say the earlier description did not hold.',
+        },
+        {
+          label: 'Past forms of いい',
+          formula: 'いい → よかったです／よくなかったです',
+          explanation: 'Use the special よ- base when changing いい into either affirmative or negative past.',
+        },
+      ],
+      contrast: {
+        with: 'い-adjective ～かったです compared with noun／な-adjective でした',
+        explanation: 'An い-adjective changes its own final い to show past time; a noun or な-adjective keeps its stem and takes でした.',
+      },
       examples: [
         { japanese: 'うみは あたたかかったです。', reading: 'うみは あたたかかったです。', english: 'The sea was warm.' },
         { japanese: 'きのうの てんきは よくなかったです。', reading: 'きのうの てんきは よくなかったです。', english: 'Yesterday’s weather was not good.' },
@@ -248,6 +405,27 @@ const lesson12: Lesson = {
       explanation: 'Nouns and な-adjectives use the copular past grid: でした for affirmative past and じゃありませんでした or the more formal ではありませんでした for negative past. The な connector appears only when the adjective directly modifies a following noun.',
       whyItWorks: 'A noun or な-adjective stem does not conjugate like an い-adjective. Japanese places past time and negation in the copular ending, so the two adjective classes follow separate sentence-building systems.',
       usageBoundary: 'Do not use the い-adjective ～かった grid here, and do not place な before でした. Keep しずかなホテル only for the noun-modifier slot.',
+      formation: [
+        {
+          label: 'Affirmative copular past',
+          formula: 'noun／な-adjective stem + でした',
+          explanation: 'Leave the noun or な-adjective stem unchanged and attach でした to make the polite affirmative past.',
+        },
+        {
+          label: 'Negative copular past',
+          formula: 'noun／な-adjective stem + じゃありませんでした／ではありませんでした',
+          explanation: 'Attach the conversational or formal negative-past copular ending to say the earlier identity or quality did not hold.',
+        },
+        {
+          label: 'な-adjective before a past noun',
+          formula: 'な-adjective stem + な + noun + でした',
+          explanation: 'Keep な only when the adjective directly modifies the noun that comes before the final past ending.',
+        },
+      ],
+      contrast: {
+        with: 'でした compared with ～かったです',
+        explanation: 'Use でした after nouns and な-adjective stems, but change an い-adjective to ～かった before adding polite です.',
+      },
       examples: [
         { japanese: 'ホテルは しずかでした。', reading: 'ホテルは しずかでした。', english: 'The hotel was quiet.' },
         { japanese: 'まつりは しずかでは ありませんでした。', reading: 'まつりは しずかでは ありませんでした。', english: 'The festival was not quiet.' },
@@ -262,6 +440,17 @@ const lesson12: Lesson = {
       explanation: 'In A は B より adjective です, より marks B as the baseline against which A is judged. The adjective describes A, and Japanese does not need an extra comparative ending or a separate word for “more.”',
       whyItWorks: 'Japanese fixes the topic, inserts a comparison baseline, and then states the quality. Reading B より as “using B as the reference point” keeps the Japanese information order clear.',
       usageBoundary: 'より identifies the baseline, not the winner; reversing A and B reverses the comparison. Broader comparison and advice patterns remain outside this lesson.',
+      formation: [
+        {
+          label: 'Baseline comparison',
+          formula: 'A + は + B + より + adjective + です',
+          explanation: 'Set A as the item being described, mark B as the comparison baseline with より, and state A’s quality.',
+        },
+      ],
+      contrast: {
+        with: 'B より compared with A のほうが',
+        explanation: 'B より identifies the reference side of a comparison, while A のほうが explicitly identifies the selected or stronger side.',
+      },
       examples: [
         { japanese: '山は うみより すずしいです。', reading: 'やまは うみより すずしいです。', english: 'The mountains are cooler than the seaside.' },
         { japanese: 'でんしゃは バスより はやいです。', reading: 'でんしゃは バスより はやいです。', english: 'The train is faster than the bus.' },
@@ -275,6 +464,27 @@ const lesson12: Lesson = {
       explanation: 'Use A と B と どちらが to ask which of two named sides has a quality, and answer with the chosen N のほうが. For a larger set, state that set with で and mark its top member with いちばん.',
       whyItWorks: 'Japanese keeps the descriptive word stable and builds the choice around it. どちら asks the listener to select one of two sides, while set で tells the listener exactly where an いちばん ranking applies.',
       usageBoundary: 'Use どちら for the taught two-way choice and give いちばん an explicit comparison set. Without a shared set, “best” or “most” lacks the intended baseline.',
+      formation: [
+        {
+          label: 'Two-way choice question',
+          formula: 'A + と + B + と + どちらが + description + ですか',
+          explanation: 'Name the two candidates with と, put どちら in the selected-side slot, and ask which fits the description.',
+        },
+        {
+          label: 'Two-way choice answer',
+          formula: 'chosen N + のほうが + description + です',
+          explanation: 'Mark the chosen side with のほうが and repeat the quality that decides the comparison.',
+        },
+        {
+          label: 'Top member of a group',
+          formula: 'group + で + N + が + いちばん + description + です',
+          explanation: 'Bound the comparison set with で, mark its top member with が, and place いちばん before the shared quality.',
+        },
+      ],
+      contrast: {
+        with: 'two-way どちら compared with group いちばん',
+        explanation: 'Use どちら to choose between two named sides; use いちばん only after the relevant larger set is stated or unmistakable.',
+      },
       examples: [
         { japanese: '春と 秋と どちらが すきですか。秋の ほうが すきです。', reading: 'はると あきと どちらが すきですか。あきの ほうが すきです。', english: 'Which do you prefer, spring or autumn? I prefer autumn.' },
         { japanese: '一年で 八月が いちばん あついです。', reading: 'いちねんで はちがつが いちばん あついです。', english: 'August is the hottest month of the year.' },
@@ -301,11 +511,22 @@ const lesson12: Lesson = {
   ],
   dialogue: [
     { id: 'l12-d01', speaker: 'Rina', japanese: '先週の 山の りょこうは どうでしたか。', reading: 'せんしゅうの やまの りょこうは どうでしたか。', english: 'How was last week’s mountain trip?' },
-    { id: 'l12-d02', speaker: 'Owen', japanese: 'とても たのしかったです。けしきも きれいでした。', reading: 'とても たのしかったです。けしきも きれいでした。', english: 'It was great fun. The scenery was beautiful too.', grammarIds: ['l12-i-adjective-past', 'l12-na-noun-past'] },
-    { id: 'l12-d03', speaker: 'Rina', japanese: 'でも、てんきは あまり よくなかったですね。', reading: 'でも、てんきは あまり よくなかったですね。', english: 'But the weather was not very good, was it?', grammarIds: ['l12-i-adjective-past'] },
-    { id: 'l12-d04', speaker: 'Owen', japanese: 'ええ。でも、山は うみより すずしかったです。', reading: 'ええ。でも、やまは うみより すずしかったです。', english: 'Right. But the mountains were cooler than the seaside.', grammarIds: ['l12-yori-comparison'] },
-    { id: 'l12-d05', speaker: 'Rina', japanese: '山と うみと どちらが すきですか。', reading: 'やまと うみと どちらが すきですか。', english: 'Which do you prefer, the mountains or the seaside?', grammarIds: ['l12-choice-best'] },
-    { id: 'l12-d06', speaker: 'Owen', japanese: '山の ほうが すきです。とくに、秋の 山が いちばん きれいです。', reading: 'やまの ほうが すきです。とくに、あきの やまが いちばん きれいです。', english: 'I prefer the mountains. In particular, the mountains are most beautiful in autumn.', grammarIds: ['l12-choice-best'] },
+    { id: 'l12-d02', speaker: 'Owen', japanese: 'とても たのしかったです。けしきも きれいでした。', reading: 'とても たのしかったです。けしきも きれいでした。', english: 'It was great fun. The scenery was beautiful too.', grammarIds: ['l12-i-adjective-past', 'l12-na-noun-past'], grammarNotes: [
+      { grammarId: 'l12-i-adjective-past', explanation: 'Owen changes たのしい to たのしかったです because the enjoyable trip is already over.' },
+      { grammarId: 'l12-na-noun-past', explanation: 'きれい is a な-adjective stem, so Owen uses でした rather than the い-adjective ～かった ending.' },
+    ] },
+    { id: 'l12-d03', speaker: 'Rina', japanese: 'でも、てんきは あまり よくなかったですね。', reading: 'でも、てんきは あまり よくなかったですね。', english: 'But the weather was not very good, was it?', grammarIds: ['l12-i-adjective-past'], grammarNotes: [
+      { grammarId: 'l12-i-adjective-past', explanation: 'The irregular adjective いい uses its よ- base in よくなかった, and あまり supports the negative “not very good” reading.' },
+    ] },
+    { id: 'l12-d04', speaker: 'Owen', japanese: 'ええ。でも、山は うみより すずしかったです。', reading: 'ええ。でも、やまは うみより すずしかったです。', english: 'Right. But the mountains were cooler than the seaside.', grammarIds: ['l12-yori-comparison'], grammarNotes: [
+      { grammarId: 'l12-yori-comparison', explanation: 'Owen describes 山 and uses うみより only as the baseline for judging how cool the mountains were.' },
+    ] },
+    { id: 'l12-d05', speaker: 'Rina', japanese: '山と うみと どちらが すきですか。', reading: 'やまと うみと どちらが すきですか。', english: 'Which do you prefer, the mountains or the seaside?', grammarIds: ['l12-choice-best'], grammarNotes: [
+      { grammarId: 'l12-choice-best', explanation: 'Rina names exactly two candidates with と and asks どちらが to leave the preferred side unknown.' },
+    ] },
+    { id: 'l12-d06', speaker: 'Owen', japanese: '山の ほうが すきです。とくに、秋の 山が いちばん きれいです。', reading: 'やまの ほうが すきです。とくに、あきの やまが いちばん きれいです。', english: 'I prefer the mountains. In particular, the mountains are most beautiful in autumn.', grammarIds: ['l12-choice-best'], grammarNotes: [
+      { grammarId: 'l12-choice-best', explanation: '山の ほうが selects one side of Rina’s pair, while 秋 provides the seasonal set in which the mountains rank いちばん.' },
+    ] },
   ],
   exercises: [
     { id: 'l12-e01', type: 'fill-blank', prompt: 'Make たのしい polite past.', sentence: 'まつりは たのし ___ です。', acceptedAnswers: ['かった', 'katta'], explanation: 'Remove final い and add かったです.' },
@@ -338,6 +559,27 @@ const lesson13: Lesson = {
       explanation: 'Mark the desired object with が and describe it with ほしい. Because ほしい behaves as an い-adjective, its negative is ほしくないです. The basic statement directly reports the speaker’s desire or asks about the listener’s desire.',
       whyItWorks: 'Japanese presents the object as desirable from an accessible viewpoint instead of treating “want” as an action performed on that object. The desired item therefore takes が in this beginner frame.',
       usageBoundary: 'Use ほしいです for your own directly known desire and in questions to the listener. Do not assert a third person’s private desire directly; evidence forms such as 欲しがる remain deferred.',
+      formation: [
+        {
+          label: 'Desired object',
+          formula: 'desired N + が + ほしいです',
+          explanation: 'Mark the item whose desirability you directly feel with が and finish with the adjective ほしいです.',
+        },
+        {
+          label: 'Unwanted object',
+          formula: 'desired N + が + ほしくないです',
+          explanation: 'Change ほしい like an い-adjective to ほしくないです when you directly do not want the item.',
+        },
+        {
+          label: 'Ask the listener’s desire',
+          formula: '何 + が + ほしいですか',
+          explanation: 'Use 何 in the desired-item slot and ask the listener, whose own desire is accessible to them.',
+        },
+      ],
+      contrast: {
+        with: 'N が ほしい compared with Vたい',
+        explanation: 'Use ほしい to describe a wanted thing, but attach たい to a verb stem when the desire is to perform an action.',
+      },
       notes: ['Avoid confidently stating a third person’s private desire with ほしいです; later you can use forms that show evidence.', '何が ほしいですか asks what someone wants.'],
       examples: [
         { japanese: 'あたらしい かばんが ほしいです。', reading: 'あたらしい かばんが ほしいです。', english: 'I want a new bag.' },
@@ -352,6 +594,22 @@ const lesson13: Lesson = {
       explanation: 'Remove ます from a polite verb and add たいです: たべます becomes たべたいです. The resulting desire form changes like an い-adjective, including the negative ～たくないです, while the action’s object commonly keeps を.',
       whyItWorks: 'Japanese attaches desire directly to the action stem and turns the whole desired action into an adjective-like predicate. This packages the action and the speaker’s stance together instead of adding a separate verb equivalent to “want.”',
       usageBoundary: 'A plain ～たいです statement directly reports the speaker’s accessible desire; use it for the listener chiefly in a question. Third-person evidence forms and advanced volitional uses remain deferred.',
+      formation: [
+        {
+          label: 'Wanted action',
+          formula: 'Vます → Vます-stem + たいです',
+          explanation: 'Remove ます from the learned polite verb and attach たいです to express your own desire to perform that action.',
+        },
+        {
+          label: 'Unwanted action',
+          formula: 'Vます-stem + たくないです',
+          explanation: 'Change the たい ending like an い-adjective to say that you do not want to perform the action.',
+        },
+      ],
+      contrast: {
+        with: 'Vたい compared with N が ほしい',
+        explanation: 'Attach たい to an action stem when you want to do something; use が ほしい when what you want is an object.',
+      },
       examples: [
         { japanese: '市場で やきものを 見たいです。', reading: 'いちばで やきものを みたいです。', english: 'I want to see pottery at the market.' },
         { japanese: 'きょうは あまり あるきたくないです。', reading: 'きょうは あまり あるきたくないです。', english: 'I do not want to walk much today.' },
@@ -366,6 +624,22 @@ const lesson13: Lesson = {
       explanation: 'Before 行きます or another movement verb, put the purpose verb’s ます-stem before に. The destination independently takes へ or に, while purpose に labels the action that motivates the trip. A purpose noun such as 買い物 can fill the same slot.',
       whyItWorks: 'Japanese assigns destination and purpose to separate particle roles even when English uses “to” for both. First locate the movement, then attach the intended activity to the movement predicate as its purpose.',
       usageBoundary: 'Do not treat the two に markers as interchangeable: destination に attaches to a place, while purpose に follows a verb stem or purpose noun. Embedded questions and advanced volitional uses remain deferred.',
+      formation: [
+        {
+          label: 'Verb purpose of movement',
+          formula: 'destination + へ／に + Vます-stem + に + 行きます／来ます',
+          explanation: 'Mark the destination separately, remove ます from the intended action, and attach purpose に before the movement verb.',
+        },
+        {
+          label: 'Noun purpose of movement',
+          formula: 'destination + へ／に + purpose noun + に + 行きます／来ます',
+          explanation: 'Put an activity noun such as 買い物 directly before purpose に when it names why the movement happens.',
+        },
+      ],
+      contrast: {
+        with: 'destination に compared with purpose に',
+        explanation: 'Destination に follows the place reached, while purpose に follows the action stem or activity that motivates the trip.',
+      },
       examples: [
         { japanese: '駅へ 友だちを むかえに 行きます。', reading: 'えきへ ともだちを むかえに いきます。', english: 'I am going to the station to meet my friend.' },
         { japanese: '町に 買い物に 行きました。', reading: 'まちに かいものに いきました。', english: 'I went into town to shop.' },
@@ -379,6 +653,22 @@ const lesson13: Lesson = {
       explanation: 'Add か to a question word to select an unspecified member of its category: 何か means something and どこか means somewhere. For total absence, combine the question word with も and a negative predicate, as in 何も…ません.',
       whyItWorks: 'Japanese keeps the question-word category in its ordinary sentence slot and changes the range with a particle. か leaves one unidentified possibility open; it does not turn the surrounding statement into a question.',
       usageBoundary: 'Question word plus か forms an indefinite inside an ordinary statement, not an embedded question. Use question word plus も with a negative for “none”; embedded-question grammar remains deferred.',
+      formation: [
+        {
+          label: 'Unspecified possibility',
+          formula: 'question word + か + affirmative predicate',
+          explanation: 'Attach か to leave one member of the question-word category unidentified inside an ordinary statement.',
+        },
+        {
+          label: 'Total absence',
+          formula: 'question word + も + negative predicate',
+          explanation: 'Attach も and make the predicate negative to exclude every member of the category.',
+        },
+      ],
+      contrast: {
+        with: 'question word + か compared with question word + も + negative',
+        explanation: 'Use +か when some unspecified person, thing, or place exists; use +も with a negative when none of that category does.',
+      },
       notes: ['The particles を and へ are often omitted after 何か and どこか in simple beginner sentences.', 'に is commonly kept in どこかに and appears inside どこにも.'],
       examples: [
         { japanese: '週末、どこかへ 行きたいです。', reading: 'しゅうまつ、どこかへ いきたいです。', english: 'I want to go somewhere this weekend.' },
@@ -405,12 +695,27 @@ const lesson13: Lesson = {
     { id: 'l13-v16', japanese: 'どこか', reading: 'どこか', english: 'somewhere; anywhere', partOfSpeech: 'indefinite pronoun' },
   ],
   dialogue: [
-    { id: 'l13-d01', speaker: 'Aya', japanese: '土曜日、どこかへ 行きたいですか。', reading: 'どようび、どこかへ いきたいですか。', english: 'Do you want to go somewhere on Saturday?', grammarIds: ['l13-indefinites', 'l13-tai'] },
-    { id: 'l13-d02', speaker: 'Ben', japanese: 'はい。川の そばの 市場へ 行きたいです。', reading: 'はい。かわの そばの いちばへ いきたいです。', english: 'Yes. I want to go to the market by the river.', grammarIds: ['l13-tai'] },
-    { id: 'l13-d03', speaker: 'Aya', japanese: '市場へ 何を しに 行きますか。', reading: 'いちばへ なにを しに いきますか。', english: 'What will you go to the market to do?', grammarIds: ['l13-purpose-movement'] },
-    { id: 'l13-d04', speaker: 'Ben', japanese: '妹の おみやげを さがしに 行きます。てづくりの さいふが ほしいです。', reading: 'いもうとの おみやげを さがしに いきます。てづくりの さいふが ほしいです。', english: 'I am going to look for a gift for my younger sister. I want a handmade wallet.', grammarIds: ['l13-purpose-movement', 'l13-hoshii'] },
-    { id: 'l13-d05', speaker: 'Aya', japanese: 'わたしは やきものを 見たいです。それから、何か 食べましょう。', reading: 'わたしは やきものを みたいです。それから、なにか たべましょう。', english: 'I want to see the pottery. Then let’s eat something.', grammarIds: ['l13-tai', 'l13-indefinites'] },
-    { id: 'l13-d06', speaker: 'Ben', japanese: 'いいですね。おなかが すきましたから、市場へ 昼ごはんも 食べに 行きましょう。', reading: 'いいですね。おなかが すきましたから、いちばへ ひるごはんも たべに いきましょう。', english: 'Sounds good. I am hungry, so let’s also go to the market to eat lunch.', grammarIds: ['l13-purpose-movement'] },
+    { id: 'l13-d01', speaker: 'Aya', japanese: '土曜日、どこかへ 行きたいですか。', reading: 'どようび、どこかへ いきたいですか。', english: 'Do you want to go somewhere on Saturday?', grammarIds: ['l13-indefinites', 'l13-tai'], grammarNotes: [
+      { grammarId: 'l13-indefinites', explanation: 'どこか leaves the Saturday destination unspecified, while へ still marks it as the direction of movement.' },
+      { grammarId: 'l13-tai', explanation: 'Aya uses 行きたいですか as a question, giving Ben direct access to report his own desired action.' },
+    ] },
+    { id: 'l13-d02', speaker: 'Ben', japanese: 'はい。川の そばの 市場へ 行きたいです。', reading: 'はい。かわの そばの いちばへ いきたいです。', english: 'Yes. I want to go to the market by the river.', grammarIds: ['l13-tai'], grammarNotes: [
+      { grammarId: 'l13-tai', explanation: 'Ben answers from his own viewpoint and attaches たいです to the 行きます stem to name the trip he wants.' },
+    ] },
+    { id: 'l13-d03', speaker: 'Aya', japanese: '市場へ 何を しに 行きますか。', reading: 'いちばへ なにを しに いきますか。', english: 'What will you go to the market to do?', grammarIds: ['l13-purpose-movement'], grammarNotes: [
+      { grammarId: 'l13-purpose-movement', explanation: '市場へ marks where the movement goes, while しに leaves the intended activity open for Ben to specify.' },
+    ] },
+    { id: 'l13-d04', speaker: 'Ben', japanese: '妹の おみやげを さがしに 行きます。てづくりの さいふが ほしいです。', reading: 'いもうとの おみやげを さがしに いきます。てづくりの さいふが ほしいです。', english: 'I am going to look for a gift for my younger sister. I want a handmade wallet.', grammarIds: ['l13-purpose-movement', 'l13-hoshii'], grammarNotes: [
+      { grammarId: 'l13-purpose-movement', explanation: 'さがし is the stem of さがします, and purpose に makes looking for the gift the reason Ben will go.' },
+      { grammarId: 'l13-hoshii', explanation: 'Ben marks てづくりの さいふ with が because the handmade wallet is the object he personally desires.' },
+    ] },
+    { id: 'l13-d05', speaker: 'Aya', japanese: 'わたしは やきものを 見たいです。それから、何か 食べましょう。', reading: 'わたしは やきものを みたいです。それから、なにか たべましょう。', english: 'I want to see the pottery. Then let’s eat something.', grammarIds: ['l13-tai', 'l13-indefinites'], grammarNotes: [
+      { grammarId: 'l13-tai', explanation: 'Aya explicitly sets herself as the viewpoint and keeps やきものを as the object of her desired action 見たいです.' },
+      { grammarId: 'l13-indefinites', explanation: '何か occupies the food-object slot without naming a specific dish, so the later suggestion stays open.' },
+    ] },
+    { id: 'l13-d06', speaker: 'Ben', japanese: 'いいですね。おなかが すきましたから、市場へ 昼ごはんも 食べに 行きましょう。', reading: 'いいですね。おなかが すきましたから、いちばへ ひるごはんも たべに いきましょう。', english: 'Sounds good. I am hungry, so let’s also go to the market to eat lunch.', grammarIds: ['l13-purpose-movement'], grammarNotes: [
+      { grammarId: 'l13-purpose-movement', explanation: 'Ben gives 市場 the destination marker へ and uses 食べに to add eating lunch as another purpose of going there.' },
+    ] },
   ],
   exercises: [
     { id: 'l13-e01', type: 'fill-blank', prompt: 'Mark the object that is desired.', sentence: 'あたらしい かばん ___ ほしいです。', acceptedAnswers: ['が', 'ga'], explanation: 'The desired object is marked with が in the core ほしい pattern.' },
@@ -443,6 +748,52 @@ const lesson14: Lesson = {
       explanation: 'Start from the familiar ～ます form and identify the verb group. For Group 1, ～います・～ちます・～ります become ～って; ～びます・～みます・～にます become ～んで; ～きます becomes ～いて; ～ぎます becomes ～いで; and ～します becomes ～して. Group 2 replaces ～ます with ～て. The irregular します becomes して, 来ます becomes きて, and 行きます exceptionally becomes 行って.',
       whyItWorks: 'The て-form deliberately leaves a verb non-final. Japanese listeners wait for what follows to learn whether it connects an action, makes a request, or combines with another expression; the connector alone supplies no tense or force.',
       usageBoundary: 'Do not translate て as one fixed word or treat it as a complete command. This lesson uses only the request, current-action, and offer branches and defers commands and later て-form constructions.',
+      formation: [
+        {
+          label: 'Group 1 (godan): い・ち・り endings',
+          formula: '～います／～ちます／～ります → ～って',
+          explanation: 'For a Group 1 verb with one of these sounds before ます, replace that ending family with the doubled-consonant connector ～って.',
+        },
+        {
+          label: 'Group 1 (godan): び・み・に endings',
+          formula: '～びます／～みます／～にます → ～んで',
+          explanation: 'For a Group 1 verb in this sound family, replace the ending before ます with the voiced connector ～んで.',
+        },
+        {
+          label: 'Group 1 (godan): き ending',
+          formula: '～きます → ～いて',
+          explanation: 'Change a regular Group 1 ～きます ending to ～いて.',
+        },
+        {
+          label: 'Group 1 (godan): ぎ ending',
+          formula: '～ぎます → ～いで',
+          explanation: 'Change a Group 1 ～ぎます ending to the voiced form ～いで.',
+        },
+        {
+          label: 'Group 1 (godan): し ending',
+          formula: '～します → ～して',
+          explanation: 'Change the ～します ending of a Group 1 verb such as はなします to ～して.',
+        },
+        {
+          label: 'Group 2 (ichidan)',
+          formula: 'Group 2 Vます → replace ～ます with ～て',
+          explanation: 'After confirming the verb is Group 2, remove the polite ending and attach ～て directly to its unchanged stem.',
+        },
+        {
+          label: 'Irregular verbs',
+          formula: 'します → して／来ます → きて',
+          explanation: 'Learn the two irregular conversions as their own て-form pair.',
+        },
+        {
+          label: '行きます exception',
+          formula: '行きます → 行って',
+          explanation: 'Use 行って instead of the regular ～きます result whenever the verb is 行きます.',
+        },
+      ],
+      contrast: {
+        with: 'て-form connector compared with a complete predicate',
+        explanation: 'A て-form keeps the clause open and receives its function from what follows; a final ます form independently supplies politeness and time.',
+      },
       notes: ['Confirm the verb group before applying the ending pattern because similar ～ます endings can occur in different groups.', 'The voiced ～んで and ～いで endings are part of the conjugation, not the particle で.'],
       examples: [
         { japanese: 'まちます → まって', reading: 'まちます、まって', english: 'wait → て-form' },
@@ -457,6 +808,22 @@ const lesson14: Lesson = {
       explanation: 'Follow the requested action’s て-form with ください to make a clear polite request. It is useful for instructions and ordinary requests, and a lead-in such as すみませんが can soften how the request is introduced.',
       whyItWorks: 'Japanese presents an unfinished action first and lets ください supply the request force. Until that ending arrives, Vて is only a connector, so the complete construction—not て by itself—asks the listener to act.',
       usageBoundary: 'Vてください is a request rather than a neutral “and” connection. It can still sound direct, so use context or a softener; command forms remain outside this lesson.',
+      formation: [
+        {
+          label: 'Polite action request',
+          formula: 'requested Vて + ください',
+          explanation: 'Put the action you want the listener to perform in its て-form and add ください to make the request polite.',
+        },
+        {
+          label: 'Softened introduction',
+          formula: 'すみませんが + Vて + ください',
+          explanation: 'Introduce the same direct request with すみませんが when you want to acknowledge the interruption or burden first.',
+        },
+      ],
+      contrast: {
+        with: 'Vてください compared with Vましょうか',
+        explanation: 'Vてください asks the listener to carry out the action, while Vましょうか offers the speaker’s own action for the listener’s benefit.',
+      },
       examples: [
         { japanese: 'ここに 名前を 書いてください。', reading: 'ここに なまえを かいてください。', english: 'Please write your name here.' },
         { japanese: 'すみませんが、少し まってください。', reading: 'すみませんが、すこし まってください。', english: 'Excuse me, but please wait a moment.' },
@@ -471,6 +838,22 @@ const lesson14: Lesson = {
       explanation: 'With an action that unfolds over time, Vています presents that action as in progress at the reference moment. Vていました places the same ongoing view in the past, and context may leave the actor unspoken.',
       whyItWorks: 'Japanese connects the action to います and views it from inside its duration. The resulting unit supplies current-action meaning; います is not translated separately as an English copula.',
       usageBoundary: 'Use this lesson’s reading for an action currently under way. Vています can also describe a continuing result or state, but that distinct interpretation is introduced in Lesson 15.',
+      formation: [
+        {
+          label: 'Action under way now',
+          formula: 'ongoing action Vて + います',
+          explanation: 'Put an action with visible or understood duration in the て-form and add います to view it from inside its progress.',
+        },
+        {
+          label: 'Action under way in the past',
+          formula: 'ongoing action Vて + いました',
+          explanation: 'Change only います to いました when the reference moment from inside the ongoing action is in the past.',
+        },
+      ],
+      contrast: {
+        with: 'action in progress compared with a continuing state',
+        explanation: 'Here Vています shows an activity unfolding at the reference moment; with verbs such as 住みます, the same shape can instead report a state that still holds.',
+      },
       examples: [
         { japanese: '今、ポスターを はっています。', reading: 'いま、ポスターを はっています。', english: 'I am putting up posters now.' },
         { japanese: 'スタッフは いすを ならべています。', reading: 'スタッフは いすを ならべています。', english: 'The staff are arranging chairs.' },
@@ -484,6 +867,22 @@ const lesson14: Lesson = {
       explanation: 'Attach ましょうか to the verb stem to offer an action and invite acceptance or refusal. In a help situation, the omitted actor is normally the speaker, and a natural acceptance is ええ、お願いします.',
       whyItWorks: 'Japanese lets the shared situation identify who will act. In this pattern the speaker puts forward their own action for the listener’s benefit, rather than grammatically ordering the listener to do it.',
       usageBoundary: 'Interpret Vましょうか here as an offer by the speaker, not a request for the listener’s action. Context may support a joint proposal, but the help-response pattern keeps the actor clear.',
+      formation: [
+        {
+          label: 'Offer the speaker’s action',
+          formula: 'Vます → Vます-stem + ましょうか',
+          explanation: 'Remove ます and attach ましょうか to propose that you perform the action for the other person.',
+        },
+        {
+          label: 'Accept the offered help',
+          formula: 'offer → ええ、お願いします',
+          explanation: 'Use お願いします to accept the proposed help without repeating the offered action.',
+        },
+      ],
+      contrast: {
+        with: 'speaker offer compared with listener request',
+        explanation: 'Vましょうか puts forward what the speaker can do; Vてください directs the listener toward a requested action.',
+      },
       examples: [
         { japanese: 'にもつを もちましょうか。', reading: 'にもつを もちましょうか。', english: 'Shall I carry the bag?' },
         { japanese: 'まどを あけましょうか。', reading: 'まどを あけましょうか。', english: 'Shall I open the window?' },
@@ -509,13 +908,26 @@ const lesson14: Lesson = {
     { id: 'l14-v16', japanese: 'ゆっくり', reading: 'ゆっくり', english: 'slowly; at ease', partOfSpeech: 'adverb' },
   ],
   dialogue: [
-    { id: 'l14-d01', speaker: 'Sora', japanese: '今、入口に ポスターを はっています。そちらを もってください。', reading: 'いま、いりぐちに ポスターを はっています。そちらを もってください。', english: 'I am putting a poster up at the entrance now. Please hold that side.', grammarIds: ['l14-action-progress', 'l14-request'] },
+    { id: 'l14-d01', speaker: 'Sora', japanese: '今、入口に ポスターを はっています。そちらを もってください。', reading: 'いま、いりぐちに ポスターを はっています。そちらを もってください。', english: 'I am putting a poster up at the entrance now. Please hold that side.', grammarIds: ['l14-action-progress', 'l14-request'], grammarNotes: [
+      { grammarId: 'l14-action-progress', explanation: '今 fixes the reference moment, so はっています presents Sora’s poster-hanging as an action currently under way.' },
+      { grammarId: 'l14-request', explanation: 'Sora identifies the side Nina should hold with そちらを and uses もってください to ask Nina to act.' },
+    ] },
     { id: 'l14-d02', speaker: 'Nina', japanese: 'はい。もう 少し 上ですか。', reading: 'はい。もう すこし うえですか。', english: 'Okay. A little higher?' },
-    { id: 'l14-d03', speaker: 'Sora', japanese: 'ええ、ゆっくり 上げてください。', reading: 'ええ、ゆっくり あげてください。', english: 'Yes, please raise it slowly.', grammarIds: ['l14-request'] },
-    { id: 'l14-d04', speaker: 'Nina', japanese: 'わかりました。つぎは いすを ならべましょうか。', reading: 'わかりました。つぎは いすを ならべましょうか。', english: 'Got it. Shall I arrange the chairs next?', grammarIds: ['l14-offer'] },
-    { id: 'l14-d05', speaker: 'Sora', japanese: 'お願いします。ケンさんが となりの へやで つくえを はこんでいます。', reading: 'おねがいします。ケンさんが となりの へやで つくえを はこんでいます。', english: 'Please do. Ken is carrying tables in the next room.', grammarIds: ['l14-action-progress'] },
-    { id: 'l14-d06', speaker: 'Nina', japanese: 'へやが くらいですね。でんきを つけましょうか。', reading: 'へやが くらいですね。でんきを つけましょうか。', english: 'The room is dark. Shall I turn on the light?', grammarIds: ['l14-offer'] },
-    { id: 'l14-d07', speaker: 'Sora', japanese: 'ええ、つけてください。ありがとうございます。', reading: 'ええ、つけてください。ありがとうございます。', english: 'Yes, please turn it on. Thank you.', grammarIds: ['l14-request'] },
+    { id: 'l14-d03', speaker: 'Sora', japanese: 'ええ、ゆっくり 上げてください。', reading: 'ええ、ゆっくり あげてください。', english: 'Yes, please raise it slowly.', grammarIds: ['l14-request'], grammarNotes: [
+      { grammarId: 'l14-request', explanation: '上げて names the exact action Sora wants from Nina, while ゆっくり adds how Nina should carry it out.' },
+    ] },
+    { id: 'l14-d04', speaker: 'Nina', japanese: 'わかりました。つぎは いすを ならべましょうか。', reading: 'わかりました。つぎは いすを ならべましょうか。', english: 'Got it. Shall I arrange the chairs next?', grammarIds: ['l14-offer'], grammarNotes: [
+      { grammarId: 'l14-offer', explanation: 'Nina uses ならべましょうか to volunteer her own next task and leaves Sora free to accept or redirect it.' },
+    ] },
+    { id: 'l14-d05', speaker: 'Sora', japanese: 'お願いします。ケンさんが となりの へやで つくえを はこんでいます。', reading: 'おねがいします。ケンさんが となりの へやで つくえを はこんでいます。', english: 'Please do. Ken is carrying tables in the next room.', grammarIds: ['l14-action-progress'], grammarNotes: [
+      { grammarId: 'l14-action-progress', explanation: 'はこんでいます views Ken in the middle of carrying tables, with となりの へやで naming the action setting.' },
+    ] },
+    { id: 'l14-d06', speaker: 'Nina', japanese: 'へやが くらいですね。でんきを つけましょうか。', reading: 'へやが くらいですね。でんきを つけましょうか。', english: 'The room is dark. Shall I turn on the light?', grammarIds: ['l14-offer'], grammarNotes: [
+      { grammarId: 'l14-offer', explanation: 'After noticing the dark room, Nina’s つけましょうか offers a helpful action that she herself will perform.' },
+    ] },
+    { id: 'l14-d07', speaker: 'Sora', japanese: 'ええ、つけてください。ありがとうございます。', reading: 'ええ、つけてください。ありがとうございます。', english: 'Yes, please turn it on. Thank you.', grammarIds: ['l14-request'], grammarNotes: [
+      { grammarId: 'l14-request', explanation: 'Sora accepts Nina’s offer by converting the same action to つけてください, now explicitly asking Nina to do it.' },
+    ] },
   ],
   exercises: [
     { id: 'l14-e01', type: 'fill-blank', prompt: 'Change よみます to its て-form.', sentence: 'この メモを よん ___ ください。', acceptedAnswers: ['で', 'de'], explanation: 'よむ ends in む, so its て-form is よんで.' },
@@ -548,6 +960,22 @@ const lesson15: Lesson = {
       explanation: 'Follow an action’s て-form with もいいです to evaluate that action as acceptable; add か to ask whether it is acceptable. Natural grants include はい、いいですよ and ええ、どうぞ.',
       whyItWorks: 'Japanese first presents the possible action and then comments on its acceptability. The permission meaning comes from the complete Vてもいい unit rather than a modal inserted before the verb.',
       usageBoundary: 'Vてもいいです grants or checks permission; it does not predict that the action will happen. Later て-form branches and conversational contractions remain deferred.',
+      formation: [
+        {
+          label: 'Ask permission',
+          formula: 'proposed Vて + も + いいですか',
+          explanation: 'Present the action in its て-form and ask whether allowing even that action would be acceptable.',
+        },
+        {
+          label: 'Grant permission',
+          formula: 'Vて + も + いいです／いいですよ',
+          explanation: 'Use the same action frame without a question to state that the action is allowed.',
+        },
+      ],
+      contrast: {
+        with: 'permission compared with prohibition',
+        explanation: 'Vてもいい treats the proposed action as acceptable, while Vてはいけません marks that action as unacceptable under the rule.',
+      },
       examples: [
         { japanese: 'ここで 写真を とっても いいですか。', reading: 'ここで しゃしんを とっても いいですか。', english: 'May I take photos here?' },
         { japanese: 'この いすを つかっても いいですよ。', reading: 'この いすを つかっても いいですよ。', english: 'You may use this chair.' },
@@ -561,6 +989,17 @@ const lesson15: Lesson = {
       explanation: 'Follow the action’s て-form with はいけません to reject that action as acceptable. The polite pattern commonly communicates a rule or strong prohibition without turning the lexical verb itself into a command form.',
       whyItWorks: 'Japanese presents the candidate action, highlights it with は, and evaluates it negatively with いけません. This frames the restriction as an unacceptable state of affairs rather than changing the action into a command verb.',
       usageBoundary: 'Use Vてはいけません for a real prohibition or firm rule, not merely a mild personal preference. Command forms, sign abbreviations, and contractions remain outside this lesson.',
+      formation: [
+        {
+          label: 'Prohibited action',
+          formula: 'prohibited Vて + は + いけません',
+          explanation: 'Put the disallowed action in its て-form, highlight it with は, and finish with いけません to state a firm restriction.',
+        },
+      ],
+      contrast: {
+        with: 'prohibition compared with permission',
+        explanation: 'Vてはいけません rejects an action under a rule, while Vてもいいです accepts that action and leaves the person free to do it.',
+      },
       examples: [
         { japanese: 'この へやで 食べては いけません。', reading: 'この へやで たべては いけません。', english: 'You must not eat in this room.' },
         { japanese: 'ここに じてんしゃを とめては いけません。', reading: 'ここに じてんしゃを とめては いけません。', english: 'Bicycles must not be parked here.' },
@@ -575,6 +1014,22 @@ const lesson15: Lesson = {
       explanation: 'With verbs such as 住みます, 働きます, 結婚します, and 持ちます, Vています can describe a state or situation that was established and still holds. The sentence need not report an action occurring at this exact second.',
       whyItWorks: 'Japanese can view the result of a change or the continuation of a situation from inside its present state. English may choose a simple-present verb or an adjective, so interpret the Japanese aspect before selecting an English tense.',
       usageBoundary: 'Use context and the verb’s meaning to distinguish a continuing result from Lesson 14’s action in progress. The separate てある, ておく, ていく, and てくる constructions remain deferred.',
+      formation: [
+        {
+          label: 'Continuing situation',
+          formula: 'state／change Vて + います',
+          explanation: 'Use the verb’s て-form with います when an established residence, job, possession, or changed condition continues to hold.',
+        },
+        {
+          label: 'Continuing situation in the past',
+          formula: 'state／change Vて + いました',
+          explanation: 'Change the final います to いました when that established situation continued at a past reference time.',
+        },
+      ],
+      contrast: {
+        with: 'action in progress compared with a continuing state',
+        explanation: 'An action-in-progress reading watches an activity unfold now; a continuing-state reading reports the situation or result that remains after it was established.',
+      },
       examples: [
         { japanese: '駅の ちかくに 住んでいます。', reading: 'えきの ちかくに すんでいます。', english: 'I live near the station.' },
         { japanese: '姉は デザイン会社で 働いています。', reading: 'あねは デザインがいしゃで はたらいています。', english: 'My older sister works at a design company.' },
@@ -588,6 +1043,27 @@ const lesson15: Lesson = {
       explanation: '知っています presents the continuing result of having learned or encountered a person or fact. The ordinary negative answer is asymmetrically 知りません, not 知っていません. Mark the known person or information with を.',
       whyItWorks: 'Japanese 知る points toward entering a state of knowledge, so the affirmative describes that result as continuing. Convention packages the negative differently; the pair 知っています／知りません must be learned together.',
       usageBoundary: 'Use 知っています for “know” and 知りません for “do not know.” Do not mechanically negate it as 知っていません in the ordinary taught contrast, and defer contractions or finer aspect distinctions.',
+      formation: [
+        {
+          label: 'Affirmative knowledge state',
+          formula: 'known person／fact + を + 知っています',
+          explanation: 'Mark the person or information with を and use 知っています for the continuing state of already knowing it.',
+        },
+        {
+          label: 'Ordinary negative knowledge',
+          formula: 'person／fact + を + 知りません',
+          explanation: 'Use the conventional simple negative 知りません when that state of knowledge has not been reached.',
+        },
+        {
+          label: 'Ask about knowledge',
+          formula: 'person／fact + を + 知っていますか',
+          explanation: 'Add か to the affirmative state expression to ask whether the listener knows the person or information.',
+        },
+      ],
+      contrast: {
+        with: '知っています compared with 知りません',
+        explanation: 'Japanese conventionally pairs the continuing affirmative 知っています with the simple negative 知りません rather than negating います mechanically.',
+      },
       examples: [
         { japanese: 'この 近くの カフェを 知っていますか。', reading: 'この ちかくの カフェを しっていますか。', english: 'Do you know a café near here?' },
         { japanese: 'いいえ、知りません。', reading: 'いいえ、しりません。', english: 'No, I do not know.' },
@@ -613,13 +1089,28 @@ const lesson15: Lesson = {
     { id: 'l15-v16', japanese: 'ざんねんですが', reading: 'ざんねんですが', english: 'unfortunately; I am sorry, but', partOfSpeech: 'expression', note: 'A gentle lead-in before declining or giving unwelcome information.' },
   ],
   dialogue: [
-    { id: 'l15-d01', speaker: 'Iris', japanese: 'すみません。この ラウンジを つかっても いいですか。', reading: 'すみません。この ラウンジを つかっても いいですか。', english: 'Excuse me. May I use this lounge?', grammarIds: ['l15-permission'] },
-    { id: 'l15-d02', speaker: 'Staff', japanese: 'はい、会員は つかっても いいです。会員カードを 見せてください。', reading: 'はい、かいいんは つかっても いいです。かいいんカードを みせてください。', english: 'Yes, members may use it. Please show your membership card.', grammarIds: ['l15-permission'] },
-    { id: 'l15-d03', speaker: 'Iris', japanese: 'どうぞ。ここで コーヒーを のんでも いいですか。', reading: 'どうぞ。ここで コーヒーを のんでも いいですか。', english: 'Here you are. May I drink coffee here?', grammarIds: ['l15-permission'] },
-    { id: 'l15-d04', speaker: 'Staff', japanese: 'ざんねんですが、この へやで コーヒーを のんでは いけません。食べものも 食べては いけません。休けい室を つかってください。', reading: 'ざんねんですが、この へやで コーヒーを のんでは いけません。たべものも たべては いけません。きゅうけいしつを つかってください。', english: 'I am sorry, but you must not drink coffee or eat food in this room. Please use the break room.', grammarIds: ['l15-prohibition'] },
-    { id: 'l15-d05', speaker: 'Iris', japanese: 'わかりました。ミナさんも ここで 働いていますか。', reading: 'わかりました。ミナさんも ここで はたらいていますか。', english: 'Understood. Does Mina work here too?', grammarIds: ['l15-continuing-state'] },
-    { id: 'l15-d06', speaker: 'Staff', japanese: 'はい。ミナさんを 知っていますか。', reading: 'はい。ミナさんを しっていますか。', english: 'Yes. Do you know Mina?', grammarIds: ['l15-knowing'] },
-    { id: 'l15-d07', speaker: 'Iris', japanese: 'はい、知っています。同じ 町に 住んでいます。', reading: 'はい、しっています。おなじ まちに すんでいます。', english: 'Yes, I know her. We live in the same town.', grammarIds: ['l15-knowing', 'l15-continuing-state'] },
+    { id: 'l15-d01', speaker: 'Iris', japanese: 'すみません。この ラウンジを つかっても いいですか。', reading: 'すみません。この ラウンジを つかっても いいですか。', english: 'Excuse me. May I use this lounge?', grammarIds: ['l15-permission'], grammarNotes: [
+      { grammarId: 'l15-permission', explanation: 'Iris presents using this particular lounge as the proposed action and asks staff whether it is acceptable.' },
+    ] },
+    { id: 'l15-d02', speaker: 'Staff', japanese: 'はい、会員は つかっても いいです。会員カードを 見せてください。', reading: 'はい、かいいんは つかっても いいです。かいいんカードを みせてください。', english: 'Yes, members may use it. Please show your membership card.', grammarIds: ['l15-permission'], grammarNotes: [
+      { grammarId: 'l15-permission', explanation: 'Staff removes the question and grants lounge use to the topic 会員, then separately requests proof of membership.' },
+    ] },
+    { id: 'l15-d03', speaker: 'Iris', japanese: 'どうぞ。ここで コーヒーを のんでも いいですか。', reading: 'どうぞ。ここで コーヒーを のんでも いいですか。', english: 'Here you are. May I drink coffee here?', grammarIds: ['l15-permission'], grammarNotes: [
+      { grammarId: 'l15-permission', explanation: 'Iris asks about a different rule by placing the candidate action のんで before もいいですか and fixing its location with ここで.' },
+    ] },
+    { id: 'l15-d04', speaker: 'Staff', japanese: 'ざんねんですが、この へやで コーヒーを のんでは いけません。食べものも 食べては いけません。休けい室を つかってください。', reading: 'ざんねんですが、この へやで コーヒーを のんでは いけません。たべものも たべては いけません。きゅうけいしつを つかってください。', english: 'I am sorry, but you must not drink coffee or eat food in this room. Please use the break room.', grammarIds: ['l15-prohibition'], grammarNotes: [
+      { grammarId: 'l15-prohibition', explanation: 'Staff applies the same firm room rule to both drinking and eating with separate Vてはいけません clauses, then gives an allowed alternative.' },
+    ] },
+    { id: 'l15-d05', speaker: 'Iris', japanese: 'わかりました。ミナさんも ここで 働いていますか。', reading: 'わかりました。ミナさんも ここで はたらいていますか。', english: 'Understood. Does Mina work here too?', grammarIds: ['l15-continuing-state'], grammarNotes: [
+      { grammarId: 'l15-continuing-state', explanation: '働いています asks whether working here is Mina’s continuing employment situation, not whether she is laboring this second.' },
+    ] },
+    { id: 'l15-d06', speaker: 'Staff', japanese: 'はい。ミナさんを 知っていますか。', reading: 'はい。ミナさんを しっていますか。', english: 'Yes. Do you know Mina?', grammarIds: ['l15-knowing'], grammarNotes: [
+      { grammarId: 'l15-knowing', explanation: 'Staff marks Mina as the known person with を and asks whether Iris is in the continuing state 知っています.' },
+    ] },
+    { id: 'l15-d07', speaker: 'Iris', japanese: 'はい、知っています。同じ 町に 住んでいます。', reading: 'はい、しっています。おなじ まちに すんでいます。', english: 'Yes, I know her. We live in the same town.', grammarIds: ['l15-knowing', 'l15-continuing-state'], grammarNotes: [
+      { grammarId: 'l15-knowing', explanation: 'Iris answers affirmatively with 知っています because her acquaintance with Mina is an existing knowledge state.' },
+      { grammarId: 'l15-continuing-state', explanation: '住んでいます describes their continuing residence in the same town, which explains how Iris knows Mina.' },
+    ] },
   ],
   exercises: [
     { id: 'l15-e01', type: 'fill-blank', prompt: 'Complete the permission question.', sentence: 'この いすに すわって ___ いいですか。', acceptedAnswers: ['も', 'mo'], explanation: 'Vてもいいですか asks whether the action is acceptable.' },
@@ -652,6 +1143,22 @@ const lesson16: Lesson = {
       explanation: 'Put each non-final action in the て-form and conjugate only the final predicate for tense and politeness. In a routine or procedure, listeners normally understand the linked actions in their stated chronological order.',
       whyItWorks: 'Japanese can maintain one topic while each て-form hands the event forward. The non-final connectors remain tenseless, so the sentence waits for the final predicate to locate the entire sequence in time.',
       usageBoundary: 'Only the final predicate carries past or nonpast tense for the whole taught chain. Use this link for compatible sequential actions, not for reasons, contrast, のに, し, or representative たり lists.',
+      formation: [
+        {
+          label: 'Nonpast action chain',
+          formula: 'V1て、V2て、final Vます',
+          explanation: 'Put every non-final step in the て-form and use a final nonpast polite verb to complete the routine or procedure.',
+        },
+        {
+          label: 'Past action chain',
+          formula: 'V1て、V2て、final Vました',
+          explanation: 'Keep the earlier connectors unchanged and put only the final predicate in the polite past to locate the whole sequence earlier.',
+        },
+      ],
+      contrast: {
+        with: 'て-form sequence compared with Vてから',
+        explanation: 'A て-form chain moves through compatible ordered steps, while Vてから deliberately makes completion of the first step the condition for starting the next.',
+      },
       examples: [
         { japanese: '受付へ 行って、名前を 書いて、カードを もらいます。', reading: 'うけつけへ いって、なまえを かいて、カードを もらいます。', english: 'I go to reception, write my name, and receive a card.' },
         { japanese: '朝、シャワーを あびて、朝ごはんを 食べて、出かけました。', reading: 'あさ、シャワーを あびて、あさごはんを たべて、でかけました。', english: 'In the morning, I showered, ate breakfast, and went out.' },
@@ -665,6 +1172,17 @@ const lesson16: Lesson = {
       explanation: 'Add から after the first action’s て-form to mark that action as complete before the following action begins. Use it when the completion boundary matters, rather than merely listing events in sequence.',
       whyItWorks: 'Japanese closes the first step with てから and makes that completed point the starting edge for what follows. The listener therefore treats the second event as downstream from the first event’s completion.',
       usageBoundary: 'Vてから requires the first action to finish before the next one starts; a simple て-form chain can merely order related steps. Do not add に after てから in this pattern.',
+      formation: [
+        {
+          label: 'Next action after completion',
+          formula: 'first Vて + から、next V',
+          explanation: 'Put the prerequisite action in its て-form, attach から, and state the action that begins after the first one is complete.',
+        },
+      ],
+      contrast: {
+        with: 'Vてから compared with a plain て-form chain',
+        explanation: 'Vてから highlights a necessary completion boundary; a plain て-form chain can simply narrate related steps in order.',
+      },
       examples: [
         { japanese: '運動してから、シャワーを あびます。', reading: 'うんどうしてから、シャワーを あびます。', english: 'After exercising, I take a shower.' },
         { japanese: 'せつめいを 聞いてから、きかいを つかってください。', reading: 'せつめいを きいてから、きかいを つかってください。', english: 'Please use the machine after listening to the explanation.' },
@@ -679,6 +1197,27 @@ const lesson16: Lesson = {
       explanation: 'Replace an い-adjective’s final い with くて, but link a な-adjective stem or noun with で. These non-final descriptions connect to a compatible final description, whose ending alone supplies tense and politeness.',
       whyItWorks: 'Japanese reshapes the first description to show that its statement is not finished. The class-specific connector—くて or で—keeps the descriptive chain open until the final predicate completes it.',
       usageBoundary: 'Keep the adjective classes separate: い-adjectives link with くて, while nouns and な-adjectives link with で. For a clear contrast use が; reasons, のに, し, and たり remain deferred.',
+      formation: [
+        {
+          label: 'Link an い-adjective',
+          formula: 'い-adjective ～い → ～くて、final description',
+          explanation: 'Replace the first い-adjective’s final い with くて and let the last description carry tense and politeness.',
+        },
+        {
+          label: 'Link a な-adjective',
+          formula: 'な-adjective stem + で、final description',
+          explanation: 'Attach で directly to the first な-adjective stem to keep the compatible description chain open.',
+        },
+        {
+          label: 'Link a noun description',
+          formula: 'noun + で、final description',
+          explanation: 'Attach で to a non-final noun identity or category before completing the combined description.',
+        },
+      ],
+      contrast: {
+        with: 'additive くて／で compared with contrastive が',
+        explanation: 'Use くて or で when the descriptions comfortably accumulate; use が when the second description is meant to oppose the first.',
+      },
       examples: [
         { japanese: 'この プールは 広くて、明るいです。', reading: 'この プールは ひろくて、あかるいです。', english: 'This pool is spacious and bright.' },
         { japanese: 'スタッフは しんせつで、元気です。', reading: 'スタッフは しんせつで、げんきです。', english: 'The staff are kind and energetic.' },
@@ -692,6 +1231,22 @@ const lesson16: Lesson = {
       explanation: 'Place どうやって before an action predicate to ask for the means, route, or procedure that achieves it. Answer with a sequence of steps or with a transport, language, or tool expression marked by で.',
       whyItWorks: 'Japanese separates a request for the condition of something from a request for the method of doing it. どう opens an evaluation of condition, whereas どうやって opens the path by which an action is accomplished.',
       usageBoundary: 'Use どうやって with an action when you need a method or route. Use どうですか for a condition or impression; the two English “how” questions are not interchangeable.',
+      formation: [
+        {
+          label: 'Method or route question',
+          formula: 'どうやって + action Vますか',
+          explanation: 'Place どうやって before the action whose means, route, or procedure is unknown.',
+        },
+        {
+          label: 'Method answer',
+          formula: 'means + で + Vます／ordered steps',
+          explanation: 'Answer with a transport, tool, or language marked by で, or provide the requested procedure as an action sequence.',
+        },
+      ],
+      contrast: {
+        with: 'どうやって compared with どうですか',
+        explanation: 'どうやって asks by what route or method an action succeeds, while どうですか asks for an evaluation or condition.',
+      },
       examples: [
         { japanese: 'どうやって 会員に なりますか。', reading: 'どうやって かいいんに なりますか。', english: 'How do I become a member?' },
         { japanese: '駅から ここまで どうやって 来ましたか。バスで 来ました。', reading: 'えきから ここまで どうやって きましたか。バスで きました。', english: 'How did you get here from the station? I came by bus.' },
@@ -717,13 +1272,27 @@ const lesson16: Lesson = {
     { id: 'l16-v16', japanese: '左', reading: 'ひだり', english: 'left side', partOfSpeech: 'noun' },
   ],
   dialogue: [
-    { id: 'l16-d01', speaker: 'Tariq', japanese: 'すみません。どうやって この ジムの 会員に なりますか。', reading: 'すみません。どうやって この ジムの かいいんに なりますか。', english: 'Excuse me. How do I become a member of this gym?', grammarIds: ['l16-how-to'] },
-    { id: 'l16-d02', speaker: 'Staff', japanese: '受付で この 紙を もらって、名前と 住所を 書いてください。', reading: 'うけつけで この かみを もらって、なまえと じゅうしょを かいてください。', english: 'Get this form at reception and write your name and address.', grammarIds: ['l16-action-sequence'] },
-    { id: 'l16-d03', speaker: 'Tariq', japanese: '書いてから、何を しますか。', reading: 'かいてから、なにを しますか。', english: 'What do I do after filling it out?', grammarIds: ['l16-after-action'] },
-    { id: 'l16-d04', speaker: 'Staff', japanese: 'カードを もらってから、二階の ロッカー室へ 行きます。', reading: 'カードを もらってから、にかいの ロッカーしつへ いきます。', english: 'After receiving your card, go to the locker room on the second floor.', grammarIds: ['l16-after-action'] },
-    { id: 'l16-d05', speaker: 'Tariq', japanese: 'プールへは どうやって 行きますか。', reading: 'プールへは どうやって いきますか。', english: 'How do I get to the pool?', grammarIds: ['l16-how-to'] },
-    { id: 'l16-d06', speaker: 'Staff', japanese: 'かいだんを 上がって、右へ まがって、まっすぐ 行ってください。', reading: 'かいだんを あがって、みぎへ まがって、まっすぐ いってください。', english: 'Go up the stairs, turn right, and go straight.', grammarIds: ['l16-action-sequence'] },
-    { id: 'l16-d07', speaker: 'Tariq', japanese: 'ありがとうございます。この ジムは 広くて、明るいですね。', reading: 'ありがとうございます。この ジムは ひろくて、あかるいですね。', english: 'Thank you. This gym is spacious and bright.', grammarIds: ['l16-description-linking'] },
+    { id: 'l16-d01', speaker: 'Tariq', japanese: 'すみません。どうやって この ジムの 会員に なりますか。', reading: 'すみません。どうやって この ジムの かいいんに なりますか。', english: 'Excuse me. How do I become a member of this gym?', grammarIds: ['l16-how-to'], grammarNotes: [
+      { grammarId: 'l16-how-to', explanation: 'Tariq already knows the desired result 会員に なります and uses どうやって to request the procedure that reaches it.' },
+    ] },
+    { id: 'l16-d02', speaker: 'Staff', japanese: '受付で この 紙を もらって、名前と 住所を 書いてください。', reading: 'うけつけで この かみを もらって、なまえと じゅうしょを かいてください。', english: 'Get this form at reception and write your name and address.', grammarIds: ['l16-action-sequence'], grammarNotes: [
+      { grammarId: 'l16-action-sequence', explanation: 'もらって leaves receiving the paper non-final, and the final 書いてください turns the two ordered steps into one instruction.' },
+    ] },
+    { id: 'l16-d03', speaker: 'Tariq', japanese: '書いてから、何を しますか。', reading: 'かいてから、なにを しますか。', english: 'What do I do after filling it out?', grammarIds: ['l16-after-action'], grammarNotes: [
+      { grammarId: 'l16-after-action', explanation: '書いてから treats completing the written form as the boundary after which Tariq asks for the next action.' },
+    ] },
+    { id: 'l16-d04', speaker: 'Staff', japanese: 'カードを もらってから、二階の ロッカー室へ 行きます。', reading: 'カードを もらってから、にかいの ロッカーしつへ いきます。', english: 'After receiving your card, go to the locker room on the second floor.', grammarIds: ['l16-after-action'], grammarNotes: [
+      { grammarId: 'l16-after-action', explanation: 'The staff makes possession of the card a completed prerequisite before the trip to the second-floor locker room.' },
+    ] },
+    { id: 'l16-d05', speaker: 'Tariq', japanese: 'プールへは どうやって 行きますか。', reading: 'プールへは どうやって いきますか。', english: 'How do I get to the pool?', grammarIds: ['l16-how-to'], grammarNotes: [
+      { grammarId: 'l16-how-to', explanation: 'The pool is already fixed as the destination, so どうやって asks specifically for the route used to get there.' },
+    ] },
+    { id: 'l16-d06', speaker: 'Staff', japanese: 'かいだんを 上がって、右へ まがって、まっすぐ 行ってください。', reading: 'かいだんを あがって、みぎへ まがって、まっすぐ いってください。', english: 'Go up the stairs, turn right, and go straight.', grammarIds: ['l16-action-sequence'], grammarNotes: [
+      { grammarId: 'l16-action-sequence', explanation: '上がって and まがって hand the route forward in order, while final 行ってください supplies the instructional force.' },
+    ] },
+    { id: 'l16-d07', speaker: 'Tariq', japanese: 'ありがとうございます。この ジムは 広くて、明るいですね。', reading: 'ありがとうございます。この ジムは ひろくて、あかるいですね。', english: 'Thank you. This gym is spacious and bright.', grammarIds: ['l16-description-linking'], grammarNotes: [
+      { grammarId: 'l16-description-linking', explanation: '広くて changes the first い-adjective into a non-final additive description before 明るい completes Tariq’s impression.' },
+    ] },
   ],
   exercises: [
     { id: 'l16-e01', type: 'fill-blank', prompt: 'Link two actions in sequence.', sentence: '朝ごはんを 食べ ___、出かけます。', acceptedAnswers: ['て', 'te'], explanation: '食べます is a る-verb, so its linking form is 食べて.' },
@@ -756,6 +1325,57 @@ const lesson17: Lesson = {
       explanation: 'Use the learned ～ます form to determine the verb group. Group 1 changes the final i-row kana before ます to the matching a-row kana, removes ます, and adds ない; い becomes わ. Group 2 replaces ます with ない. The irregular します becomes しない, and 来ます becomes こない.',
       whyItWorks: 'Japanese builds negation into the verb ending rather than placing a separate helper before an unchanged verb. The group-specific change creates one nonpolite negative form that can connect to the longer expressions in this lesson.',
       usageBoundary: 'Apply the rule to the learned forms: 書きます→書かない, 読みます→読まない, 待ちます→待たない, 買います→買わない, and 見ます→見ない; あります becomes ない. Broader form analysis remains deferred to Lesson 18.',
+      formation: [
+        {
+          label: 'Group 1 (godan): き・ぎ endings',
+          formula: '～きます／～ぎます → ～かない／～がない',
+          explanation: 'Move the final sound before ます from the i-row to its a-row partner and attach ない.',
+        },
+        {
+          label: 'Group 1 (godan): し ending',
+          formula: '～します → ～さない',
+          explanation: 'For a regular Group 1 ～します verb such as はなします, change し to さ before ない.',
+        },
+        {
+          label: 'Group 1 (godan): ち ending',
+          formula: '～ちます → ～たない',
+          explanation: 'Change the final ち before ます to its a-row partner た and add ない.',
+        },
+        {
+          label: 'Group 1 (godan): に・び・み endings',
+          formula: '～にます／～びます／～みます → ～なない／～ばない／～まない',
+          explanation: 'Match each final i-row kana with its a-row partner and finish the negative with ない.',
+        },
+        {
+          label: 'Group 1 (godan): り ending',
+          formula: '～ります → ～らない',
+          explanation: 'For a Group 1 verb, change り before ます to ら and attach ない.',
+        },
+        {
+          label: 'Group 1 (godan): い ending',
+          formula: '～います → ～わない',
+          explanation: 'Use わ, not あ, before ない when a Group 1 verb has い immediately before ます.',
+        },
+        {
+          label: 'Group 2 (ichidan)',
+          formula: 'Group 2 Vます → replace ～ます with ～ない',
+          explanation: 'After confirming the verb is Group 2, keep its stem and replace the complete polite ending with ない.',
+        },
+        {
+          label: 'Irregular verbs',
+          formula: 'します → しない／来ます → こない',
+          explanation: 'Learn しない and こない as the two irregular ない-forms in this lesson.',
+        },
+        {
+          label: 'Existence exception',
+          formula: 'あります → ない',
+          explanation: 'Use ない as the plain negative of あります instead of applying the regular Group 1 ending change.',
+        },
+      ],
+      contrast: {
+        with: 'ない-form compared with polite ません',
+        explanation: 'The ない-form is the plain negative base needed inside this lesson’s longer patterns; ません is a polite final negative predicate.',
+      },
       notes: ['For Group 1, pair the kana before ます with its a-row partner, such as き→か, み→ま, ち→た, and い→わ.', 'Group 2 directly replaces ます with ない; します and 来ます are irregular.'],
       examples: [
         { japanese: '飲みます → 飲まない', reading: 'のみます、のまない', english: 'drink → not drink' },
@@ -770,6 +1390,17 @@ const lesson17: Lesson = {
       explanation: 'Follow the complete ない-form with でください to ask the listener not to perform the action. Depending on context, the same form can deliver a warning, an instruction, or a personal request.',
       whyItWorks: 'Japanese first constructs the unwanted negative action and then lets ください supply request force. The ない ending remains intact; で connects that negative action to the request.',
       usageBoundary: 'Vないでください asks for non-action and is not the same as saying an action is optional. Use Vなくてもいいです to release an obligation instead.',
+      formation: [
+        {
+          label: 'Negative request',
+          formula: 'requested non-action Vない + で + ください',
+          explanation: 'Build the complete ない-form of the action you want avoided, keep ない intact, and add でください.',
+        },
+      ],
+      contrast: {
+        with: 'Vないでください compared with Vなくてもいいです',
+        explanation: 'Vないでください asks the listener to refrain from an action, while Vなくてもいい says the action is optional and may still be done.',
+      },
       examples: [
         { japanese: 'この くすりを お酒と いっしょに 飲まないでください。', reading: 'この くすりを おさけと いっしょに のまないでください。', english: 'Please do not take this medicine with alcohol.' },
         { japanese: '大切な カードを わすれないでください。', reading: 'たいせつな カードを わすれないでください。', english: 'Please do not forget the important card.' },
@@ -783,6 +1414,17 @@ const lesson17: Lesson = {
       explanation: 'Replace ない in the verb’s ない-form with なければ and add なりません. Learn Vなければなりません as the complete polite obligation expression: the action’s absence is presented as an unacceptable outcome.',
       whyItWorks: 'Japanese composes obligation from two negative ideas: not doing the action, and that situation not being workable. Because the negative alternative is rejected, the whole chunk points to the action as required.',
       usageBoundary: 'Treat Vなければなりません as one compositional beginner chunk. Do not keep both ない and なければ, and defer casual contractions and full conditional analysis.',
+      formation: [
+        {
+          label: 'Required action',
+          formula: 'Vない → replace ない with なければ + なりません',
+          explanation: 'Start from the ない-form, exchange only ない for なければ, and add なりません to reject the no-action outcome.',
+        },
+      ],
+      contrast: {
+        with: 'obligation compared with no necessity',
+        explanation: 'Vなければなりません requires the action because its absence is unacceptable; Vなくてもいい accepts the action’s absence.',
+      },
       examples: [
         { japanese: '毎朝 くすりを 飲まなければ なりません。', reading: 'まいあさ くすりを のまなければ なりません。', english: 'I must take medicine every morning.' },
         { japanese: '金曜日までに この 書類を 出さなければ なりません。', reading: 'きんようびまでに この しょるいを ださなければ なりません。', english: 'I must submit this document by Friday.' },
@@ -797,6 +1439,17 @@ const lesson17: Lesson = {
       explanation: 'Replace ない in the verb’s ない-form with なくて and add もいいです. The complete expression judges the situation without the action as acceptable, so it releases an obligation and makes the action optional.',
       whyItWorks: 'Japanese evaluates non-action directly: even with the action absent, the situation is acceptable. This makes the permission logic visible and keeps optionality separate from a prohibition against acting.',
       usageBoundary: 'Vなくてもいいです means the action is unnecessary, not forbidden. Contrast it with Vないでください, which requests non-action; full conditional analysis remains deferred.',
+      formation: [
+        {
+          label: 'Action not required',
+          formula: 'Vない → replace ない with なくて + も + いいです',
+          explanation: 'Start from the ない-form, change its ending to なくて, and add もいいです to judge non-action as acceptable.',
+        },
+      ],
+      contrast: {
+        with: 'Vなくてもいいです compared with Vないでください',
+        explanation: 'Vなくてもいい removes a requirement and leaves both choices open; Vないでください actively asks the listener to choose non-action.',
+      },
       examples: [
         { japanese: 'あしたは 早く 起きなくても いいです。', reading: 'あしたは はやく おきなくても いいです。', english: 'You do not have to get up early tomorrow.' },
         { japanese: 'この らんは 書かなくても いいです。', reading: 'この らんは かかなくても いいです。', english: 'You do not need to fill in this field.' },
@@ -824,11 +1477,22 @@ const lesson17: Lesson = {
   dialogue: [
     { id: 'l17-d01', speaker: 'Doctor', japanese: '足は まだ いたいですか。', reading: 'あしは まだ いたいですか。', english: 'Does your leg still hurt?' },
     { id: 'l17-d02', speaker: 'Luca', japanese: 'はい、少し いたいです。あした 仕事へ 行っても いいですか。', reading: 'はい、すこし いたいです。あした しごとへ いっても いいですか。', english: 'Yes, it hurts a little. May I go to work tomorrow?' },
-    { id: 'l17-d03', speaker: 'Doctor', japanese: 'あしたは むりを しないでください。家で 休まなければ なりません。', reading: 'あしたは むりを しないでください。いえで やすまなければ なりません。', english: 'Please do not overdo it tomorrow. You must rest at home.', grammarIds: ['l17-negative-request', 'l17-obligation'] },
+    { id: 'l17-d03', speaker: 'Doctor', japanese: 'あしたは むりを しないでください。家で 休まなければ なりません。', reading: 'あしたは むりを しないでください。いえで やすまなければ なりません。', english: 'Please do not overdo it tomorrow. You must rest at home.', grammarIds: ['l17-negative-request', 'l17-obligation'], grammarNotes: [
+      { grammarId: 'l17-negative-request', explanation: 'The doctor keeps しない intact before でください to request that Luca avoid overexertion tomorrow.' },
+      { grammarId: 'l17-obligation', explanation: '休まなければ なりません rejects not resting as an option and makes rest at home a medical requirement.' },
+    ] },
     { id: 'l17-d04', speaker: 'Luca', japanese: 'わかりました。くすりは いつ 飲みますか。', reading: 'わかりました。くすりは いつ のみますか。', english: 'Understood. When should I take the medicine?' },
-    { id: 'l17-d05', speaker: 'Doctor', japanese: '朝ごはんと 晩ごはんの あとで 飲まなければ なりません。お昼は 飲まなくても いいです。', reading: 'あさごはんと ばんごはんの あとで のまなければ なりません。おひるは のまなくても いいです。', english: 'You must take it after breakfast and dinner. You do not need to take it at lunchtime.', grammarIds: ['l17-obligation', 'l17-not-necessary'] },
-    { id: 'l17-d06', speaker: 'Luca', japanese: 'つぎの よやくは きょう しなければ なりませんか。', reading: 'つぎの よやくは きょう しなければ なりませんか。', english: 'Do I have to make the next appointment today?', grammarIds: ['l17-obligation'] },
-    { id: 'l17-d07', speaker: 'Doctor', japanese: 'いいえ、きょうは しなくても いいです。来週、電話してください。それから、ほけんしょうを わすれないでください。', reading: 'いいえ、きょうは しなくても いいです。らいしゅう、でんわしてください。それから、ほけんしょうを わすれないでください。', english: 'No, you do not have to do it today. Please call next week. Also, please do not forget your insurance card.', grammarIds: ['l17-not-necessary', 'l17-negative-request'] },
+    { id: 'l17-d05', speaker: 'Doctor', japanese: '朝ごはんと 晩ごはんの あとで 飲まなければ なりません。お昼は 飲まなくても いいです。', reading: 'あさごはんと ばんごはんの あとで のまなければ なりません。おひるは のまなくても いいです。', english: 'You must take it after breakfast and dinner. You do not need to take it at lunchtime.', grammarIds: ['l17-obligation', 'l17-not-necessary'], grammarNotes: [
+      { grammarId: 'l17-obligation', explanation: '飲まなければ なりません makes the breakfast and dinner doses required rather than merely recommended.' },
+      { grammarId: 'l17-not-necessary', explanation: 'By contrast, 飲まなくても いいです accepts skipping a lunchtime dose and does not forbid taking medicine generally.' },
+    ] },
+    { id: 'l17-d06', speaker: 'Luca', japanese: 'つぎの よやくは きょう しなければ なりませんか。', reading: 'つぎの よやくは きょう しなければ なりませんか。', english: 'Do I have to make the next appointment today?', grammarIds: ['l17-obligation'], grammarNotes: [
+      { grammarId: 'l17-obligation', explanation: 'Luca adds か to the obligation pattern to check whether making the next appointment specifically today is mandatory.' },
+    ] },
+    { id: 'l17-d07', speaker: 'Doctor', japanese: 'いいえ、きょうは しなくても いいです。来週、電話してください。それから、ほけんしょうを わすれないでください。', reading: 'いいえ、きょうは しなくても いいです。らいしゅう、でんわしてください。それから、ほけんしょうを わすれないでください。', english: 'No, you do not have to do it today. Please call next week. Also, please do not forget your insurance card.', grammarIds: ['l17-not-necessary', 'l17-negative-request'], grammarNotes: [
+      { grammarId: 'l17-not-necessary', explanation: 'しなくても いいです releases only today’s appointment-making obligation, while the following sentence supplies the later action.' },
+      { grammarId: 'l17-negative-request', explanation: 'The doctor builds わすれない from わすれます and adds でください to ask Luca not to leave his insurance card behind.' },
+    ] },
     { id: 'l17-d08', speaker: 'Luca', japanese: 'はい。ありがとうございました。', reading: 'はい。ありがとうございました。', english: 'Okay. Thank you very much.' },
   ],
   exercises: [
