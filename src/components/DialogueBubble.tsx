@@ -1,9 +1,16 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-import { DialogueTurn } from '../models/content';
+import type { DialogueTurn, GrammarPoint } from '../models/content';
 import { colors, radii, spacing, typography } from '../theme/tokens';
+import { DialogueGrammarNotes } from './DialogueGrammarNotes';
 
-export function DialogueBubble({ turn, alignRight }: { turn: DialogueTurn; alignRight: boolean }) {
+interface Props {
+  turn: DialogueTurn;
+  grammar: readonly GrammarPoint[];
+  alignRight: boolean;
+}
+
+export function DialogueBubble({ turn, grammar, alignRight }: Props) {
   return (
     <View style={[styles.wrap, alignRight && styles.wrapRight]}>
       <Text style={[styles.speaker, alignRight && styles.speakerRight]}>{turn.speaker}</Text>
@@ -11,6 +18,7 @@ export function DialogueBubble({ turn, alignRight }: { turn: DialogueTurn; align
         <Text style={styles.japanese}>{turn.japanese}</Text>
         <Text style={styles.reading}>{turn.reading}</Text>
         <Text style={styles.english}>{turn.english}</Text>
+        <DialogueGrammarNotes grammar={grammar} turn={turn} />
       </View>
     </View>
   );

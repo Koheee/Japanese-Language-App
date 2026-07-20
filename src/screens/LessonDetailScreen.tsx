@@ -183,7 +183,12 @@ export function LessonDetailScreen({ navigation, route }: Props) {
           </Text>
           <View style={styles.dialogueList}>
             {lesson.dialogue.map((turn, index) => (
-              <DialogueBubble key={turn.id} turn={turn} alignRight={index % 2 === 1} />
+              <DialogueBubble
+                alignRight={index % 2 === 1}
+                grammar={lesson.grammar}
+                key={turn.id}
+                turn={turn}
+              />
             ))}
           </View>
         </View>
