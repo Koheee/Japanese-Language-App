@@ -13,11 +13,13 @@ describe('search target landing presentation', () => {
     expect(source).toContain('calculateSearchTargetY');
     expect(source).toContain('shouldRunSearchLanding');
     expect(source).toContain('scrollTo({ y: targetY, animated: true })');
+    expect(source).toContain("scrollIntoView?.({ behavior: 'smooth', block: 'start' })");
     expect(source).toContain('scrollTo({ y: 0, animated: true })');
     expect(source).toContain('SearchTargetAnchor');
     expect(source).toContain('AccessibilityInfo.setAccessibilityFocus');
     expect(source).toContain("Platform.OS === 'web'");
     expect(source).toContain('focus?.()');
+    expect(source).toContain('}, 2_000);');
     expect(source).toContain('2_500');
 
     const anchor = read('components/SearchTargetAnchor.tsx');

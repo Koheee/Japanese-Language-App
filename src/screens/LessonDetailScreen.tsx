@@ -31,6 +31,11 @@ import { colors, radii, spacing, typography } from '../theme/tokens';
 type Props = NativeStackScreenProps<LearnStackParamList, 'LessonDetail'>;
 type Tab = 'overview' | 'grammar' | 'dialogue';
 
+interface WebSearchTargetAnchor {
+  focus?: () => void;
+  scrollIntoView?: (options: { behavior: 'smooth'; block: 'start' }) => void;
+}
+
 const tabs: { id: Tab; label: string }[] = [
   { id: 'overview', label: 'Overview' },
   { id: 'grammar', label: 'Grammar' },
@@ -74,7 +79,7 @@ export function LessonDetailScreen({ navigation, route }: Props) {
       if (!shouldRunSearchLanding(consumedRequestTokenRef.current, searchTarget)) return;
       consumedRequestTokenRef.current = searchTarget!.requestToken;
       screenScrollRef.current?.scrollTo({ y: 0, animated: true });
-    }, 650);
+    }, 2_000);
 
     return () => clearTimeout(fallbackTimer);
   }, [route.params.lessonId, searchTarget?.requestToken]);
@@ -83,13 +88,18 @@ export function LessonDetailScreen({ navigation, route }: Props) {
     if (targetY === null || !shouldRunSearchLanding(consumedRequestTokenRef.current, searchTarget)) return;
 
     consumedRequestTokenRef.current = searchTarget!.requestToken;
-    screenScrollRef.current?.scrollTo({ y: targetY, animated: true });
+    const webTargetAnchor = targetAnchorRef.current as unknown as WebSearchTargetAnchor | null;
+    if (Platform.OS === 'web' && webTargetAnchor?.scrollIntoView) {
+      webTargetAnchor.scrollIntoView?.({ behavior: 'smooth', block: 'start' });
+    } else {
+      screenScrollRef.current?.scrollTo({ y: targetY, animated: true });
+    }
     setHighlightedRequestToken(searchTarget!.requestToken);
 
     const focusTimer = setTimeout(() => {
       const targetAnchor = targetAnchorRef.current;
       if (Platform.OS === 'web') {
-        (targetAnchor as unknown as { focus?: () => void } | null)?.focus?.();
+        (targetAnchor as unknown as WebSearchTargetAnchor | null)?.focus?.();
         return;
       }
       const targetHandle = findNodeHandle(targetAnchor);
