@@ -44,6 +44,156 @@ const textUsingStyle = (root: ts.Node, styleName: string) =>
       && attribute.initializer.expression?.getText() === `styles.${styleName}`))
     .map((element) => visibleText(element).join(' '));
 
+type JsxElementWithAttributes = ts.JsxOpeningElement | ts.JsxSelfClosingElement;
+
+const attributeNamed = (element: JsxElementWithAttributes, name: string) =>
+  element.attributes.properties.find((attribute): attribute is ts.JsxAttribute =>
+    ts.isJsxAttribute(attribute) && attribute.name.getText() === name);
+
+const expressionAttribute = (element: JsxElementWithAttributes, name: string) => {
+  const attribute = attributeNamed(element, name);
+  expect(attribute).toBeDefined();
+  if (
+    attribute?.initializer === undefined
+    || !ts.isJsxExpression(attribute.initializer)
+    || attribute.initializer.expression === undefined
+  ) {
+    throw new Error(`${name} must be a JSX expression`);
+  }
+  return attribute.initializer.expression;
+};
+
+const stringAttribute = (element: JsxElementWithAttributes, name: string) => {
+  const attribute = attributeNamed(element, name);
+  expect(attribute).toBeDefined();
+  if (attribute?.initializer === undefined || !ts.isStringLiteral(attribute.initializer)) {
+    throw new Error(`${name} must be a string literal`);
+  }
+  return attribute.initializer.text;
+};
+
+const expectIdentifierAttribute = (
+  element: JsxElementWithAttributes,
+  attributeName: string,
+  identifier: string,
+) => {
+  const expression = expressionAttribute(element, attributeName);
+  expect(ts.isIdentifier(expression)).toBe(true);
+  expect((expression as ts.Identifier).text).toBe(identifier);
+};
+
+const styleObject = (root: ts.Node, name: string) => {
+  const createCall = collect(root, (node): node is ts.CallExpression =>
+    ts.isCallExpression(node)
+    && ts.isPropertyAccessExpression(node.expression)
+    && node.expression.expression.getText() === 'StyleSheet'
+    && node.expression.name.text === 'create')[0];
+  expect(createCall).toBeDefined();
+  const stylesArgument = createCall?.arguments[0];
+  expect(stylesArgument).toBeDefined();
+  if (stylesArgument === undefined || !ts.isObjectLiteralExpression(stylesArgument)) {
+    throw new Error('StyleSheet.create must receive an object literal');
+  }
+
+  const style = stylesArgument.properties.find(
+    (property): property is ts.PropertyAssignment =>
+      ts.isPropertyAssignment(property) && property.name.getText() === name,
+  );
+  expect(style).toBeDefined();
+  if (style === undefined || !ts.isObjectLiteralExpression(style.initializer)) {
+    throw new Error(`${name} must be an object-literal style`);
+  }
+  return style.initializer;
+};
+
+const styleProperty = (style: ts.ObjectLiteralExpression, name: string) => {
+  const property = style.properties.find((candidate): candidate is ts.PropertyAssignment =>
+    ts.isPropertyAssignment(candidate) && candidate.name.getText() === name);
+  expect(property).toBeDefined();
+  return property!.initializer;
+};
+
+const expectStaticListBindings = (root: ts.SourceFile) => {
+  const flatLists = collect(root, (node): node is ts.JsxSelfClosingElement =>
+    ts.isJsxSelfClosingElement(node) && node.tagName.getText(root) === 'FlatList');
+  expect(flatLists).toHaveLength(1);
+  expectIdentifierAttribute(flatLists[0]!, 'data', 'curriculum');
+
+  const lessonCards = collect(root, (node): node is ts.JsxSelfClosingElement =>
+    ts.isJsxSelfClosingElement(node) && node.tagName.getText(root) === 'LessonCard');
+  expect(lessonCards).toHaveLength(1);
+  expectIdentifierAttribute(lessonCards[0]!, 'lesson', 'item');
+};
+
+const expectCardAffordances = (root: ts.SourceFile) => {
+  const component = root.statements.find((statement): statement is ts.FunctionDeclaration =>
+    ts.isFunctionDeclaration(statement) && statement.name?.text === 'LessonCard');
+  expect(component).toBeDefined();
+
+  const returns = collect(component!, ts.isReturnStatement);
+  expect(returns).toHaveLength(1);
+  let returned = returns[0]!.expression!;
+  while (ts.isParenthesizedExpression(returned)) returned = returned.expression;
+  expect(ts.isJsxElement(returned)).toBe(true);
+  const pressable = (returned as ts.JsxElement).openingElement;
+  expect(pressable.tagName.getText(root)).toBe('Pressable');
+
+  expectIdentifierAttribute(pressable, 'onPress', 'onPress');
+
+  expect(stringAttribute(pressable, 'accessibilityRole')).toBe('button');
+
+  expect(stringAttribute(pressable, 'accessibilityHint').trim()).not.toBe('');
+
+  const labelExpression = expressionAttribute(pressable, 'accessibilityLabel');
+  expect(ts.isTemplateExpression(labelExpression)).toBe(true);
+  const labelFields = collect(labelExpression, ts.isPropertyAccessExpression)
+    .filter((access) => ts.isIdentifier(access.expression) && access.expression.text === 'lesson')
+    .map((access) => access.name.text);
+  expect(labelFields).toEqual(expect.arrayContaining(['number', 'title']));
+
+  const cardStyleExpression = expressionAttribute(pressable, 'style');
+  const appliedStyles = collect(
+    cardStyleExpression,
+    ts.isPropertyAccessExpression,
+  ).filter((access) => ts.isIdentifier(access.expression) && access.expression.text === 'styles')
+    .map((access) => access.name.text);
+  expect(appliedStyles).toContain('card');
+
+  const chevrons = collect(returned, ts.isJsxElement).filter((element) => {
+    const style = attributeNamed(element.openingElement, 'style');
+    if (
+      element.openingElement.tagName.getText(root) !== 'Text'
+      || style?.initializer === undefined
+      || !ts.isJsxExpression(style.initializer)
+    ) {
+      return false;
+    }
+    const expression = style.initializer.expression;
+    return expression !== undefined
+      && ts.isPropertyAccessExpression(expression)
+      && ts.isIdentifier(expression.expression)
+      && expression.expression.text === 'styles'
+      && expression.name.text === 'chevron';
+  });
+  expect(chevrons).toHaveLength(1);
+  expect(visibleText(chevrons[0]!)).toEqual(['\u203a']);
+
+  const cardStyle = styleObject(root, 'card');
+  expect(styleProperty(cardStyle, 'flexDirection')).toMatchObject({ text: 'row' });
+  const padding = styleProperty(cardStyle, 'padding');
+  expect(ts.isPropertyAccessExpression(padding)).toBe(true);
+  expect(ts.isIdentifier((padding as ts.PropertyAccessExpression).expression)).toBe(true);
+  expect(((padding as ts.PropertyAccessExpression).expression as ts.Identifier).text).toBe('spacing');
+  expect((padding as ts.PropertyAccessExpression).name.text).toBe('lg');
+
+  const numberStyle = styleObject(root, 'number');
+  for (const dimension of ['width', 'height']) {
+    const value = styleProperty(numberStyle, dimension);
+    expect(ts.isNumericLiteral(value)).toBe(true);
+    expect(Number((value as ts.NumericLiteral).text)).toBeGreaterThanOrEqual(44);
+  }
+};
+
 describe('grammar reader lesson list', () => {
   it('presents the frozen curriculum totals instead of study activity', () => {
     expect(importPaths(screen)).not.toContain('../state/StudyContext');
@@ -61,6 +211,8 @@ describe('grammar reader lesson list', () => {
   });
 
   it('renders LessonCard with only its lesson and navigation callback', () => {
+    expectStaticListBindings(screen);
+
     const lessonCards = collect(screen, (node): node is ts.JsxSelfClosingElement =>
       ts.isJsxSelfClosingElement(node) && node.tagName.getText(screen) === 'LessonCard');
 
@@ -85,7 +237,7 @@ describe('grammar reader lesson list', () => {
     expect((lessonId!.initializer as ts.PropertyAccessExpression).name.text).toBe('id');
   });
 
-  it('keeps LessonCard pressable while removing progress and preview branches', () => {
+  it('keeps LessonCard a large accessible pressable without progress or preview branches', () => {
     expect(importPaths(card)).not.toContain('./ProgressBar');
 
     const component = card.statements.find((statement): statement is ts.FunctionDeclaration =>
@@ -115,10 +267,6 @@ describe('grammar reader lesson list', () => {
       'summary',
     ]));
 
-    const pressable = collect(component!, (node): node is ts.JsxOpeningElement =>
-      ts.isJsxOpeningElement(node) && node.tagName.getText(card) === 'Pressable');
-    expect(pressable).toHaveLength(1);
-    expect(pressable[0]!.attributes.properties.some((attribute) =>
-      ts.isJsxAttribute(attribute) && attribute.name.getText(card) === 'onPress')).toBe(true);
+    expectCardAffordances(card);
   });
 });
