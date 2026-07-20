@@ -525,7 +525,7 @@ const lesson12: Lesson = {
       { grammarId: 'l12-choice-best', explanation: 'Rina names exactly two candidates with と and asks どちらが to leave the preferred side unknown.' },
     ] },
     { id: 'l12-d06', speaker: 'Owen', japanese: '山の ほうが すきです。とくに、秋の 山が いちばん きれいです。', reading: 'やまの ほうが すきです。とくに、あきの やまが いちばん きれいです。', english: 'I prefer the mountains. In particular, the mountains are most beautiful in autumn.', grammarIds: ['l12-choice-best'], grammarNotes: [
-      { grammarId: 'l12-choice-best', explanation: '山の ほうが selects one side of Rina’s pair, while 秋 provides the seasonal set in which the mountains rank いちばん.' },
+      { grammarId: 'l12-choice-best', explanation: '秋の 山 is one noun phrase: 秋 modifies 山, and that whole item is marked by が and ranked いちばん against implicitly understood mountains in other seasons.' },
     ] },
   ],
   exercises: [
@@ -703,7 +703,7 @@ const lesson13: Lesson = {
       { grammarId: 'l13-tai', explanation: 'Ben answers from his own viewpoint and attaches たいです to the 行きます stem to name the trip he wants.' },
     ] },
     { id: 'l13-d03', speaker: 'Aya', japanese: '市場へ 何を しに 行きますか。', reading: 'いちばへ なにを しに いきますか。', english: 'What will you go to the market to do?', grammarIds: ['l13-purpose-movement'], grammarNotes: [
-      { grammarId: 'l13-purpose-movement', explanation: '市場へ marks where the movement goes, while しに leaves the intended activity open for Ben to specify.' },
+      { grammarId: 'l13-purpose-movement', explanation: '何を marks the unknown content of the activity; し is the ます-stem of します, and に marks that activity as the purpose of 行きます.' },
     ] },
     { id: 'l13-d04', speaker: 'Ben', japanese: '妹の おみやげを さがしに 行きます。てづくりの さいふが ほしいです。', reading: 'いもうとの おみやげを さがしに いきます。てづくりの さいふが ほしいです。', english: 'I am going to look for a gift for my younger sister. I want a handmade wallet.', grammarIds: ['l13-purpose-movement', 'l13-hoshii'], grammarNotes: [
       { grammarId: 'l13-purpose-movement', explanation: 'さがし is the stem of さがします, and purpose に makes looking for the gift the reason Ben will go.' },

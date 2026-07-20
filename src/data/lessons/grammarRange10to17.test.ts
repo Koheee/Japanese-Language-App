@@ -24,6 +24,22 @@ describe('grammar enrichment for Lessons 10-17', () => {
     expect(points.get('l17-obligation')?.formation?.some(({ formula }) => formula.includes('なければ'))).toBe(true);
   });
 
+  it('treats 秋の山 as the ranked Lesson 12 item', () => {
+    const turn = lessons.find(({ number }) => number === 12)?.dialogue.find(({ id }) => id === 'l12-d06');
+
+    expect(turn?.grammarNotes?.[0]?.explanation).toBe(
+      '秋の 山 is one noun phrase: 秋 modifies 山, and that whole item is marked by が and ranked いちばん against implicitly understood mountains in other seasons.',
+    );
+  });
+
+  it('assigns each part of the Lesson 13 purpose question its actual role', () => {
+    const turn = lessons.find(({ number }) => number === 13)?.dialogue.find(({ id }) => id === 'l13-d03');
+
+    expect(turn?.grammarNotes?.[0]?.explanation).toBe(
+      '何を marks the unknown content of the activity; し is the ます-stem of します, and に marks that activity as the purpose of 行きます.',
+    );
+  });
+
   it('anchors the taught て-form and ない-form algorithms to familiar ～ます forms', () => {
     const points = new Map(
       lessons
