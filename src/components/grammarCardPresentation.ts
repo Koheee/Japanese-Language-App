@@ -1,64 +1,84 @@
 import type { GrammarPoint } from '../models/content';
-import { createLatestAttemptCoordinator } from './latestAttemptCoordinator';
 
-export interface GrammarInsightState {
-  expanded: boolean;
-  focused: boolean;
+export type GrammarCardSection = 'insight' | 'deeper';
+
+export interface GrammarCardState {
+  insightExpanded: boolean;
+  deeperExpanded: boolean;
+  focusedToggle: GrammarCardSection | null;
 }
 
-export const createGrammarInsightState = (): GrammarInsightState => ({
-  expanded: false,
-  focused: false,
+export interface GrammarCardTogglePresentation {
+  accessibilityRole: 'button';
+  accessibilityLabel: string;
+  accessibilityHint: string;
+  accessibilityState: { expanded: boolean };
+  minimumTouchTarget: 44;
+}
+
+export const createGrammarCardState = (): GrammarCardState => ({
+  insightExpanded: false,
+  deeperExpanded: false,
+  focusedToggle: null,
 });
 
-export const toggleGrammarInsight = (state: GrammarInsightState): GrammarInsightState => ({
-  ...state,
-  expanded: !state.expanded,
-});
+export const toggleGrammarCardSection = (
+  state: GrammarCardState,
+  section: GrammarCardSection,
+): GrammarCardState => section === 'insight'
+  ? { ...state, insightExpanded: !state.insightExpanded }
+  : { ...state, deeperExpanded: !state.deeperExpanded };
 
-export const setGrammarInsightFocused = (
-  state: GrammarInsightState,
+export const setGrammarCardToggleFocused = (
+  state: GrammarCardState,
+  section: GrammarCardSection,
   focused: boolean,
-): GrammarInsightState => ({ ...state, focused });
+): GrammarCardState => ({
+  ...state,
+  focusedToggle: focused
+    ? section
+    : state.focusedToggle === section
+      ? null
+      : state.focusedToggle,
+});
 
-export const openGrammarReference = async (
-  url: string,
-  openUrl: (url: string) => Promise<unknown>,
-): Promise<string | null> => {
-  try {
-    await openUrl(url);
-    return null;
-  } catch {
-    return 'Could not open this further-reading link. Please try again.';
-  }
-};
+const createTogglePresentation = (
+  title: string,
+  sectionLabel: string,
+  expanded: boolean,
+): GrammarCardTogglePresentation => ({
+  accessibilityRole: 'button',
+  accessibilityLabel: `${sectionLabel}: ${title}`,
+  accessibilityHint: expanded
+    ? `Collapses ${sectionLabel.toLowerCase()}.`
+    : `Expands ${sectionLabel.toLowerCase()}.`,
+  accessibilityState: { expanded },
+  minimumTouchTarget: 44,
+});
 
-export const createGrammarReferenceAttemptCoordinator = () => {
-  const coordinator = createLatestAttemptCoordinator<string | null>();
+export const projectGrammarCard = (point: GrammarPoint, state: GrammarCardState) => {
+  const hasDeeperContent = Boolean(point.notes?.length || point.beyondBasics?.length);
+
   return {
-    open: (
-      url: string,
-      openUrl: (url: string) => Promise<unknown>,
-      applyResult: (result: string | null) => void,
-    ) => coordinator.run(() => openGrammarReference(url, openUrl), applyResult),
-    deactivate: coordinator.deactivate,
+    insightToggle: createTogglePresentation(
+      point.title,
+      'A Japanese-first picture',
+      state.insightExpanded,
+    ),
+    deeperToggle: hasDeeperContent
+      ? createTogglePresentation(point.title, 'Go deeper', state.deeperExpanded)
+      : null,
+    insight: state.insightExpanded
+      ? {
+          whyItWorks: point.whyItWorks,
+          usageBoundary: point.usageBoundary,
+        }
+      : null,
+    deeper: state.deeperExpanded && hasDeeperContent
+      ? {
+          notes: point.notes,
+          beyondBasics: point.beyondBasics,
+        }
+      : null,
   };
 };
-
-export const projectGrammarInsight = (point: GrammarPoint, state: GrammarInsightState) => ({
-  toggle: {
-    accessibilityRole: 'button' as const,
-    accessibilityLabel: `Japanese-first insight: ${point.title}`,
-    accessibilityHint: state.expanded
-      ? 'Collapses the Japanese-first insight, usage boundary, notes, and further reading.'
-      : 'Expands the Japanese-first insight, usage boundary, notes, and further reading.',
-    accessibilityState: { expanded: state.expanded },
-    minimumTouchTarget: 44 as const,
-  },
-  content: state.expanded ? {
-    whyItWorks: point.whyItWorks,
-    usageBoundary: point.usageBoundary,
-    notes: point.notes,
-    furtherReading: point.furtherReading,
-  } : null,
-});

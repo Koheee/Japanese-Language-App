@@ -1,26 +1,44 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
+import ts from 'typescript';
 import { describe, expect, it } from 'vitest';
 
 import type { GrammarPoint } from '../models/content';
-import {
-  createGrammarReferenceAttemptCoordinator,
-  createGrammarInsightState,
-  openGrammarReference,
-  projectGrammarInsight,
-  setGrammarInsightFocused,
-  toggleGrammarInsight,
-} from './grammarCardPresentation';
+import * as grammarCardPresentation from './grammarCardPresentation';
 
-const deferred = <T,>() => {
-  let resolve!: (value: T | PromiseLike<T>) => void;
-  let reject!: (reason?: unknown) => void;
-  const promise = new Promise<T>((resolvePromise, rejectPromise) => {
-    resolve = resolvePromise;
-    reject = rejectPromise;
-  });
-  return { promise, reject, resolve };
+type GrammarCardPresentationApi = typeof import('./grammarCardPresentation') & {
+  createGrammarCardState: () => {
+    insightExpanded: boolean;
+    deeperExpanded: boolean;
+    focusedToggle: 'insight' | 'deeper' | null;
+  };
+  projectGrammarCard: (
+    point: GrammarPoint,
+    state: ReturnType<GrammarCardPresentationApi['createGrammarCardState']>,
+  ) => Record<string, unknown>;
+  setGrammarCardToggleFocused: (
+    state: ReturnType<GrammarCardPresentationApi['createGrammarCardState']>,
+    section: 'insight' | 'deeper',
+    focused: boolean,
+  ) => ReturnType<GrammarCardPresentationApi['createGrammarCardState']>;
+  toggleGrammarCardSection: (
+    state: ReturnType<GrammarCardPresentationApi['createGrammarCardState']>,
+    section: 'insight' | 'deeper',
+  ) => ReturnType<GrammarCardPresentationApi['createGrammarCardState']>;
+};
+
+const getPresentationApi = (): GrammarCardPresentationApi => {
+  const candidate = grammarCardPresentation as Record<string, unknown>;
+  for (const name of [
+    'createGrammarCardState',
+    'projectGrammarCard',
+    'setGrammarCardToggleFocused',
+    'toggleGrammarCardSection',
+  ]) {
+    expect(candidate[name], `${name} should be exported`).toBeTypeOf('function');
+  }
+  return grammarCardPresentation as GrammarCardPresentationApi;
 };
 
 const point: GrammarPoint = {
@@ -41,9 +59,10 @@ const point: GrammarPoint = {
     explanation: 'Use は to establish the conversational topic; が has a separate identifying role.',
   },
   notes: ['Literal frame: “As for A, B.”'],
+  beyondBasics: ['A topic can stay understood across nearby sentences.'],
   examples: [
-    { japanese: 'わたしは がくせいです。', reading: 'わたしは がくせいです。', english: 'I am a student.' },
-    { japanese: 'エマさんは けんきゅうしゃです。', reading: 'エマさんは けんきゅうしゃです。', english: 'Emma is a researcher.' },
+    { japanese: 'わたしは 学生です。', reading: 'わたしは がくせいです。', english: 'I am a student.' },
+    { japanese: 'エマさんは 研究者です。', reading: 'エマさんは けんきゅうしゃです。', english: 'Emma is a researcher.' },
   ],
   furtherReading: [{
     title: "Tae Kim's Guide: Introduction to Particles",
@@ -52,156 +71,224 @@ const point: GrammarPoint = {
 };
 
 describe('grammar card presentation', () => {
-  it('starts collapsed with an explicit 44-pixel accessible toggle contract', () => {
-    const projection = projectGrammarInsight(point, createGrammarInsightState());
-    expect(projection.toggle).toEqual({
-      accessibilityRole: 'button',
-      accessibilityLabel: 'Japanese-first insight: Make a noun the topic, then identify it',
-      accessibilityHint: 'Expands the Japanese-first insight, usage boundary, notes, and further reading.',
-      accessibilityState: { expanded: false },
-      minimumTouchTarget: 44,
+  it('starts with two collapsed, accessible 44-point toggles', () => {
+    const { createGrammarCardState, projectGrammarCard } = getPresentationApi();
+    expect(projectGrammarCard(point, createGrammarCardState())).toMatchObject({
+      insightToggle: {
+        accessibilityRole: 'button',
+        accessibilityState: { expanded: false },
+        minimumTouchTarget: 44,
+      },
+      deeperToggle: {
+        accessibilityRole: 'button',
+        accessibilityState: { expanded: false },
+        minimumTouchTarget: 44,
+      },
+      insight: null,
+      deeper: null,
     });
-    expect(projection.content).toBeNull();
   });
 
-  it('toggles one immutable state without changing another card state', () => {
-    const first = createGrammarInsightState();
-    const second = createGrammarInsightState();
-    const expandedFirst = toggleGrammarInsight(first);
-    expect(expandedFirst.expanded).toBe(true);
-    expect(first.expanded).toBe(false);
-    expect(second.expanded).toBe(false);
-    expect(projectGrammarInsight(point, expandedFirst).content).toEqual({
+  it('toggles the two sections independently without mutating earlier states', () => {
+    const { createGrammarCardState, toggleGrammarCardSection } = getPresentationApi();
+    const initial = createGrammarCardState();
+    const insightOpen = toggleGrammarCardSection(initial, 'insight');
+    const bothOpen = toggleGrammarCardSection(insightOpen, 'deeper');
+    const deeperOnly = toggleGrammarCardSection(bothOpen, 'insight');
+
+    expect(initial).toEqual({
+      insightExpanded: false,
+      deeperExpanded: false,
+      focusedToggle: null,
+    });
+    expect(insightOpen).toMatchObject({ insightExpanded: true, deeperExpanded: false });
+    expect(bothOpen).toMatchObject({ insightExpanded: true, deeperExpanded: true });
+    expect(deeperOnly).toMatchObject({ insightExpanded: false, deeperExpanded: true });
+  });
+
+  it('tracks one focused toggle without collapsing either section', () => {
+    const {
+      createGrammarCardState,
+      setGrammarCardToggleFocused,
+      toggleGrammarCardSection,
+    } = getPresentationApi();
+    const open = toggleGrammarCardSection(
+      toggleGrammarCardSection(createGrammarCardState(), 'insight'),
+      'deeper',
+    );
+    const insightFocused = setGrammarCardToggleFocused(open, 'insight', true);
+    const deeperFocused = setGrammarCardToggleFocused(insightFocused, 'deeper', true);
+    const staleInsightBlur = setGrammarCardToggleFocused(deeperFocused, 'insight', false);
+    const noFocus = setGrammarCardToggleFocused(staleInsightBlur, 'deeper', false);
+
+    expect(insightFocused.focusedToggle).toBe('insight');
+    expect(deeperFocused.focusedToggle).toBe('deeper');
+    expect(staleInsightBlur.focusedToggle).toBe('deeper');
+    expect(noFocus).toEqual({
+      insightExpanded: true,
+      deeperExpanded: true,
+      focusedToggle: null,
+    });
+  });
+
+  it('projects internal teaching only and leaves references out of the card model', () => {
+    const { createGrammarCardState, projectGrammarCard, toggleGrammarCardSection } = getPresentationApi();
+    const expanded = toggleGrammarCardSection(
+      toggleGrammarCardSection(createGrammarCardState(), 'insight'),
+      'deeper',
+    );
+    const projection = projectGrammarCard(point, expanded);
+
+    expect(projection.insight).toEqual({
       whyItWorks: point.whyItWorks,
       usageBoundary: point.usageBoundary,
-      notes: point.notes,
-      furtherReading: point.furtherReading,
     });
+    expect(projection.deeper).toEqual({
+      notes: point.notes,
+      beyondBasics: point.beyondBasics,
+    });
+    expect(JSON.stringify(projection)).not.toContain('guidetojapanese.org');
+    expect(JSON.stringify(projection)).not.toContain('furtherReading');
   });
 
-  it('projects focus and the collapsed hint without losing expansion', () => {
-    const focused = setGrammarInsightFocused(toggleGrammarInsight(createGrammarInsightState()), true);
-    expect(focused).toEqual({ expanded: true, focused: true });
-    expect(projectGrammarInsight(point, focused).toggle.accessibilityHint).toBe(
-      'Collapses the Japanese-first insight, usage boundary, notes, and further reading.',
-    );
-  });
-
-  it('opens a further-reading link and reports no error', async () => {
-    const receiverDependentOpener = {
-      opened: [] as string[],
-      async openURL(url: string) {
-        if (this !== receiverDependentOpener) {
-          throw new Error('openURL receiver was detached');
-        }
-        this.opened.push(url);
-      },
+  it('omits the deeper toggle when there is no optional nuance', () => {
+    const { createGrammarCardState, projectGrammarCard } = getPresentationApi();
+    const withoutNuance: GrammarPoint = {
+      ...point,
+      notes: undefined,
+      beyondBasics: undefined,
     };
-    const result = await openGrammarReference(
-      'https://example.com/grammar',
-      (url) => receiverDependentOpener.openURL(url),
-    );
 
-    expect(receiverDependentOpener.opened).toEqual(['https://example.com/grammar']);
-    expect(result).toBeNull();
-  });
-
-  it('turns a rejected further-reading opener into a user-facing error', async () => {
-    const result = await openGrammarReference(
-      'https://example.com/grammar',
-      async () => { throw new Error('browser unavailable'); },
-    );
-
-    expect(result).toBe('Could not open this further-reading link. Please try again.');
-  });
-
-  it('keeps a newer success when an older failure settles last', async () => {
-    const coordinator = createGrammarReferenceAttemptCoordinator();
-    const olderFailure = deferred<void>();
-    const newerSuccess = deferred<void>();
-    const applied: Array<string | null> = [];
-
-    const older = coordinator.open('https://example.com/older', () => olderFailure.promise, (value) => applied.push(value));
-    const newer = coordinator.open('https://example.com/newer', () => newerSuccess.promise, (value) => applied.push(value));
-    newerSuccess.resolve();
-    await newer;
-    olderFailure.reject(new Error('older failure'));
-    await older;
-
-    expect(applied).toEqual([null]);
-  });
-
-  it('keeps a newer failure when an older success settles first', async () => {
-    const coordinator = createGrammarReferenceAttemptCoordinator();
-    const olderSuccess = deferred<void>();
-    const newerFailure = deferred<void>();
-    const applied: Array<string | null> = [];
-
-    const older = coordinator.open('https://example.com/older', () => olderSuccess.promise, (value) => applied.push(value));
-    const newer = coordinator.open('https://example.com/newer', () => newerFailure.promise, (value) => applied.push(value));
-    olderSuccess.resolve();
-    await older;
-    newerFailure.reject(new Error('newer failure'));
-    await newer;
-
-    expect(applied).toEqual(['Could not open this further-reading link. Please try again.']);
-  });
-
-  it('drops a further-reading result after the card unmounts', async () => {
-    const coordinator = createGrammarReferenceAttemptCoordinator();
-    const pending = deferred<void>();
-    const applied: Array<string | null> = [];
-    const attempt = coordinator.open(
-      'https://example.com/reference',
-      () => pending.promise,
-      (value) => applied.push(value),
-    );
-
-    coordinator.deactivate();
-    pending.reject(new Error('late failure'));
-    await attempt;
-
-    expect(applied).toEqual([]);
+    expect(projectGrammarCard(withoutNuance, createGrammarCardState())).toMatchObject({
+      deeperToggle: null,
+      deeper: null,
+    });
   });
 });
 
-describe('GrammarCard source contract', () => {
-  const source = readFileSync(join(import.meta.dirname, 'GrammarCard.tsx'), 'utf8');
+const parseTsx = (fileName: string) => {
+  const path = join(import.meta.dirname, fileName);
+  const source = existsSync(path) ? readFileSync(path, 'utf8') : '';
+  return {
+    source,
+    tree: ts.createSourceFile(fileName, source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX),
+  };
+};
 
-  it('forwards the expansion state through the explicit web ARIA alias', () => {
-    const toggleTag = source.match(/<Pressable[\s\S]*?style=\{\[[\s\S]*?styles\.insightToggle[\s\S]*?\}\s*>/)?.[0] ?? '';
+const collect = <T extends ts.Node>(
+  root: ts.Node,
+  predicate: (node: ts.Node) => node is T,
+): T[] => {
+  const matches: T[] = [];
+  const visit = (node: ts.Node) => {
+    if (predicate(node)) matches.push(node);
+    ts.forEachChild(node, visit);
+  };
+  visit(root);
+  return matches;
+};
 
-    expect(toggleTag).toContain('accessibilityState={insight.toggle.accessibilityState}');
-    expect(toggleTag).toContain('aria-expanded={insight.toggle.accessibilityState.expanded}');
+describe('GrammarCard teaching contract', () => {
+  const card = parseTsx('GrammarCard.tsx');
+
+  it('renders the complete teaching sequence in learner order', () => {
+    const labels = [
+      ...collect(card.tree, ts.isJsxText).map((node) => ({
+        position: node.pos,
+        text: node.text.trim(),
+      })),
+      ...collect(card.tree, ts.isJsxAttribute)
+        .filter((node) => node.name.getText(card.tree) === 'label'
+          && node.initializer
+          && ts.isStringLiteral(node.initializer))
+        .map((node) => ({
+          position: node.pos,
+          text: (node.initializer as ts.StringLiteral).text,
+        })),
+    ]
+      .filter(({ text }) => Boolean(text))
+      .sort((left, right) => left.position - right.position)
+      .map(({ text }) => text);
+    const expected = [
+      'THE BASICS',
+      'BUILD THE FORM',
+      'A JAPANESE-FIRST PICTURE',
+      'WHEN IT FITS',
+      'COMPARE IT',
+      'EXAMPLES',
+      'COMMON TURN',
+      'GO DEEPER',
+    ];
+
+    const positions = expected.map((label) => labels.indexOf(label));
+    expect(positions.every((position) => position >= 0)).toBe(true);
+    expect([...positions].sort((left, right) => left - right)).toEqual(positions);
   });
 
-  it('hides the decorative chevron from native and web accessibility trees', () => {
-    const chevronTag = source.match(/<Text[^>]*style=\{styles\.insightChevron\}[^>]*>/)?.[0];
+  it('does not import link opening or render per-card references', () => {
+    const imports = card.tree.statements.filter(ts.isImportDeclaration);
+    const reactNativeImport = imports.find(
+      (statement) => (statement.moduleSpecifier as ts.StringLiteral).text === 'react-native',
+    );
+    const importedNames = reactNativeImport?.importClause?.namedBindings
+      && ts.isNamedImports(reactNativeImport.importClause.namedBindings)
+      ? reactNativeImport.importClause.namedBindings.elements.map((element) => element.name.text)
+      : [];
+    const pointProperties = collect(card.tree, ts.isPropertyAccessExpression)
+      .filter((node) => node.expression.getText(card.tree) === 'point')
+      .map((node) => node.name.text);
 
-    expect(chevronTag).toContain('accessibilityElementsHidden');
-    expect(chevronTag).toContain('importantForAccessibility="no"');
-    expect(chevronTag).toContain('aria-hidden={true}');
+    expect(importedNames).not.toContain('Linking');
+    expect(pointProperties).not.toContain('furtherReading');
   });
 
-  it('keeps focus geometry fixed and uses the high-contrast forest token', () => {
-    const baseStyle = source.match(/insightToggle:\s*\{[\s\S]*?\n\s*\},\n\s*insightToggleFocused:/)?.[0];
-    const focusedStyle = source.match(/insightToggleFocused:\s*\{[^}]*\}/)?.[0];
+  it('forwards button, expansion, touch-target, focus, and hidden-glyph contracts', () => {
+    const toggle = card.source.match(
+      /function GrammarSectionToggle[\s\S]*?return \([\s\S]*?<Pressable[\s\S]*?<\/Pressable>[\s\S]*?\);/,
+    )?.[0] ?? '';
 
-    expect(baseStyle).toContain('borderWidth: 1');
-    expect(focusedStyle).toContain('borderColor: colors.forest');
+    expect(toggle).toContain('accessibilityRole={presentation.accessibilityRole}');
+    expect(toggle).toContain('accessibilityState={presentation.accessibilityState}');
+    expect(toggle).toContain('aria-expanded={presentation.accessibilityState.expanded}');
+    expect(toggle).toContain('minHeight: presentation.minimumTouchTarget');
+    expect(toggle).toContain('onFocus={onFocus}');
+    expect(toggle).toContain('onBlur={onBlur}');
+    expect(toggle).toContain('focused && styles.toggleFocused');
+    expect(toggle).toContain('accessibilityElementsHidden');
+    expect(toggle).toContain('importantForAccessibility="no"');
+    expect(toggle).toContain('aria-hidden={true}');
+
+    const baseStyle = card.source.match(/toggle:\s*\{[\s\S]*?\n\s*\},\n\s*toggleFocused:/)?.[0] ?? '';
+    const focusedStyle = card.source.match(/toggleFocused:\s*\{[^}]*\}/)?.[0] ?? '';
+    expect(baseStyle).toContain('borderWidth: 2');
+    expect(focusedStyle).toContain('borderColor: colors.gold');
     expect(focusedStyle).not.toContain('borderWidth');
   });
+});
 
-  it('reports external-link failures from inside the expanded insight', () => {
-    const expandedContent = source.match(/\{insight\.content \? \([\s\S]*?\n\s*\) : null\}/)?.[0];
+describe('GrammarFormationList narrow-screen contract', () => {
+  const formation = parseTsx('GrammarFormationList.tsx');
 
-    expect(source).toContain('setReferenceError(null)');
-    expect(source).toContain('createGrammarReferenceAttemptCoordinator()');
-    expect(source).toContain('referenceAttemptCoordinator.open(');
-    expect(source).toContain('(url) => Linking.openURL(url)');
-    expect(source).toContain('referenceAttemptCoordinator.deactivate()');
-    expect(expandedContent).toContain('accessibilityRole="alert"');
-    expect(expandedContent).toContain('accessibilityLiveRegion="polite"');
-    expect(expandedContent).toContain('{referenceError}');
+  it('renders every row field and makes formula text selectable', () => {
+    const properties = collect(formation.tree, ts.isPropertyAccessExpression)
+      .filter((node) => node.expression.getText(formation.tree) === 'row')
+      .map((node) => node.name.text);
+    const textTags = collect(formation.tree, ts.isJsxOpeningElement)
+      .filter((node) => node.tagName.getText(formation.tree) === 'Text')
+      .map((node) => node.getText(formation.tree));
+
+    expect(properties).toEqual(expect.arrayContaining(['label', 'formula', 'explanation']));
+    expect(textTags.some((tag) => tag.includes('selectable={true}'))).toBe(true);
+  });
+
+  it('uses shrinkable full-width rows and formula panels without a fixed width', () => {
+    for (const styleName of ['row', 'formulaPanel', 'formula']) {
+      const style = formation.source.match(
+        new RegExp(`${styleName}:\\s*\\{[\\s\\S]*?\\n\\s*\\},`),
+      )?.[0] ?? '';
+      expect(style).toContain("width: '100%'");
+      expect(style).toContain('flexShrink: 1');
+      expect(style).not.toMatch(/width:\s*\d/);
+    }
   });
 });
