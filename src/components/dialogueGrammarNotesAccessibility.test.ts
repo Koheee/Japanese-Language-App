@@ -86,6 +86,68 @@ const styleProperties = (style: ts.ObjectLiteralExpression) => new Map(
   ]),
 );
 
+const parseGrammarNoteButton = (source: string) => {
+  const tree = ts.createSourceFile(
+    componentPath,
+    source,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TSX,
+  );
+  const itemsMap = collect(tree, ts.isCallExpression).find(
+    (call) => call.expression.getText(tree) === 'items.map',
+  );
+  expect(itemsMap).toBeDefined();
+  const button = collect(itemsMap!, ts.isJsxOpeningElement).find(
+    (element) => element.tagName.getText(tree) === 'Pressable',
+  );
+  expect(button).toBeDefined();
+  return { button: button!, tree };
+};
+
+const normalizedAttributeExpression = (button: JsxTag, name: string) => (
+  attributeExpression(button, name)?.replace(/\s+/g, ' ').trim() ?? null
+);
+
+const assertLiveGrammarNoteButtonContract = (source: string) => {
+  const { button } = parseGrammarNoteButton(source);
+
+  expect(attribute(button, 'disabled')).toBeUndefined();
+  expect(normalizedAttributeExpression(button, 'onPress')).toBe(
+    '() => setActiveGrammarId((current) => toggleDialogueGrammarNote(current, item.grammarId))',
+  );
+  expect(normalizedAttributeExpression(button, 'onFocus')).toBe(
+    '() => setFocusedGrammarId(item.grammarId)',
+  );
+  expect(normalizedAttributeExpression(button, 'onBlur')).toBe(
+    '() => setFocusedGrammarId((current) => ( current === item.grammarId ? null : current ))',
+  );
+  expect(normalizedAttributeExpression(button, 'style')).toContain(
+    'focusedGrammarId === item.grammarId && styles.noteButtonFocused',
+  );
+  expect(normalizedAttributeExpression(button, 'accessibilityState')).toBe(
+    '{ selected: activeGrammarId === item.grammarId, expanded: activeGrammarId === item.grammarId }',
+  );
+  expect(normalizedAttributeExpression(button, 'aria-selected')).toBe(
+    'activeGrammarId === item.grammarId',
+  );
+  expect(normalizedAttributeExpression(button, 'aria-expanded')).toBe(
+    'activeGrammarId === item.grammarId',
+  );
+};
+
+const removeGrammarNoteButtonAttribute = (source: string, name: string) => {
+  const { button } = parseGrammarNoteButton(source);
+  const target = attribute(button, name);
+  expect(target).toBeDefined();
+  return source.slice(0, target!.getFullStart()) + source.slice(target!.end);
+};
+
+const addBareDisabledToGrammarNoteButton = (source: string) => {
+  const { button } = parseGrammarNoteButton(source);
+  return source.slice(0, button.attributes.pos) + ' disabled' + source.slice(button.attributes.pos);
+};
+
 describe('dialogue grammar-note accessibility and behavior', () => {
   it('renders no note container when the projection is empty', () => {
     expect(componentSource).toContain('if (items.length === 0) return null;');
@@ -112,6 +174,21 @@ describe('dialogue grammar-note accessibility and behavior', () => {
       (expression) => expression.expression?.getText(componentTree) === 'item.pattern',
     );
     expect(visiblePattern).toBe(true);
+  });
+
+  it('binds an enabled button to live selection, focus, blur, style, and output state', () => {
+    assertLiveGrammarNoteButtonContract(componentSource);
+  });
+
+  it.each([
+    ['missing onFocus', (source: string) => removeGrammarNoteButtonAttribute(source, 'onFocus')],
+    ['missing onBlur', (source: string) => removeGrammarNoteButtonAttribute(source, 'onBlur')],
+    ['missing onPress', (source: string) => removeGrammarNoteButtonAttribute(source, 'onPress')],
+    ['disabled button', addBareDisabledToGrammarNoteButton],
+  ])('rejects the %s interaction mutant', (_label, mutate) => {
+    const mutant = mutate(componentSource);
+    expect(mutant).not.toBe(componentSource);
+    expect(() => assertLiveGrammarNoteButtonContract(mutant)).toThrow();
   });
 
   it('keeps fixed 44-point geometry and gives keyboard focus a high-contrast border', () => {
