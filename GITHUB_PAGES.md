@@ -4,6 +4,8 @@ The GitHub Actions workflow tests the project, exports the Expo web app, and pub
 
 The visible product flow is **Lesson list â†’ Lesson Detail**. Lesson Detail contains only **Overview, Grammar, and Dialogue**; no exercise, review, progress, Words, vocabulary-management, import, or editor route is visible.
 
+A dedicated Search screen is available from both the lesson list and every lesson page. Search accepts Japanese, kana, and English; romaji is not supported. The index is bundled into the site and works offline after one successful online load. Selecting a result opens the exact lesson section and note, expands hidden content when necessary, and briefly highlights the match; Back returns to the preserved query.
+
 ## 1. Create or connect the repository
 
 Create a GitHub repository, then push this project to its `main` branch. GitHub Desktop is convenient on Windows; command-line Git also works:
@@ -49,7 +51,7 @@ Pushing a commit to `main` triggers validation and republishing. After the workf
 
 1. Do not uninstall the home-screen app and do not clear Safari website data.
 2. Open the installed app online and wait for the deployment to load; close it fully and reopen it.
-3. Test Overview, Grammar, and Dialogue and use the lesson quick-switcher from all three sections.
+3. Test Overview, Grammar, and Dialogue and use the lesson quick-switcher from all three sections. Open the dedicated Search screen, search for `より`, select a result, and confirm it lands on and highlights the exact note.
 4. Check portrait and landscape safe areas. With VoiceOver, confirm the selected tab, expanded grammar areas, optional references, and dialogue-note labels are announced clearly.
 5. After the successful online load, enable airplane mode and reopen the app once. Core lesson reading should remain available offline.
 
@@ -57,7 +59,7 @@ The old device-local study, review, and vocabulary data remains preserved in dor
 
 ## Visible reader and dormant source
 
-The deployed interface is the two-screen reader only. Exercise, review, progress, vocabulary manager, word editor, import, backup, scheduling, and persistence source modules remain dormant in the repository for compatibility. They are not reachable from the app's navigation.
+The deployed interface contains the lesson list, lesson detail, and dedicated Search screen only. Exercise, review, progress, vocabulary manager, word editor, import, backup, scheduling, and persistence source modules remain dormant in the repository for compatibility. They are not reachable from the app's navigation.
 
 There is no visible backup import/export workflow in this reader release. Clearing site data or removing the PWA may remove device-local state, which is why the update procedure explicitly avoids both actions.
 

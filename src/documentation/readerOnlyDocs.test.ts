@@ -35,4 +35,12 @@ describe.each(['README.md', 'GITHUB_PAGES.md'])('%s reader-only documentation', 
     expect(doc).toContain('VoiceOver');
     expect(doc).toMatch(/airplane mode/i);
   });
+
+  it('documents the internal offline grammar search without implying romaji support', () => {
+    expect(doc).toContain('dedicated Search screen');
+    expect(doc).toMatch(/Japanese, kana, and English/i);
+    expect(doc).toMatch(/romaji (?:is not|isn’t) supported/i);
+    expect(doc).toMatch(/works offline/i);
+    expect(doc).toMatch(/exact .*lesson.*note/i);
+  });
 });

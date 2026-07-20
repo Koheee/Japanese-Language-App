@@ -12,6 +12,8 @@ The visible flow is **Lesson list â†’ Lesson Detail**. The lesson list cove
 
 The lesson quick-switcher is available on every lesson page and preserves the current section while moving between lessons. Optional Tae Kim and Tofugu links are grouped after the grammar cards; the lessons do not require those links.
 
+A dedicated Search screen is available from the lesson list and every lesson page. Search accepts Japanese, kana, and English; romaji is not supported. It searches the packaged grammar explanations, examples, and dialogues on the device, so it works offline after the app has loaded successfully once. Selecting a result opens the exact lesson section and note, expands a hidden explanation when needed, and briefly highlights the match. Use Back to return to the same search and query.
+
 There is no visible exercise, review, progress, Words, vocabulary-management, import, or editing route in the shipped reader.
 
 ## Device-local data and dormant modules
@@ -32,7 +34,7 @@ src/
   components/       Reader UI and dormant reusable components
   data/              Curriculum and all 25 authored lessons
   models/            Content plus preserved study-data types
-  navigation/        Visible two-screen reader stack
+  navigation/        Visible lesson, detail, and Search reader stack
   screens/           Visible reader screens plus dormant study screens
   services/          Preserved answer and scheduling services
   state/             Preserved device-local persistence
@@ -66,7 +68,7 @@ For a non-destructive installed-app update:
 
 1. Do not uninstall the home-screen app and do not clear Safari website data.
 2. Open the installed app online, allow the new deployment to load, then close it fully and reopen it.
-3. Test Overview, Grammar, and Dialogue, then use the lesson quick-switcher from each section.
+3. Test Overview, Grammar, and Dialogue, then use the lesson quick-switcher from each section. Open the dedicated Search screen, search for `より`, and open a result to confirm exact-note navigation.
 4. Check portrait and landscape safe areas and the tab, expanded-state, and dialogue-note labels with VoiceOver.
 5. After that successful online load, enable airplane mode and reopen the app once to confirm the offline fallback.
 
