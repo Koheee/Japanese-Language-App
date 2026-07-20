@@ -37,6 +37,15 @@ const startedLesson: Lesson = {
       explanation: 'Marks A as the topic.',
       whyItWorks: 'は introduces the topic.',
       usageBoundary: 'A topic frame sets context; it does not automatically identify the grammatical subject.',
+      formation: [{
+        label: 'Topic frame',
+        formula: 'topic + は + comment',
+        explanation: 'Place the shared topic before は, then state the comment about it.',
+      }],
+      contrast: {
+        with: 'は compared with が',
+        explanation: 'Use は to frame the topic; が has a distinct identifying role.',
+      },
       examples: [],
     },
   ],

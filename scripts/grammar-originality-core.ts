@@ -36,22 +36,42 @@ const ngramsFor = (text: string, minimumTokens: number): string[] => {
   return phrases;
 };
 
-const grammarProseFields = (point: GrammarPoint): string[] => [
+const grammarProseFields = (
+  point: GrammarPoint,
+  dialogueNoteExplanations: readonly string[],
+): string[] => [
   point.title,
   point.plainEnglish,
   point.explanation,
   point.whyItWorks,
   point.usageBoundary,
+  ...point.formation.flatMap(({ label, formula, explanation }) => [label, formula, explanation]),
+  point.contrast.with,
+  point.contrast.explanation,
+  ...(point.beyondBasics ?? []),
   ...(point.notes ?? []),
   ...(point.commonMistake
     ? [point.commonMistake.avoid, point.commonMistake.prefer, point.commonMistake.reason]
     : []),
+  ...dialogueNoteExplanations,
 ];
 
 export const collectGrammarProseRecords = (
   lessons: readonly Lesson[],
-): GrammarProseRecord[] => lessons.flatMap((lesson) =>
-  lesson.grammar.map((point) => ({ id: point.id, fields: grammarProseFields(point) })));
+): GrammarProseRecord[] => lessons.flatMap((lesson) => {
+  const dialogueNotesByGrammarId = new Map<string, string[]>();
+  for (const turn of lesson.dialogue) {
+    for (const note of turn.grammarNotes ?? []) {
+      const explanations = dialogueNotesByGrammarId.get(note.grammarId) ?? [];
+      explanations.push(note.explanation);
+      dialogueNotesByGrammarId.set(note.grammarId, explanations);
+    }
+  }
+  return lesson.grammar.map((point) => ({
+    id: point.id,
+    fields: grammarProseFields(point, dialogueNotesByGrammarId.get(point.id) ?? []),
+  }));
+});
 
 export const findCrossRecordOverlaps = (
   records: readonly GrammarProseRecord[],
@@ -124,6 +144,15 @@ export const collectAppOriginalityFields = (
       addField(fields, `${point.id}.explanation`, point.explanation);
       addField(fields, `${point.id}.whyItWorks`, point.whyItWorks);
       addField(fields, `${point.id}.usageBoundary`, point.usageBoundary);
+      point.formation.forEach(({ label, formula, explanation }, index) => {
+        addField(fields, `${point.id}.formation[${index}].label`, label);
+        addField(fields, `${point.id}.formation[${index}].formula`, formula);
+        addField(fields, `${point.id}.formation[${index}].explanation`, explanation);
+      });
+      addField(fields, `${point.id}.contrast.with`, point.contrast.with);
+      addField(fields, `${point.id}.contrast.explanation`, point.contrast.explanation);
+      point.beyondBasics?.forEach((text, index) =>
+        addField(fields, `${point.id}.beyondBasics[${index}]`, text));
       point.notes?.forEach((text, index) => addField(fields, `${point.id}.notes[${index}]`, text));
       if (point.commonMistake) {
         addField(fields, `${point.id}.commonMistake.avoid`, point.commonMistake.avoid);
@@ -140,6 +169,8 @@ export const collectAppOriginalityFields = (
       addField(fields, `${turn.id}.japanese`, turn.japanese);
       addField(fields, `${turn.id}.reading`, turn.reading);
       addField(fields, `${turn.id}.english`, turn.english);
+      turn.grammarNotes?.forEach(({ explanation }, index) =>
+        addField(fields, `${turn.id}.grammarNotes[${index}].explanation`, explanation));
     }
     for (const exercise of lesson.exercises) {
       addField(fields, `${exercise.id}.prompt`, exercise.prompt);

@@ -49,6 +49,15 @@ const lesson: Lesson = {
       explanation: 'Marks the topic.',
       whyItWorks: 'Introduces shared context.',
       usageBoundary: 'A topic frame guides the listener; it does not always name the sentence subject.',
+      formation: [{
+        label: 'Topic marker',
+        formula: 'topic + は + comment',
+        explanation: 'Introduce the shared topic with は before giving the comment about it.',
+      }],
+      contrast: {
+        with: 'は compared with が',
+        explanation: 'The fixture frames known context with は rather than identifying a subject with が.',
+      },
       examples: [],
     },
   ],

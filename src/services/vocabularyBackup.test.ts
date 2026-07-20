@@ -78,6 +78,15 @@ const lessons: readonly Lesson[] = [
       explanation: 'Fixture explanation',
       whyItWorks: 'Fixture reason',
       usageBoundary: 'A topic marker frames shared context; it does not replace every English subject.',
+      formation: [{
+        label: 'Topic statement',
+        formula: 'topic + は + comment',
+        explanation: 'Put the established topic before は and follow it with the intended comment.',
+      }],
+      contrast: {
+        with: 'topic marking compared with subject identification',
+        explanation: 'This fixture uses は for context framing, not as a universal subject marker.',
+      },
       examples: [],
     }],
   ),

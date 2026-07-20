@@ -31,6 +31,15 @@ const point: GrammarPoint = {
   explanation: 'Put the shared topic before は and the identifying noun before です to close the noun sentence politely.',
   whyItWorks: 'Japanese establishes a conversational frame before supplying the comment, so understood material can remain unspoken.',
   usageBoundary: 'Do not replace every English subject with は; this particle marks the chosen conversational topic.',
+  formation: [{
+    label: 'Polite noun sentence',
+    formula: 'topic + は + identity/category + です',
+    explanation: 'Choose the topic first, then close the identifying noun phrase politely with です.',
+  }],
+  contrast: {
+    with: 'は compared with が',
+    explanation: 'Use は to establish the conversational topic; が has a separate identifying role.',
+  },
   notes: ['Literal frame: “As for A, B.”'],
   examples: [
     { japanese: 'わたしは がくせいです。', reading: 'わたしは がくせいです。', english: 'I am a student.' },

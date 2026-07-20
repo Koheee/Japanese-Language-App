@@ -30,8 +30,8 @@ export interface GrammarPoint {
   explanation: string;
   whyItWorks: string;
   usageBoundary: string;
-  formation?: GrammarFormation[];
-  contrast?: GrammarContrast;
+  formation: GrammarFormation[];
+  contrast: GrammarContrast;
   beyondBasics?: string[];
   notes?: string[];
   examples: JapaneseExample[];

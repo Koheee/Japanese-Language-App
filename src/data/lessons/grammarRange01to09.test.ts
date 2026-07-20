@@ -41,7 +41,7 @@ describe('grammar enrichment for Lessons 1-9', () => {
 
     try {
       point.formation = [];
-      point.contrast = undefined;
+      Reflect.deleteProperty(point, 'contrast');
       turn.grammarNotes = [];
       const errors = collectGrammarRangeErrors(rangeExpectation);
       expect(errors).toContain(`${point.id}: formation is missing`);

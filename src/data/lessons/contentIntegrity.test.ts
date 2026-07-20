@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { describe, expect, expectTypeOf, it } from 'vitest';
 
-import type { GrammarPoint } from '../../models/content';
+import type { GrammarContrast, GrammarFormation, GrammarPoint } from '../../models/content';
 import authoredV1 from '../../test/fixtures/authored-vocabulary-v1.json';
 import { AUTHORED_BASELINE_FINGERPRINT, canonicalizeAuthoredVocabulary } from '../authoredBaseline';
 import { curriculum } from '../curriculum';
@@ -11,8 +11,10 @@ import { FROZEN_GRAMMAR_IDS, GRAMMAR_IDS_BY_LESSON } from './grammarInventory';
 import { lessons } from '.';
 import {
   ORIGINALITY_MIN_TOKENS,
+  collectAppOriginalityFields,
   collectGrammarProseRecords,
   findCrossRecordOverlaps,
+  tokenizeOriginalityText,
 } from '../../../scripts/grammar-originality-core';
 
 describe('complete curriculum', () => {
@@ -74,8 +76,12 @@ describe('complete curriculum', () => {
     ).toMatchSnapshot();
   });
 
-  it('requires usageBoundary in the GrammarPoint type', () => {
+  it('requires the complete teaching contract in the GrammarPoint type', () => {
     expectTypeOf<GrammarPoint>().toMatchTypeOf<{ usageBoundary: string }>();
+    expectTypeOf<GrammarPoint>().toMatchTypeOf<{
+      formation: GrammarFormation[];
+      contrast: GrammarContrast;
+    }>();
   });
 
   it('locks the complete enriched grammar inventory and readings', () => {
@@ -94,6 +100,8 @@ describe('complete curriculum', () => {
     expect(points).toHaveLength(101);
     expect(examples).toHaveLength(202);
     expect(dialogue).toHaveLength(173);
+    expect(points.every(({ formation }) => formation.length > 0)).toBe(true);
+    expect(points.every(({ contrast }) => contrast.with.trim() && contrast.explanation.trim())).toBe(true);
 
     for (const point of points) {
       expect(point.explanation.trim().length).toBeGreaterThan(40);
@@ -125,18 +133,85 @@ describe('complete curriculum', () => {
       for (const turn of lesson.dialogue) {
         expect(isKanaReading(turn.reading)).toBe(true);
         expect(containsLatinLetters(turn.reading)).toBe(false);
-        for (const grammarId of turn.grammarIds ?? []) {
+        const ids = turn.grammarIds ?? [];
+        const notes = turn.grammarNotes ?? [];
+        expect(notes.map(({ grammarId }) => grammarId).sort()).toEqual([...ids].sort());
+        expect(notes.every(({ explanation }) => explanation.trim().length > 30)).toBe(true);
+        expect(notes.every(({ explanation }) => !/https?:\/\//i.test(explanation))).toBe(true);
+        for (const grammarId of ids) {
           expect(sameLessonGrammarIds.has(grammarId)).toBe(true);
         }
       }
     }
   });
 
-  it('has no unexplained corpus-wide 12-token overlap between grammar points', () => {
+  it('audits every enriched teaching field and dialogue note for originality', () => {
     const records = collectGrammarProseRecords(lessons);
     expect(ORIGINALITY_MIN_TOKENS).toBe(12);
     expect(records).toHaveLength(101);
+
+    const recordsById = new Map(records.map((record) => [record.id, record.fields] as const));
+    for (const lesson of lessons) {
+      const dialogueNotesByGrammarId = new Map<string, string[]>();
+      for (const turn of lesson.dialogue) {
+        for (const note of turn.grammarNotes ?? []) {
+          const explanations = dialogueNotesByGrammarId.get(note.grammarId) ?? [];
+          explanations.push(note.explanation);
+          dialogueNotesByGrammarId.set(note.grammarId, explanations);
+        }
+      }
+      for (const point of lesson.grammar) {
+        expect(recordsById.get(point.id)).toEqual(expect.arrayContaining([
+          ...point.formation.flatMap(({ label, formula, explanation }) => [label, formula, explanation]),
+          point.contrast.with,
+          point.contrast.explanation,
+          ...(point.beyondBasics ?? []),
+          ...(dialogueNotesByGrammarId.get(point.id) ?? []),
+        ]));
+      }
+    }
     expect(findCrossRecordOverlaps(records)).toEqual([]);
+
+    const appFields = collectAppOriginalityFields(lessons);
+    const appFieldsById = new Map(appFields.map(({ id, text }) => [id, text] as const));
+    expect(appFieldsById.size).toBe(appFields.length);
+    for (const lesson of lessons) {
+      for (const point of lesson.grammar) {
+        point.formation.forEach(({ label, formula, explanation }, index) => {
+          expect(appFieldsById.get(`${point.id}.formation[${index}].label`)).toBe(label);
+          expect(appFieldsById.get(`${point.id}.formation[${index}].formula`)).toBe(formula);
+          expect(appFieldsById.get(`${point.id}.formation[${index}].explanation`)).toBe(explanation);
+        });
+        expect(appFieldsById.get(`${point.id}.contrast.with`)).toBe(point.contrast.with);
+        expect(appFieldsById.get(`${point.id}.contrast.explanation`)).toBe(point.contrast.explanation);
+        point.beyondBasics?.forEach((text, index) => {
+          expect(appFieldsById.get(`${point.id}.beyondBasics[${index}]`)).toBe(text);
+        });
+      }
+      for (const turn of lesson.dialogue) {
+        turn.grammarNotes?.forEach(({ explanation }, index) => {
+          expect(appFieldsById.get(`${turn.id}.grammarNotes[${index}].explanation`)).toBe(explanation);
+        });
+      }
+    }
+  });
+
+  it('detects a local overlap introduced through a dialogue note', () => {
+    const lesson = lessons[0]!;
+    const turn = lesson.dialogue.find(({ grammarNotes }) => grammarNotes?.length)!;
+    const note = turn.grammarNotes![0]!;
+    const sourcePoint = lesson.grammar.find(({ id }) => id !== note.grammarId)!;
+    const explanation = note.explanation;
+
+    try {
+      note.explanation = sourcePoint.whyItWorks;
+      expect(findCrossRecordOverlaps(collectGrammarProseRecords(lessons))).toContainEqual({
+        phrase: tokenizeOriginalityText(sourcePoint.whyItWorks).slice(0, ORIGINALITY_MIN_TOKENS).join(' '),
+        recordIds: [note.grammarId, sourcePoint.id].sort(),
+      });
+    } finally {
+      note.explanation = explanation;
+    }
   });
 
   it.each(Array.from({ length: 25 }, (_, index) => index + 1))(
