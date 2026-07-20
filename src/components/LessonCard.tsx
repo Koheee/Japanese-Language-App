@@ -2,12 +2,17 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { LessonOutline } from '../models/content';
 import { colors, radii, shadows, spacing, typography } from '../theme/tokens';
-import { ProgressBar } from './ProgressBar';
 
-export function LessonCard({ lesson, progress, onPress }: { lesson: LessonOutline; progress: number; onPress: () => void }) {
+export function LessonCard({ lesson, onPress }: { lesson: LessonOutline; onPress: () => void }) {
   const isReady = lesson.availability === 'ready';
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.card, pressed && styles.pressed]}>
+    <Pressable
+      accessibilityHint="Opens the lesson"
+      accessibilityLabel={`Lesson ${lesson.number}: ${lesson.title}`}
+      accessibilityRole="button"
+      onPress={onPress}
+      style={({ pressed }) => [styles.card, pressed && styles.pressed]}
+    >
       <View style={[styles.number, isReady ? styles.numberReady : styles.numberOutline]}>
         <Text style={[styles.numberText, !isReady && styles.numberTextOutline]}>{String(lesson.number).padStart(2, '0')}</Text>
       </View>
@@ -20,14 +25,6 @@ export function LessonCard({ lesson, progress, onPress }: { lesson: LessonOutlin
           <Text style={styles.chevron}>›</Text>
         </View>
         <Text style={styles.summary} numberOfLines={2}>{lesson.summary}</Text>
-        {isReady ? (
-          <View style={styles.progressWrap}>
-            <ProgressBar value={progress} />
-            <Text style={styles.progressText}>{progress > 0 ? `${Math.round(progress * 100)}%` : 'Ready to begin'}</Text>
-          </View>
-        ) : (
-          <Text style={styles.preview}>CURRICULUM OUTLINE</Text>
-        )}
       </View>
     </Pressable>
   );
@@ -48,7 +45,4 @@ const styles = StyleSheet.create({
   title: { marginTop: 2, color: colors.ink, fontSize: typography.heading, fontWeight: '800' },
   chevron: { color: colors.inkMuted, fontSize: 28, fontWeight: '300' },
   summary: { color: colors.inkMuted, fontSize: typography.small, lineHeight: 19 },
-  progressWrap: { gap: spacing.xs },
-  progressText: { color: colors.inkMuted, fontSize: typography.micro, fontWeight: '600' },
-  preview: { color: colors.gold, fontSize: typography.micro, fontWeight: '900', letterSpacing: 1.1 },
 });

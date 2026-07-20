@@ -4,15 +4,12 @@ import { FlatList, Platform, StyleSheet, Text, View } from 'react-native';
 
 import { LessonCard } from '../components/LessonCard';
 import { curriculum } from '../data/curriculum';
-import { getLesson } from '../data/lessons';
 import { LearnStackParamList } from '../navigation/types';
-import { useStudy } from '../state/StudyContext';
 import { colors, radii, spacing, typography } from '../theme/tokens';
 
 type Props = NativeStackScreenProps<LearnStackParamList, 'Lessons'>;
 
 export function LessonListScreen({ navigation }: Props) {
-  const { dueCards, getProgress } = useStudy();
   const [isStandalone, setIsStandalone] = useState(false);
 
   useEffect(() => {
@@ -38,8 +35,8 @@ export function LessonListScreen({ navigation }: Props) {
           <View style={styles.header}>
             <Text style={styles.brand}>NIHONGO PATH</Text>
             <Text style={styles.kicker}>ことばを、ひとつずつ。</Text>
-            <Text style={styles.title}>Your learning path</Text>
-            <Text style={styles.subtitle}>Twenty-five focused steps from first introductions to real conditional conversations.</Text>
+            <Text style={styles.title}>Your grammar reading path</Text>
+            <Text style={styles.subtitle}>Twenty-five focused lessons from first introductions to real conditional conversations.</Text>
 
             <View style={styles.summaryCard}>
               <View style={styles.summaryItem}>
@@ -48,13 +45,13 @@ export function LessonListScreen({ navigation }: Props) {
               </View>
               <View style={styles.divider} />
               <View style={styles.summaryItem}>
-                <Text style={styles.summaryValue}>{curriculum.filter((lesson) => lesson.availability === 'ready').length}</Text>
-                <Text style={styles.summaryLabel}>ready now</Text>
+                <Text style={styles.summaryValue}>101</Text>
+                <Text style={styles.summaryLabel}>grammar points</Text>
               </View>
               <View style={styles.divider} />
               <View style={styles.summaryItem}>
-                <Text style={styles.summaryValue}>{dueCards.length}</Text>
-                <Text style={styles.summaryLabel}>reviews due</Text>
+                <Text style={styles.summaryValue}>A1–A2</Text>
+                <Text style={styles.summaryLabel}>reading path</Text>
               </View>
             </View>
 
@@ -74,23 +71,14 @@ export function LessonListScreen({ navigation }: Props) {
             </View>
           </View>
         }
-        renderItem={({ item }) => {
-          const lesson = getLesson(item.id);
-          const progress = getProgress(item.id);
-          const completion = lesson && progress
-            ? progress.completedExerciseIds.length / lesson.exercises.length
-            : 0;
-
-          return (
-            <LessonCard
-              lesson={item}
-              progress={completion}
-              onPress={() => navigation.navigate('LessonDetail', { lessonId: item.id })}
-            />
-          );
-        }}
+        renderItem={({ item }) => (
+          <LessonCard
+            lesson={item}
+            onPress={() => navigation.navigate('LessonDetail', { lessonId: item.id })}
+          />
+        )}
         ItemSeparatorComponent={() => <View style={styles.gap} />}
-        ListFooterComponent={<Text style={styles.footer}>Original curriculum · Built for deliberate daily study</Text>}
+        ListFooterComponent={<Text style={styles.footer}>Original grammar curriculum · Built for clear, self-paced reading</Text>}
       />
     </View>
   );
