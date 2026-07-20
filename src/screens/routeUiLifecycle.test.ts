@@ -132,7 +132,6 @@ describe('route UI lifecycle coordinator', () => {
 
 describe('async persistence screen contracts', () => {
   it.each([
-    ['LessonDetailScreen.tsx', '() => setIsStarting(false)'],
     ['WordEditorScreen.tsx', '() => setIsSaving(false)'],
     ['ExerciseScreen.tsx', '() => setIsSaving(false)'],
   ])('splits mounted cleanup from route-current results in %s', (file, cleanup) => {

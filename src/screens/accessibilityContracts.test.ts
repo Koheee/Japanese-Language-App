@@ -1,9 +1,22 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-
+import ts from 'typescript';
 import { describe, expect, it } from 'vitest';
 
 const readScreen = (file: string) => readFileSync(join(import.meta.dirname, file), 'utf8');
+
+const collect = <T extends ts.Node>(
+  root: ts.Node,
+  predicate: (node: ts.Node) => node is T,
+): T[] => {
+  const matches: T[] = [];
+  const visit = (node: ts.Node) => {
+    if (predicate(node)) matches.push(node);
+    ts.forEachChild(node, visit);
+  };
+  visit(root);
+  return matches;
+};
 
 describe('review screen accessibility contracts', () => {
   const source = readScreen('ReviewScreen.tsx');
@@ -34,14 +47,33 @@ describe('review screen accessibility contracts', () => {
 });
 
 describe('route-local tab accessibility contracts', () => {
-  it('forwards selected state for every lesson detail tab on web and native', () => {
+  it('forwards selected and focus state for all three lesson detail tabs', () => {
     const source = readScreen('LessonDetailScreen.tsx');
-    const tabTag = source.match(
-      /\{tabs\.map\([\s\S]*?<Pressable[\s\S]*?style=\{\[styles\.tab,[\s\S]*?\}\s*>/,
-    )?.[0] ?? '';
+    const screen = ts.createSourceFile(
+      'LessonDetailScreen.tsx',
+      source,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TSX,
+    );
+    const tabsMap = collect(screen, ts.isCallExpression).find((call) =>
+      ts.isPropertyAccessExpression(call.expression)
+      && call.expression.expression.getText(screen) === 'tabs'
+      && call.expression.name.text === 'map');
+    expect(tabsMap).toBeDefined();
+    const tabTag = collect(tabsMap!, (node): node is ts.JsxOpeningElement =>
+      ts.isJsxOpeningElement(node) && node.tagName.getText(screen) === 'Pressable')[0]
+      ?.getText(screen) ?? '';
 
+    const tabType = screen.statements.find((statement): statement is ts.TypeAliasDeclaration =>
+      ts.isTypeAliasDeclaration(statement) && statement.name.text === 'Tab');
+    expect(tabType?.type.getText(screen)).toBe("'overview' | 'grammar' | 'dialogue'");
+    expect(tabTag).toContain('accessibilityRole="tab"');
     expect(tabTag).toContain('accessibilityState={{ selected: activeTab === tab.id }}');
     expect(tabTag).toContain('aria-selected={activeTab === tab.id}');
+    expect(tabTag).toContain('onFocus={() => setFocusedTab(tab.id)}');
+    expect(tabTag).toContain("onBlur={() => setFocusedTab((current) => current === tab.id ? null : current)}");
+    expect(tabTag).toContain('focusedTab === tab.id && styles.tabFocused');
   });
 
   it('forwards selected state for both vocabulary manager tabs on web and native', () => {
