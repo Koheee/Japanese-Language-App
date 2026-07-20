@@ -5,6 +5,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { DialogueBubble } from '../components/DialogueBubble';
 import { GrammarCard } from '../components/GrammarCard';
 import { LessonQuickSwitcher } from '../components/LessonQuickSwitcher';
+import { LessonReferenceSection } from '../components/LessonReferenceSection';
 import { Screen } from '../components/Screen';
 import { SectionTitle } from '../components/SectionTitle';
 import { getLesson, lessons } from '../data/lessons';
@@ -169,6 +170,7 @@ export function LessonDetailScreen({ navigation, route }: Props) {
           {lesson.grammar.map((point, index) => (
             <GrammarCard key={point.id} point={point} index={index} />
           ))}
+          <LessonReferenceSection points={lesson.grammar} />
         </View>
       ) : null}
 
