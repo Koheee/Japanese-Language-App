@@ -292,6 +292,14 @@ describe('GrammarCard teaching contract', () => {
     return section!;
   };
 
+  const getGrammarToggle = (label: string) => requireNode(
+    collect(grammarCard!, ts.isJsxSelfClosingElement).find(
+      (node) => node.tagName.getText(card.tree) === 'GrammarSectionToggle'
+        && getJsxAttributeText(node, 'label') === label,
+    ),
+    `${label} GrammarSectionToggle`,
+  );
+
   it('ties the at-a-glance heading and plain-English pill to their content', () => {
     const heading = requireNode(
       getElementsWithStyle(grammarCard!, 'headingCopy')[0],
@@ -325,12 +333,7 @@ describe('GrammarCard teaching contract', () => {
 
   it('ties the insight toggle and expanded picture to both projected insight fields', () => {
     const insight = getSection('section', 'A JAPANESE-FIRST PICTURE');
-    const toggle = requireNode(
-      collect(insight, ts.isJsxSelfClosingElement).find(
-        (node) => node.tagName.getText(card.tree) === 'GrammarSectionToggle',
-      ),
-      'Japanese-first toggle',
-    );
+    const toggle = getGrammarToggle('A JAPANESE-FIRST PICTURE');
     const payloads = propertyAccessTexts(insight);
     const whyPayload = requireNode(
       collect(insight, ts.isPropertyAccessExpression).find(
@@ -346,6 +349,11 @@ describe('GrammarCard teaching contract', () => {
     );
 
     expect(getJsxAttributeExpression(toggle, 'presentation')).toBe('presentation.insightToggle');
+    expect(getJsxAttributeExpression(toggle, 'expanded')).toBe('cardState.insightExpanded');
+    expect(getJsxAttributeExpression(toggle, 'focused')).toBe("cardState.focusedToggle === 'insight'");
+    expect(getJsxAttributeExpression(toggle, 'onPress')).toBe("() => toggle('insight')");
+    expect(getJsxAttributeExpression(toggle, 'onFocus')).toBe("() => setFocused('insight', true)");
+    expect(getJsxAttributeExpression(toggle, 'onBlur')).toBe("() => setFocused('insight', false)");
     expect(payloads).toEqual(expect.arrayContaining([
       'presentation.insight',
       'presentation.insight.whyItWorks',
@@ -395,6 +403,7 @@ describe('GrammarCard teaching contract', () => {
     const mistakeBranch = findAncestor(mistake, ts.isConditionalExpression);
     const deeperBranch = findAncestor(deeper, ts.isConditionalExpression);
     const deeperPayloads = propertyAccessTexts(deeper);
+    const deeperToggle = getGrammarToggle('GO DEEPER');
 
     expect(mistakeBranch?.condition.getText(card.tree)).toBe('point.commonMistake');
     expect(propertyAccessTexts(mistake)).toEqual(expect.arrayContaining([
@@ -403,6 +412,12 @@ describe('GrammarCard teaching contract', () => {
       'point.commonMistake.reason',
     ]));
     expect(deeperBranch?.condition.getText(card.tree)).toBe('presentation.deeperToggle');
+    expect(getJsxAttributeExpression(deeperToggle, 'presentation')).toBe('presentation.deeperToggle');
+    expect(getJsxAttributeExpression(deeperToggle, 'expanded')).toBe('cardState.deeperExpanded');
+    expect(getJsxAttributeExpression(deeperToggle, 'focused')).toBe("cardState.focusedToggle === 'deeper'");
+    expect(getJsxAttributeExpression(deeperToggle, 'onPress')).toBe("() => toggle('deeper')");
+    expect(getJsxAttributeExpression(deeperToggle, 'onFocus')).toBe("() => setFocused('deeper', true)");
+    expect(getJsxAttributeExpression(deeperToggle, 'onBlur')).toBe("() => setFocused('deeper', false)");
     expect(deeperPayloads).toEqual(expect.arrayContaining([
       'presentation.deeper',
       'presentation.deeper.notes',
@@ -430,7 +445,7 @@ describe('GrammarCard teaching contract', () => {
       translation,
       getSection('section', 'THE BASICS'),
       getSection('section', 'BUILD THE FORM'),
-      getSection('section', 'A JAPANESE-FIRST PICTURE'),
+      getGrammarToggle('A JAPANESE-FIRST PICTURE'),
       getSection('boundarySection', 'WHEN IT FITS'),
       getSection('compareBox', 'COMPARE IT'),
       getSection('section', 'EXAMPLES'),
