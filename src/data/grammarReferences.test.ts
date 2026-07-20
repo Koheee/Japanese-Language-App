@@ -1,3 +1,6 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
 import { describe, expect, it } from 'vitest';
 
 import { lessons } from './lessons';
@@ -16,17 +19,50 @@ describe('grammarReferences', () => {
   });
 
   it('uses only explicit official learner pages and has no within-point duplicate', () => {
+    const allowedReference = (title: string, url: URL) =>
+      (url.hostname === 'guidetojapanese.org' && title.startsWith("Tae Kim's Guide: "))
+      || (url.hostname === 'www.tofugu.com' && title.startsWith('Tofugu: '));
+
     for (const grammarId of FROZEN_GRAMMAR_IDS) {
       const references = getGrammarReferences(grammarId);
       expect(new Set(references.map(({ url }) => url)).size).toBe(references.length);
       for (const reference of references) {
         const url = new URL(reference.url);
         expect(url.protocol).toBe('https:');
-        expect(url.hostname).toBe('guidetojapanese.org');
-        expect(url.pathname).toMatch(/^\/learn\/grammar\/[a-z_]+$/);
-        expect(reference.title).toMatch(/^Tae Kim's Guide: /);
+        expect(allowedReference(reference.title, url)).toBe(true);
+        if (url.hostname === 'guidetojapanese.org') {
+          expect(url.pathname).toMatch(/^\/learn\/grammar\/[a-z_]+$/);
+        } else {
+          expect(url.pathname).toMatch(/^\/japanese-grammar\/[a-z0-9-]+\/$/);
+        }
       }
     }
+  });
+
+  it('maps the topic, destination, and te-form anchors to exact Tofugu pages', () => {
+    expect(getGrammarReferences('l1-topic-copula').some(({ url }) =>
+      url === 'https://www.tofugu.com/japanese-grammar/particle-wa/')).toBe(true);
+    expect(getGrammarReferences('l5-destination').some(({ url }) =>
+      url === 'https://www.tofugu.com/japanese-grammar/particle-ni/')).toBe(true);
+    expect(getGrammarReferences('l14-te-form').some(({ url }) =>
+      url === 'https://www.tofugu.com/japanese-grammar/te-form/')).toBe(true);
+  });
+
+  it('keeps the live verifier aligned with the complete mixed-source manifest', () => {
+    const verifierSource = readFileSync(
+      join(import.meta.dirname, '../../scripts/verify-grammar-links.mjs'),
+      'utf8',
+    );
+
+    expect(verifierSource).toContain(
+      "parsed.hostname === 'guidetojapanese.org' && /^\\/learn\\/grammar\\/[a-z_]+$/.test(parsed.pathname)",
+    );
+    expect(verifierSource).toContain(
+      "parsed.hostname === 'www.tofugu.com' && /^\\/japanese-grammar\\/[a-z0-9-]+\\/$/.test(parsed.pathname)",
+    );
+    expect(verifierSource).toContain('urls.length < 25');
+    expect(verifierSource).not.toContain('urls.length !== 25');
+    expect(verifierSource).toContain('for (const url of urls)');
   });
 
   it('attaches an independent manifest copy to every exported point', () => {
@@ -60,11 +96,23 @@ describe('grammarReferences', () => {
         title: "Tae Kim's Guide: Particles used with verbs",
         url: 'https://guidetojapanese.org/learn/grammar/verbparticles',
       },
+      {
+        title: 'Tofugu: Particle から',
+        url: 'https://www.tofugu.com/japanese-grammar/particle-kara/',
+      },
+      {
+        title: 'Tofugu: Particle まで',
+        url: 'https://www.tofugu.com/japanese-grammar/particle-made/',
+      },
     ]);
     expect(getGrammarReferences('l6-invite')).toEqual([
       {
         title: "Tae Kim's Guide: The Question Marker",
         url: 'https://guidetojapanese.org/learn/grammar/question',
+      },
+      {
+        title: 'Tofugu: 〜ます',
+        url: 'https://www.tofugu.com/japanese-grammar/masu/',
       },
     ]);
   });
