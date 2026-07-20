@@ -15,6 +15,16 @@ describe('grammar enrichment for Lessons 18-25', () => {
     })).toEqual([]);
   });
 
+  it('distinguishes plain forms, clause modification, and conditional viewpoint', () => {
+    const points = new Map(lessons.slice(17).flatMap(({ grammar }) =>
+      grammar.map((point) => [point.id, point] as const)));
+
+    expect(points.get('l20-plain-verbs')?.contrast?.with).toBe('plain form compared with polite ます form');
+    expect(points.get('l22-relative-clause')?.formation?.some(({ formula }) => formula.endsWith('+ noun'))).toBe(true);
+    expect(points.get('l23-automatic-to')?.contrast?.with).toBe('と compared with たら');
+    expect(points.get('l25-tara-condition')?.contrast?.with).toBe('たら compared with automatic-result と');
+  });
+
   it('treats どうしたの？ receptively without teaching productive explanatory の', () => {
     const point = lessons
       .find(({ number }) => number === 20)

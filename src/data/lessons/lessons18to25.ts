@@ -1,7 +1,7 @@
-import { DialogueTurn, JapaneseExample, Lesson, VocabularyItem } from '../../models/content';
+import { DialogueGrammarNote, DialogueTurn, JapaneseExample, Lesson, VocabularyItem } from '../../models/content';
 
 type VocabularySeed = [japanese: string, reading: string, english: string, partOfSpeech: string, note?: string];
-type DialogueSeed = [speaker: string, japanese: string, reading: string, english: string, grammarIds?: string[]];
+type DialogueSeed = [speaker: string, japanese: string, reading: string, english: string, grammarIds?: string[], grammarNotes?: DialogueGrammarNote[]];
 
 const example = (japanese: string, reading: string, english: string): JapaneseExample => ({
   japanese,
@@ -20,13 +20,14 @@ const makeVocabulary = (lesson: number, seeds: VocabularySeed[]): VocabularyItem
   }));
 
 const makeDialogue = (lesson: number, seeds: DialogueSeed[]): DialogueTurn[] =>
-  seeds.map(([speaker, japanese, reading, english, grammarIds], index) => ({
+  seeds.map(([speaker, japanese, reading, english, grammarIds, grammarNotes], index) => ({
     id: `l${lesson}-d${String(index + 1).padStart(2, '0')}`,
     speaker,
     japanese,
     reading,
     english,
     ...(grammarIds ? { grammarIds } : {}),
+    ...(grammarNotes ? { grammarNotes } : {}),
   }));
 
 export const lessons18to25: Lesson[] = ([
@@ -55,6 +56,27 @@ export const lessons18to25: Lesson[] = ([
         whyItWorks: 'English often uses an unchanged base verb after words such as “can” or “before.” Japanese grammar also needs a base-like form, but it must come before the following grammar marker. Treat the dictionary form as a connector-ready verb, not as rude speech by itself.',
         usageBoundary: 'Use this connector-ready nonpast base before こと and まえに. The form itself is not inherently rude; relationship and sentence ending determine register. Productive potential conjugation, potential-particle changes, and 見える／聞こえる remain outside this lesson.',
         notes: ['Non-past can describe a habit or a future action.', 'Check a dictionary when a verb’s group is uncertain.'],
+        formation: [
+          {
+            label: 'Group 1 verbs',
+            formula: 'Vい-row + ます → matching Vう-row ending',
+            explanation: 'Remove ます and move the final stem kana from its い-row sound to the matching う-row sound, as in かきます → かく and およぎます → およぐ.',
+          },
+          {
+            label: 'Group 2 verbs',
+            formula: 'Vます-stem + ます → Vます-stem + る',
+            explanation: 'Remove ます and attach る, as in たべます → たべる; confirm the group when an い or え sound before ます is misleading.',
+          },
+          {
+            label: 'Irregular verbs',
+            formula: 'します → する; きます／来ます → くる／来る',
+            explanation: 'Learn the two irregular dictionary forms as complete pairs rather than applying a regular ending change.',
+          },
+        ],
+        contrast: {
+          with: 'connector-ready dictionary form compared with sentence-final ます form',
+          explanation: 'Dictionary form fits before こと and まえに in this lesson, while ます supplies a polite sentence ending; the dictionary form is not automatically impolite whenever it appears.',
+        },
         examples: [
           example('まいあさ こうえんを はしる。', 'まいあさ こうえんを はしる。', 'I run in the park every morning.'),
           example('らいしゅう きょうとへ いく。', 'らいしゅう きょうとへ いく。', 'I will go to Kyoto next week.'),
@@ -73,6 +95,22 @@ export const lessons18to25: Lesson[] = ([
         explanation: 'こと turns the action before it into a noun-like idea, and できます says that idea is possible. Use できません for a polite negative. A skill noun can also stand directly before ができます.',
         whyItWorks: 'English puts “can” before a verb. Japanese first packages the whole action with こと, then comments that it is doable. Build from the end: “is possible” → できます; “what is possible” → Vこと.',
         usageBoundary: 'Use Vることができます for the taught ability pattern and a skill noun + ができます for noun skills. Do not yet produce potential verb forms, alternate particles with potential verbs, or use 見える／聞こえる as if they were this pattern.',
+        formation: [
+          {
+            label: 'Ability to perform an action',
+            formula: 'V dictionary form + こと + が + できます／できません',
+            explanation: 'Turn the whole action into an activity with こと, mark that activity with が, and state politely whether it is possible.',
+          },
+          {
+            label: 'Ability named by a skill noun',
+            formula: 'skill noun + が + できます／できません',
+            explanation: 'When a noun already names the skill or activity, place it directly before ができます without adding こと.',
+          },
+        ],
+        contrast: {
+          with: 'Vることができます compared with a skill noun + ができます',
+          explanation: 'Use こと to package a full verb phrase such as ギターをひく, but let a skill noun such as りょうり stand directly before ができます.',
+        },
         examples: [
           example('わたしは ギターを ひくことが できます。', 'わたしは ギターを ひくことが できます。', 'I can play the guitar.'),
           example('このへやで りょうりが できます。', 'このへやで りょうりが できます。', 'You can cook in this room.'),
@@ -86,6 +124,17 @@ export const lessons18to25: Lesson[] = ([
         explanation: 'An activity cannot normally sit directly where a noun description goes. Add こと to turn the verb phrase into an activity concept, then identify it with です.',
         whyItWorks: 'English uses an “-ing” form: “My hobby is painting.” Japanese uses the ordinary dictionary form plus こと. Do not search for a Japanese “-ing”; let こと make the action noun-like.',
         usageBoundary: 'Here こと nominalizes the whole activity so it can identify the hobby; it is not a Japanese version of every English “-ing” form. Keep the activity in dictionary form before こと.',
+        formation: [
+          {
+            label: 'Activity as a hobby',
+            formula: 'しゅみは + V dictionary form + こと + です',
+            explanation: 'Place the complete activity before こと, then use です to identify that activity as the topic’s hobby.',
+          },
+        ],
+        contrast: {
+          with: 'Vることです compared with Vることができます',
+          explanation: 'ことです identifies what the hobby is, whereas ことができます evaluates whether the packaged action is possible.',
+        },
         examples: [
           example('しゅみは まちの しゃしんを とることです。', 'しゅみは まちの しゃしんを とることです。', 'My hobby is taking photos around town.'),
           example('ミナさんの しゅみは きってを あつめることです。', 'ミナさんの しゅみは きってを あつめることです。', 'Mina’s hobby is collecting stamps.'),
@@ -99,6 +148,22 @@ export const lessons18to25: Lesson[] = ([
         explanation: 'Put the later event before まえに and the earlier action after it. Verbs use dictionary form even when the whole sentence is about the past. Nouns connect with の.',
         whyItWorks: 'English and Japanese both say “before X,” but Japanese does not make X past tense just because it later happened. The dictionary form presents X as a point on the timeline; the final verb carries the sentence tense.',
         usageBoundary: 'Use Vるまえに even when the final action is past: the nonpast modifier views the later event as still ahead at the earlier action. Use Nのまえに with nouns; do not copy the final sentence tense onto the verb before まえに.',
+        formation: [
+          {
+            label: 'Before an action',
+            formula: 'later V dictionary form + まえに + earlier action',
+            explanation: 'Keep the later action nonpast before まえに, then state the action that happens first in the final clause.',
+          },
+          {
+            label: 'Before a noun event',
+            formula: 'later event noun + の + まえに + earlier action',
+            explanation: 'Join a named event to まえ with の, then put the action that precedes it after まえに.',
+          },
+        ],
+        contrast: {
+          with: 'Vるまえに compared with Nのまえに',
+          explanation: 'A verb directly modifies まえ in dictionary form, while a noun needs の to connect to the same time word.',
+        },
         examples: [
           example('でかける まえに、でんげんを けします。', 'でかける まえに、でんげんを けします。', 'Before going out, I turn off the power.'),
           example('こうりゅうかいの まえに、ギターを れんしゅうしました。', 'こうりゅうかいの まえに、ギターを れんしゅうしました。', 'I practiced guitar before the exchange event.'),
@@ -126,10 +191,19 @@ export const lessons18to25: Lesson[] = ([
     dialogue: makeDialogue(18, [
       ['Aya', 'にちようびの こうりゅうかいに さんかしますか。', 'にちようびの こうりゅうかいに さんかしますか。', 'Will you join Sunday’s exchange gathering?'],
       ['Leo', 'はい。でも、なにを しょうかいしましょうか。', 'はい。でも、なにを しょうかいしましょうか。', 'Yes. But what should I present?'],
-      ['Aya', 'レオさんは なにか がっきを ひくことが できますか。', 'レオさんは なにか がっきを ひくことが できますか。', 'Leo, can you play any instrument?', ['l18-ability']],
-      ['Leo', 'ギターを ひくことが できます。しゅみは うたを つくることです。', 'ギターを ひくことが できます。しゅみは うたを つくることです。', 'I can play guitar. My hobby is writing songs.', ['l18-ability', 'l18-hobby']],
-      ['Aya', 'すてきですね。こうりゅうかいの まえに、いっしょに れんしゅうしませんか。', 'すてきですね。こうりゅうかいの まえに、いっしょに れんしゅうしませんか。', 'That sounds great. Shall we practice together before the gathering?', ['l18-before']],
-      ['Leo', 'ぜひ。れんしゅうする まえに、へやを よやくします。', 'ぜひ。れんしゅうする まえに、へやを よやくします。', 'Definitely. Before we practice, I’ll reserve a room.', ['l18-before']],
+      ['Aya', 'レオさんは なにか がっきを ひくことが できますか。', 'レオさんは なにか がっきを ひくことが できますか。', 'Leo, can you play any instrument?', ['l18-ability'], [
+        { grammarId: 'l18-ability', explanation: 'ひくこと packages “play an instrument” as the ability that Aya checks with ができますか.' },
+      ]],
+      ['Leo', 'ギターを ひくことが できます。しゅみは うたを つくることです。', 'ギターを ひくことが できます。しゅみは うたを つくることです。', 'I can play guitar. My hobby is writing songs.', ['l18-ability', 'l18-hobby'], [
+        { grammarId: 'l18-ability', explanation: 'Leo answers with the same action-plus-こと frame and states that guitar playing is possible for him.' },
+        { grammarId: 'l18-hobby', explanation: 'In the second sentence, うたをつくること becomes the noun-like activity identified as Leo’s hobby.' },
+      ]],
+      ['Aya', 'すてきですね。こうりゅうかいの まえに、いっしょに れんしゅうしませんか。', 'すてきですね。こうりゅうかいの まえに、いっしょに れんしゅうしませんか。', 'That sounds great. Shall we practice together before the gathering?', ['l18-before'], [
+        { grammarId: 'l18-before', explanation: 'こうりゅうかい is a named event, so の links it to まえに and places the proposed practice earlier.' },
+      ]],
+      ['Leo', 'ぜひ。れんしゅうする まえに、へやを よやくします。', 'ぜひ。れんしゅうする まえに、へやを よやくします。', 'Definitely. Before we practice, I’ll reserve a room.', ['l18-before'], [
+        { grammarId: 'l18-before', explanation: 'The later action れんしゅうする stays in dictionary form, while よやくします names the reservation that happens first.' },
+      ]],
     ]),
     exercises: [
       {
@@ -201,6 +275,22 @@ export const lessons18to25: Lesson[] = ([
         explanation: 'A verb clause in plain form can modify the noun immediately after it. Japanese needs no word meaning “who,” “that,” or “which.” The head noun then takes whatever particle its role needs in the larger sentence.',
         whyItWorks: 'English starts with the noun and then opens a relative clause. Japanese gives you all identifying information first and reveals the head noun at the end. Hold the clause in memory until that noun tells you what is being described.',
         usageBoundary: 'Find the head noun immediately after the modifier, then assign that whole noun phrase its role in the main sentence. This lesson keeps production to one clear modifying clause; advanced nominalization and nested clauses remain deferred.',
+        formation: [
+          {
+            label: 'Noun modified by an action',
+            formula: 'plain verb clause + noun',
+            explanation: 'Build the describing action in plain form and place it immediately before the head noun, with no separate relative pronoun.',
+          },
+          {
+            label: 'Completed noun phrase in the main clause',
+            formula: '[plain clause + noun] + main-clause particle + predicate',
+            explanation: 'After the head noun closes the modifier, mark the entire noun phrase with the particle required by its role in the larger sentence.',
+          },
+        ],
+        contrast: {
+          with: 'Japanese modifier-first clause compared with an English relative clause',
+          explanation: 'Japanese puts the identifying clause before its noun and uses no “who/that/which,” whereas English normally names the noun before the relative clause.',
+        },
         examples: [
           example('あそこで えを かいている ひとは ミオさんです。', 'あそこで えを かいている ひとは ミオさんです。', 'The person painting over there is Mio.'),
           example('きのう かった かばんを みせてください。', 'きのう かった かばんを みせてください。', 'Please show me the bag you bought yesterday.'),
@@ -214,6 +304,22 @@ export const lessons18to25: Lesson[] = ([
         explanation: 'When a modifier clause has its own subject, が normally marks it. The entire noun phrase can then be marked by は, を, or another particle in the main sentence.',
         whyItWorks: 'English word order signals who performs the inner action. Japanese uses が to keep that smaller subject inside the descriptive package. Seeing two layers—inner clause and main sentence—prevents you from making every subject a は-topic.',
         usageBoundary: 'Use が for the inner participant in the beginner pattern, then choose a separate particle for the completed noun phrase outside the clause. Do not promote every inner subject to は or attempt nested-clause production here.',
+        formation: [
+          {
+            label: 'Subject inside the modifier',
+            formula: 'inner subject + が + plain predicate + head noun',
+            explanation: 'Mark who or what performs the modifying action with が before the plain predicate and head noun.',
+          },
+          {
+            label: 'Role outside the modifier',
+            formula: '[inner subject が + plain predicate + head noun] + は／を／other particle',
+            explanation: 'Treat the completed noun phrase as one unit, then add the particle required by the main sentence.',
+          },
+        ],
+        contrast: {
+          with: 'inner-clause が compared with the main noun phrase’s particle',
+          explanation: 'が identifies the participant inside the description, while は, を, or another particle after the head noun gives the whole phrase its outer role.',
+        },
         examples: [
           example('ミオさんが つくった さらは かるいです。', 'ミオさんが つくった さらは かるいです。', 'The plate Mio made is light.'),
           example('まどが おおきい へやを かりました。', 'まどが おおきい へやを かりました。', 'I rented a room whose windows are large.'),
@@ -232,6 +338,27 @@ export const lessons18to25: Lesson[] = ([
         explanation: 'The modifier’s plain form carries its own tense and polarity: Vる, Vない, Vた, or Vなかった. Its viewpoint can differ from the final predicate. Before a head noun, a positive な-adjective uses な and a noun commonly uses の; copular だ cannot remain directly before that noun.',
         whyItWorks: 'English relative clauses also carry their own tense, but “who/that” makes their boundary visible. Japanese has no such signpost, so find the head noun and read backward; the form immediately before it tells you whether the description is nonpast, past, positive, or negative.',
         usageBoundary: 'Keep tense and polarity inside the modifier and do not copy the main predicate’s tense. Never leave copular だ directly before the head noun; use the appropriate な-adjective or noun connection taught here.',
+        formation: [
+          {
+            label: 'Verb modifier grid',
+            formula: 'Vる／Vない／Vた／Vなかった + noun',
+            explanation: 'Choose the modifier’s own nonpast or past, positive or negative viewpoint before placing the head noun directly after it.',
+          },
+          {
+            label: 'Adjective modifier',
+            formula: 'い-adjective + noun; な-adjective + な + noun',
+            explanation: 'An い-adjective directly modifies the noun, while a positive nonpast な-adjective uses な rather than sentence-final だ.',
+          },
+          {
+            label: 'Noun modifier',
+            formula: 'noun + の + head noun',
+            explanation: 'Use の for the beginner noun-to-noun connection instead of leaving copular だ before the head noun.',
+          },
+        ],
+        contrast: {
+          with: 'modifier tense compared with main-predicate tense',
+          explanation: 'The form inside the modifier locates or negates the description itself, while the final predicate independently locates the larger statement.',
+        },
         examples: [
           example('まだ だれも つかっていない つくえが あります。', 'まだ だれも つかっていない つくえが あります。', 'There is a desk that nobody has used yet.'),
           example('せんしゅう こなかった がくせいに れんらくしました。', 'せんしゅう こなかった がくせいに れんらくしました。', 'I contacted the student who did not come last week.'),
@@ -245,6 +372,22 @@ export const lessons18to25: Lesson[] = ([
         explanation: 'A dictionary-form verb can describe a future or customary purpose of a time-related noun. The phrase ほんをよむじかん means “time for reading”; it does not claim the reading has already happened.',
         whyItWorks: 'English often adds “to” or “for -ing” after a time noun. Japanese keeps the usual modifier-first order: the intended action comes before じかん. The non-past form points forward from that time slot.',
         usageBoundary: 'Place the intended action before the time noun it modifies: Vるじかん, Vるよてい, or Vるやくそく. Treat the result as one noun phrase; nested modifiers and advanced nominalization remain outside this lesson.',
+        formation: [
+          {
+            label: 'Time or plan for an action',
+            formula: 'intended V dictionary form + じかん／よてい／やくそく',
+            explanation: 'Put the action expected for that slot before the time-related head noun and keep it in nonpast dictionary form.',
+          },
+          {
+            label: 'Use the completed time noun phrase',
+            formula: '[Vる + time noun] + が／を／other particle + predicate',
+            explanation: 'Once the action has modified the time noun, add the particle that the full noun phrase needs in the main sentence.',
+          },
+        ],
+        contrast: {
+          with: 'intended Vる time modifier compared with completed Vた modifier',
+          explanation: 'Vる before a time noun points to the action assigned to that time, while Vた would describe an action already completed relative to the noun’s viewpoint.',
+        },
         examples: [
           example('えを みる じかんが もっと ほしいです。', 'えを みる じかんが もっと ほしいです。', 'I want more time to look at the art.'),
           example('おおやさんに あう やくそくが あります。', 'おおやさんに あう やくそくが あります。', 'I have an appointment to meet the landlord.'),
@@ -271,12 +414,24 @@ export const lessons18to25: Lesson[] = ([
       ['かるい', 'かるい', 'light in weight', 'い-adjective'],
     ]),
     dialogue: makeDialogue(22, [
-      ['Hana', 'あそこで あおい ぼうしを かぶっている ひとは だれですか。', 'あそこで あおい ぼうしを かぶっている ひとは だれですか。', 'Who is the person over there wearing a blue hat?', ['l22-relative-clause']],
-      ['Ken', 'この スタジオで さくひんを つくっている ミオさんです。', 'この スタジオで さくひんを つくっている ミオさんです。', 'That is Mio, who makes artwork in this studio.', ['l22-relative-clause']],
-      ['Hana', 'ミオさんが つくった この さらは かるいですね。', 'ミオさんが つくった この さらは かるいですね。', 'This plate that Mio made is light, isn’t it?', ['l22-inner-subject']],
-      ['Ken', 'ええ。まだ いろを ぬっていない さらも あります。', 'ええ。まだ いろを ぬっていない さらも あります。', 'Yes. There are also plates that have not been painted yet.', ['l22-tense-negative']],
-      ['Hana', 'わたしも さくひんを つくる じかんが ほしいです。', 'わたしも さくひんを つくる じかんが ほしいです。', 'I want time to make art too.', ['l22-time-for-action']],
-      ['Ken', 'となりに まどが おおきい へやが あります。こんど しょうかいしますよ。', 'となりに まどが おおきい へやが あります。こんど しょうかいしますよ。', 'Next door there is a room with large windows. I’ll show it to you next time.', ['l22-inner-subject']],
+      ['Hana', 'あそこで あおい ぼうしを かぶっている ひとは だれですか。', 'あそこで あおい ぼうしを かぶっている ひとは だれですか。', 'Who is the person over there wearing a blue hat?', ['l22-relative-clause'], [
+        { grammarId: 'l22-relative-clause', explanation: 'The full description あおいぼうしをかぶっている comes before ひと, which then takes は in Hana’s question.' },
+      ]],
+      ['Ken', 'この スタジオで さくひんを つくっている ミオさんです。', 'この スタジオで さくひんを つくっている ミオさんです。', 'That is Mio, who makes artwork in this studio.', ['l22-relative-clause'], [
+        { grammarId: 'l22-relative-clause', explanation: 'このスタジオでさくひんをつくっている identifies which Mio Ken means before her name appears.' },
+      ]],
+      ['Hana', 'ミオさんが つくった この さらは かるいですね。', 'ミオさんが つくった この さらは かるいですね。', 'This plate that Mio made is light, isn’t it?', ['l22-inner-subject'], [
+        { grammarId: 'l22-inner-subject', explanation: 'ミオさんが marks the maker inside the modifier, while は after このさら gives the resulting noun phrase its main topic role.' },
+      ]],
+      ['Ken', 'ええ。まだ いろを ぬっていない さらも あります。', 'ええ。まだ いろを ぬっていない さらも あります。', 'Yes. There are also plates that have not been painted yet.', ['l22-tense-negative'], [
+        { grammarId: 'l22-tense-negative', explanation: 'ぬっていない carries negative meaning inside the description and narrows さら to plates still unpainted.' },
+      ]],
+      ['Hana', 'わたしも さくひんを つくる じかんが ほしいです。', 'わたしも さくひんを つくる じかんが ほしいです。', 'I want time to make art too.', ['l22-time-for-action'], [
+        { grammarId: 'l22-time-for-action', explanation: 'Dictionary-form つくる describes what the desired じかん is for; it does not say Hana has already made the work.' },
+      ]],
+      ['Ken', 'となりに まどが おおきい へやが あります。こんど しょうかいしますよ。', 'となりに まどが おおきい へやが あります。こんど しょうかいしますよ。', 'Next door there is a room with large windows. I’ll show it to you next time.', ['l22-inner-subject'], [
+        { grammarId: 'l22-inner-subject', explanation: 'まどが is the subject of おおきい inside the modifier, and the following へやが is the room that exists next door.' },
+      ]],
     ]),
     exercises: [
       {
@@ -342,6 +497,27 @@ export const lessons18to25: Lesson[] = ([
         explanation: 'とき is a noun meaning “time.” Plain verbs and い-adjectives directly modify it. A な-adjective takes な, and a noun takes の. The main clause states what happens in that situation.',
         whyItWorks: 'English puts “when” before a clause. Japanese describes the “time” like any other noun and places that description first. Remembering that とき is literally a noun explains な and の connections.',
         usageBoundary: 'Treat とき as a modified time noun and use only the taught connections: plain verb or い-adjective directly, な after a な-adjective, and の after a noun. Productive たら waits until Lesson 25; なら and ば remain deferred.',
+        formation: [
+          {
+            label: 'Verb or い-adjective situation',
+            formula: 'plain verb／い-adjective + とき + main clause',
+            explanation: 'Let a plain verb or い-adjective directly describe the time, then state what happens in that situation.',
+          },
+          {
+            label: 'な-adjective situation',
+            formula: 'な-adjective stem + な + とき + main clause',
+            explanation: 'Use the noun-modifying な connection before the time noun とき.',
+          },
+          {
+            label: 'Noun situation',
+            formula: 'noun + の + とき + main clause',
+            explanation: 'Connect a noun to とき with の, as in こどものとき or こしょうのとき.',
+          },
+        ],
+        contrast: {
+          with: 'time noun とき compared with automatic-result と',
+          explanation: 'とき names the situation’s time and accepts the usual noun modifiers, while conditional と follows a dictionary-form predicate and links it to a reliable result.',
+        },
         examples: [
           example('プリンターを つかう とき、せつめいを よみます。', 'プリンターを つかう とき、せつめいを よみます。', 'When I use the printer, I read the instructions.'),
           example('ひまな とき、こうぐを せいりします。', 'ひまな とき、こうぐを せいりします。', 'When I am free, I organize the tools.'),
@@ -355,6 +531,22 @@ export const lessons18to25: Lesson[] = ([
         explanation: 'A non-past verb before とき presents that action as not yet completed at the main action’s time. A た-form presents it as completed. The final verb still determines the overall sentence tense.',
         whyItWorks: 'English often leaves the exact order to context. Japanese lets the form before とき act like a camera angle: before completion with Vる, or after completion with Vた. Compare “when leaving” with “when I had arrived.”',
         usageBoundary: 'Choose Vる when that action is not complete at the reference time and Vた when it is complete; the final predicate still supplies the sentence tense. Do not treat these forms as a simple present-versus-past translation choice.',
+        formation: [
+          {
+            label: 'Action not yet complete at that time',
+            formula: 'V dictionary form + とき + main action',
+            explanation: 'Use nonpast when the とき action has not yet reached completion at the main action’s reference point.',
+          },
+          {
+            label: 'Action already complete at that time',
+            formula: 'Vた-form + とき + main action',
+            explanation: 'Use た-form when the とき action has reached completion before the main action or event becomes relevant.',
+          },
+        ],
+        contrast: {
+          with: 'Vるとき compared with Vたとき',
+          explanation: 'Vる looks from a point before the modifying action is complete, while Vた looks from a point after completion; neither choice alone fixes the whole sentence as present or past.',
+        },
         examples: [
           example('へやを でる とき、でんきを けしました。', 'へやを でる とき、でんきを けしました。', 'When I was about to leave the room, I turned off the light.'),
           example('へやを でた とき、でんわが なりました。', 'へやを でた とき、でんわが なりました。', 'After I left the room, the phone rang.'),
@@ -368,6 +560,17 @@ export const lessons18to25: Lesson[] = ([
         explanation: 'と links a condition to a natural, habitual, machine-driven, or otherwise reliable result. The result clause does not normally contain a command, invitation, request, or the speaker’s deliberate intention.',
         whyItWorks: 'English “if” covers both facts and personal choices. Japanese と is narrower: press this and the machine predictably responds. Imagine an arrow from trigger to result, not an open decision.',
         usageBoundary: 'Use this と only when the result is presented as automatic, regular, or reliably found. Do not put the taught command, request, invitation, or speaker-controlled intended result after it; Lesson 25 introduces たら for those outcomes.',
+        formation: [
+          {
+            label: 'Reliable trigger and result',
+            formula: 'trigger V dictionary form + と + automatic／habitual／reliably found result',
+            explanation: 'State the trigger in dictionary form, add と, and follow it with a result presented as dependable rather than chosen on the spot.',
+          },
+        ],
+        contrast: {
+          with: 'と compared with たら',
+          explanation: 'と presents a strong, repeatable trigger-to-result link and normally excludes a request or personal invitation, while たら can set a completed condition before such speaker-controlled outcomes.',
+        },
         examples: [
           example('みどりの ボタンを おすと、きかいが うごきます。', 'みどりの ボタンを おすと、きかいが うごきます。', 'When you press the green button, the machine starts.'),
           example('この かどを まがると、ひだりに えきが あります。', 'この かどを まがると、ひだりに えきが あります。', 'When you turn at this corner, the station is on the left.'),
@@ -382,6 +585,22 @@ export const lessons18to25: Lesson[] = ([
         explanation: 'With movement verbs, を can mark a route or point traversed rather than a direct object. Use it with a road you walk along, a bridge you cross, a corner you turn at, or a place you leave.',
         whyItWorks: 'English changes prepositions—along, across, at, out of—while Japanese groups these as a path the movement passes through. The verb supplies the exact kind of movement; を highlights its route.',
         usageBoundary: 'Read を here as the route or space traversed, not as a thing acted on. Keep it with taught movement verbs such as まがる, わたる, あるく, and でる rather than generalizing it to every destination.',
+        formation: [
+          {
+            label: 'Route traversed',
+            formula: 'road／bridge／space + を + あるく／わたる／でる',
+            explanation: 'Mark the space the movement passes along, across, or out of with を and let the movement verb specify the path relation.',
+          },
+          {
+            label: 'Point where a route turns',
+            formula: 'corner／intersection + を + direction へ + まがる',
+            explanation: 'Mark the point traversed with を, optionally state the new direction with へ, and finish with まがる.',
+          },
+        ],
+        contrast: {
+          with: 'path を compared with direct-object を',
+          explanation: 'Direct-object を marks what an action affects, while path を marks the road, bridge, corner, or space through which movement proceeds.',
+        },
         examples: [
           example('つぎの かどを みぎへ まがってください。', 'つぎの かどを みぎへ まがってください。', 'Please turn right at the next corner.'),
           example('あおい はしを わたると、こうえんが あります。', 'あおい はしを わたると、こうえんが あります。', 'When you cross the blue bridge, there is a park.'),
@@ -408,12 +627,24 @@ export const lessons18to25: Lesson[] = ([
       ['おと', 'おと', 'sound', 'noun'],
     ]),
     dialogue: makeDialogue(23, [
-      ['Sora', 'この プリンターを つかう とき、まず なにを しますか。', 'この プリンターを つかう とき、まず なにを しますか。', 'When using this printer, what do I do first?', ['l23-when-forms']],
-      ['Mai', 'つかう ときは、はじめに かみを いれてください。', 'つかう ときは、はじめに かみを いれてください。', 'When you are about to use it, first load the paper.', ['l23-timing-viewpoint']],
+      ['Sora', 'この プリンターを つかう とき、まず なにを しますか。', 'この プリンターを つかう とき、まず なにを しますか。', 'When using this printer, what do I do first?', ['l23-when-forms'], [
+        { grammarId: 'l23-when-forms', explanation: 'Plain つかう directly modifies the noun とき, creating the situation in which Sora asks for the first step.' },
+      ]],
+      ['Mai', 'つかう ときは、はじめに かみを いれてください。', 'つかう ときは、はじめに かみを いれてください。', 'When you are about to use it, first load the paper.', ['l23-timing-viewpoint'], [
+        { grammarId: 'l23-timing-viewpoint', explanation: 'Nonpast つかう views printer use as not yet complete when the paper-loading instruction applies.' },
+      ]],
       ['Sora', 'それから、この みどりの ボタンですか。', 'それから、この みどりの ボタンですか。', 'Then, is it this green button?'],
-      ['Mai', 'はい。ボタンを おすと、プリンターが うごきます。', 'はい。ボタンを おすと、プリンターが うごきます。', 'Yes. When you press the button, the printer starts.', ['l23-automatic-to']],
-      ['Sora', 'へんな おとが した ときは、どうしますか。', 'へんな おとが した ときは、どうしますか。', 'What should I do when it makes a strange sound?', ['l23-when-forms', 'l23-timing-viewpoint']],
-      ['Mai', 'きかいに さわらないで、スタッフを よんでください。こしょうの ときは あかい ボタンを おすと、とまります。', 'きかいに さわらないで、スタッフを よんでください。こしょうの ときは あかい ボタンを おすと、とまります。', 'Do not touch the machine; call a staff member. During a malfunction, pressing the red button stops it.', ['l23-when-forms', 'l23-automatic-to']],
+      ['Mai', 'はい。ボタンを おすと、プリンターが うごきます。', 'はい。ボタンを おすと、プリンターが うごきます。', 'Yes. When you press the button, the printer starts.', ['l23-automatic-to'], [
+        { grammarId: 'l23-automatic-to', explanation: 'おすと links a button press to the printer’s predictable mechanical response, not to Mai’s personal choice.' },
+      ]],
+      ['Sora', 'へんな おとが した ときは、どうしますか。', 'へんな おとが した ときは、どうしますか。', 'What should I do when it makes a strange sound?', ['l23-when-forms', 'l23-timing-viewpoint'], [
+        { grammarId: 'l23-when-forms', explanation: 'The plain clause へんなおとがした describes とき, and は makes that situation the case Sora wants instructions for.' },
+        { grammarId: 'l23-timing-viewpoint', explanation: 'Past した views the strange sound as having occurred by the point when Sora must decide what to do.' },
+      ]],
+      ['Mai', 'きかいに さわらないで、スタッフを よんでください。こしょうの ときは あかい ボタンを おすと、とまります。', 'きかいに さわらないで、スタッフを よんでください。こしょうの ときは あかい ボタンを おすと、とまります。', 'Do not touch the machine; call a staff member. During a malfunction, pressing the red button stops it.', ['l23-when-forms', 'l23-automatic-to'], [
+        { grammarId: 'l23-when-forms', explanation: 'The noun こしょう connects to とき with の and sets a malfunction as the situation for the red-button instruction.' },
+        { grammarId: 'l23-automatic-to', explanation: 'おすと、とまります states the red button’s reliable stop response; the requests remain in separate sentences before it.' },
+      ]],
     ]),
     exercises: [
       {
@@ -478,6 +709,37 @@ export const lessons18to25: Lesson[] = ([
         explanation: 'The た-form follows the same sound pattern as the て-form: replace final て with た and で with だ. For example, たべて→たべた, かいて→かいた, のんで→のんだ. します becomes した and 来ます becomes きた.',
         whyItWorks: 'English marks past mainly by changing the verb. Japanese た-form marks a completed viewpoint, while connectors such as ことがあります and たり add their own functions afterward. Keep the conjugated form separate from the construction that follows it.',
         usageBoundary: 'Use the bare た-form as a plain completed/past predicate, then add ことがあります or り only when that separate connector is intended. The form alone does not mean “experience” or “things like.”',
+        formation: [
+          {
+            label: 'Group 2 verbs',
+            formula: 'Vる → Vた',
+            explanation: 'Remove final る and attach た, as in たべる → たべた.',
+          },
+          {
+            label: 'Group 1 う・つ・る endings',
+            formula: 'Vう／Vつ／Vる → Vった',
+            explanation: 'Replace the final kana with った, as in かう → かった, まつ → まった, and とる → とった.',
+          },
+          {
+            label: 'Group 1 む・ぶ・ぬ endings',
+            formula: 'Vむ／Vぶ／Vぬ → Vんだ',
+            explanation: 'Replace the final kana with んだ, as in のむ → のんだ and あそぶ → あそんだ.',
+          },
+          {
+            label: 'Group 1 く・ぐ・す endings',
+            formula: 'Vく → Vいた; Vぐ → Vいだ; Vす → Vした',
+            explanation: 'Use いた, いだ, or した according to the ending; remember that いく is the exception いった.',
+          },
+          {
+            label: 'Irregular verbs',
+            formula: 'する → した; くる／来る → きた／来た',
+            explanation: 'Memorize the two irregular completed forms as fixed transformations.',
+          },
+        ],
+        contrast: {
+          with: 'bare た-form compared with た-form plus a following construction',
+          explanation: 'A bare た-form simply presents completion or past time; ことがあります or り must be added to express experience or representative actions.',
+        },
         examples: [
           example('きのう うみまで あるいた。', 'きのう うみまで あるいた。', 'I walked as far as the sea yesterday.'),
           example('あさごはんを たべた。', 'あさごはんを たべた。', 'I ate breakfast.'),
@@ -491,6 +753,22 @@ export const lessons18to25: Lesson[] = ([
         explanation: 'Use the た-form plus ことがあります for an experience that has occurred at least once. Use ことがありません for “have never.” This is about life experience, not one specified past event.',
         whyItWorks: 'English uses “have + past participle.” Japanese packages a completed event as Vたこと and then asserts whether that experience exists with あります or ありません. The sentence inventories experience rather than narrating one dated event.',
         usageBoundary: 'Use this for whether an experience has ever existed. A specific finished occasion such as yesterday normally takes an ordinary past predicate instead of Vたことがあります.',
+        formation: [
+          {
+            label: 'Experience has occurred',
+            formula: 'Vた + こと + が／は + あります',
+            explanation: 'Package a completed action with こと and state that such an experience exists; は can contrast this experience with another one in context.',
+          },
+          {
+            label: 'Experience has never occurred',
+            formula: 'Vた + こと + が + ありません',
+            explanation: 'Keep the action in た-form and negate the existence of that experience with ありません.',
+          },
+        ],
+        contrast: {
+          with: 'general experience compared with one dated past event',
+          explanation: 'Vたことがあります inventories whether something has ever happened, while an ordinary past predicate reports a particular occasion such as yesterday.',
+        },
         examples: [
           example('ふじさんに のぼったことが あります。', 'ふじさんに のぼったことが あります。', 'I have climbed Mount Fuji.'),
           example('テントに とまったことが ありません。', 'テントに とまったことが ありません。', 'I have never stayed in a tent.'),
@@ -509,6 +787,22 @@ export const lessons18to25: Lesson[] = ([
         explanation: 'Add り to each た-form and finish with します. The listed actions are examples, not necessarily a complete sequence or chronological order. Conjugate the final します for tense.',
         whyItWorks: 'English uses “things like…” or “sometimes…and sometimes….” Japanese flags every sample action with たり, then lets the final verb carry tense and politeness. Do not read it as a step-by-step list.',
         usageBoundary: 'Treat every Vたり item as a non-exhaustive representative, not a complete or ordered list. Put tense and politeness on the final します／しました rather than changing each sample to match the sentence time.',
+        formation: [
+          {
+            label: 'Each sample action',
+            formula: 'Vた + り',
+            explanation: 'Build the た-form of every action and add り to mark it as one representative item.',
+          },
+          {
+            label: 'Complete representative list',
+            formula: 'Vたり + Vたり + します／しました',
+            explanation: 'Repeat たり for the sampled actions and put tense and politeness only on the final します.',
+          },
+        ],
+        contrast: {
+          with: 'representative たり list compared with a て-form sequence',
+          explanation: 'たり offers selected examples without fixing their order, while a て-form action chain presents linked actions as an unfolding sequence.',
+        },
         examples: [
           example('やすみの ひは およいだり、ほんを よんだり します。', 'やすみの ひは およいだり、ほんを よんだり します。', 'On days off I do things like swim and read.'),
           example('きのうは もりを あるいたり、しゃしんを とったり しました。', 'きのうは もりを あるいたり、しゃしんを とったり しました。', 'Yesterday I walked in the woods, took photos, and so on.'),
@@ -522,6 +816,22 @@ export const lessons18to25: Lesson[] = ([
         explanation: 'Change an い-adjective’s final い to く before なります. Add に after a な-adjective or noun. なりました describes a completed change; だんだん often highlights a gradual one.',
         whyItWorks: 'English places “become” before an adjective or noun. Japanese marks the destination state with く or に and then says なります. Think “change into the state of X,” which makes the particle choice easier.',
         usageBoundary: 'Use なります to report movement into a resulting state. Deliberately making something a state with する and acquired ability with ようになる are distinct patterns deferred beyond this lesson.',
+        formation: [
+          {
+            label: 'Change into an い-adjective state',
+            formula: 'い-adjective minus final い + く + なります／なりました',
+            explanation: 'Change final い to く, then use なります for the transition or なりました for a completed change.',
+          },
+          {
+            label: 'Change into a な-adjective or noun state',
+            formula: 'な-adjective／noun + に + なります／なりました',
+            explanation: 'Mark the destination state with に and use なる to report entering it.',
+          },
+        ],
+        contrast: {
+          with: 'describing a state compared with becoming that state',
+          explanation: 'An adjective or noun predicate says what something is, whereas く／に なります focuses on the transition into that condition.',
+        },
         examples: [
           example('さいきん、ひるが ながく なりました。', 'さいきん、ひるが ながく なりました。', 'Recently, the days have become longer.'),
           example('まちが しずかに なりました。', 'まちが しずかに なりました。', 'The town became quiet.'),
@@ -547,12 +857,20 @@ export const lessons18to25: Lesson[] = ([
       ['しずか', 'しずか', 'quiet', 'な-adjective'],
     ]),
     dialogue: makeDialogue(19, [
-      ['Mika', 'サムさんは みどり山に のぼったことが ありますか。', 'サムさんは みどりやまに のぼったことが ありますか。', 'Sam, have you ever climbed Mount Midori?', ['l19-experience']],
-      ['Sam', 'いいえ、ありません。でも、テントに とまったことは あります。', 'いいえ、ありません。でも、テントに とまったことは あります。', 'No, I haven’t. But I have stayed in a tent.', ['l19-experience']],
+      ['Mika', 'サムさんは みどり山に のぼったことが ありますか。', 'サムさんは みどりやまに のぼったことが ありますか。', 'Sam, have you ever climbed Mount Midori?', ['l19-experience'], [
+        { grammarId: 'l19-experience', explanation: 'のぼったことが asks whether climbing Mount Midori belongs anywhere in Sam’s experience, without naming a date.' },
+      ]],
+      ['Sam', 'いいえ、ありません。でも、テントに とまったことは あります。', 'いいえ、ありません。でも、テントに とまったことは あります。', 'No, I haven’t. But I have stayed in a tent.', ['l19-experience'], [
+        { grammarId: 'l19-experience', explanation: 'Sam contrasts the absent climbing experience with テントにとまったことは, an experience he does have.' },
+      ]],
       ['Mika', 'こんどの しゅうまつ、いっしょに いきませんか。', 'こんどの しゅうまつ、いっしょに いきませんか。', 'Would you like to go together this weekend?'],
       ['Sam', 'いいですね。山で なにを しますか。', 'いいですね。やまで なにを しますか。', 'Sounds good. What will we do in the mountains?'],
-      ['Mika', 'もりを あるいたり、けしきの しゃしんを とったり します。', 'もりを あるいたり、けしきの しゃしんを とったり します。', 'We’ll do things like walk in the woods and photograph the scenery.', ['l19-representative-actions']],
-      ['Sam', 'たのしみです。さいきん からだが つよく なりました。', 'たのしみです。さいきん からだが つよく なりました。', 'I’m looking forward to it. I’ve become physically stronger recently.', ['l19-change']],
+      ['Mika', 'もりを あるいたり、けしきの しゃしんを とったり します。', 'もりを あるいたり、けしきの しゃしんを とったり します。', 'We’ll do things like walk in the woods and photograph the scenery.', ['l19-representative-actions'], [
+        { grammarId: 'l19-representative-actions', explanation: 'あるいたり and とったり offer two sample mountain activities, leaving room for other plans and no required order.' },
+      ]],
+      ['Sam', 'たのしみです。さいきん からだが つよく なりました。', 'たのしみです。さいきん からだが つよく なりました。', 'I’m looking forward to it. I’ve become physically stronger recently.', ['l19-change'], [
+        { grammarId: 'l19-change', explanation: 'つよい changes to つよく before なりました, presenting Sam’s body as having entered a stronger state.' },
+      ]],
     ]),
     exercises: [
       {
@@ -622,6 +940,32 @@ export const lessons18to25: Lesson[] = ([
         explanation: 'Use the exact four-way verb grid: positive nonpast いく, negative nonpast いかない, positive past いった, and negative past いかなかった. Plain forms occur with close friends and inside many longer grammar patterns.',
         whyItWorks: 'English often relies on helper words such as “do not” and “did not.” Japanese packs tense and polarity into the verb ending. Learn the four forms as a small grid instead of treating “casual” as merely deleting ます.',
         usageBoundary: 'Choose one cell by polarity and viewpoint: positive/negative × nonpast/past. Plain does not automatically mean rude, but a bare plain ending is unsuitable in many formal or distant relationships.',
+        formation: [
+          {
+            label: 'Positive nonpast',
+            formula: 'V dictionary form',
+            explanation: 'Use the dictionary form for a plain habit, future action, or affirmative nonpast statement.',
+          },
+          {
+            label: 'Negative nonpast',
+            formula: 'Vない-form',
+            explanation: 'Use the previously learned ない-form for a plain negative habit, future action, or present decision.',
+          },
+          {
+            label: 'Positive past',
+            formula: 'Vた-form',
+            explanation: 'Use the た-form for a plain affirmative event viewed as completed.',
+          },
+          {
+            label: 'Negative past',
+            formula: 'Vない minus final い + かった',
+            explanation: 'Change final ない to なかった to deny that the action occurred.',
+          },
+        ],
+        contrast: {
+          with: 'plain form compared with polite ます form',
+          explanation: 'Both grids express the same tense and polarity choices, but a sentence-final plain form suits close relationships while a ます ending supplies polite distance; plain forms also appear inside later structures regardless of outer politeness.',
+        },
         examples: [
           example('あした うちに くる？', 'あした うちに くる？', 'Are you coming to my place tomorrow?'),
           example('きのうは ゲームを しなかった。', 'きのうは ゲームを しなかった。', 'I did not play games yesterday.'),
@@ -635,6 +979,27 @@ export const lessons18to25: Lesson[] = ([
         explanation: 'Use four-way grids. For an い-adjective: おもしろい／おもしろくない／おもしろかった／おもしろくなかった. For a な-adjective: ひまだ／ひまじゃない／ひまだった／ひまじゃなかった. Nouns follow the same だ grid: がくせいだ／がくせいじゃない／がくせいだった／がくせいじゃなかった.',
         whyItWorks: 'English always needs “is/are,” even casually. Japanese い-adjectives already carry a predicate ending, while nouns and な-adjectives need だ in statements. This is why simply replacing every です with だ produces errors.',
         usageBoundary: 'Select positive/negative × nonpast/past within the correct predicate class. Never attach だ to a plain positive い-adjective, and normally omit statement-final だ in a casual noun or な-adjective question.',
+        formation: [
+          {
+            label: 'い-adjective grid',
+            formula: 'いA／いAくない／いAかった／いAくなかった',
+            explanation: 'Keep positive nonpast unchanged, then use くない, かった, or くなかった for negative nonpast, positive past, or negative past.',
+          },
+          {
+            label: 'な-adjective grid',
+            formula: 'なAだ／なAじゃない／なAだった／なAじゃなかった',
+            explanation: 'Attach the plain copular endings to the な-adjective stem and do not leave the attributive な before them.',
+          },
+          {
+            label: 'Noun grid',
+            formula: 'Nだ／Nじゃない／Nだった／Nじゃなかった',
+            explanation: 'Use the same だ grid with nouns to choose tense and polarity in a plain description.',
+          },
+        ],
+        contrast: {
+          with: 'い-adjective endings compared with な-adjective and noun だ endings',
+          explanation: 'An い-adjective conjugates its own ending and never adds だ in the positive nonpast, while a な-adjective or noun needs the plain copular grid.',
+        },
         examples: [
           example('この ゲームは むずかしくない。', 'この ゲームは むずかしくない。', 'This game is not difficult.'),
           example('あしたは ひまだ。', 'あしたは ひまだ。', 'I am free tomorrow.'),
@@ -650,6 +1015,27 @@ export const lessons18to25: Lesson[] = ([
         whyItWorks: 'English uses word order to distinguish many questions. Japanese casual speech can leave the order unchanged and rely on intonation and context. Imagine a spoken question mark at the end.',
         usageBoundary: 'Use context, a question word, and spoken intonation for this close-relationship pattern; do not assume every written plain sentence is a question. Keep polite か in polite questions, while explanatory question-ending の remains deferred.',
         notes: ['The dialogue’s どうしたの？ is a fixed receptive expression meaning “What’s up?” or “What happened?”; productive explanatory question-final の remains deferred.'],
+        formation: [
+          {
+            label: 'Yes-or-no casual question',
+            formula: 'plain predicate + rising question intonation',
+            explanation: 'Keep the predicate plain and let the spoken rise ask for confirmation without adding polite か.',
+          },
+          {
+            label: 'Question-word casual question',
+            formula: 'question word + plain predicate + question intonation',
+            explanation: 'Use a word such as だれ or なに to leave one part unknown, with the rest of the clause in plain form.',
+          },
+          {
+            label: 'Noun or な-adjective casual question',
+            formula: 'N／なA stem + question intonation',
+            explanation: 'Omit the statement-final だ when directly asking a close friend a noun or な-adjective question, as in ひま？.',
+          },
+        ],
+        contrast: {
+          with: 'casual intonation question compared with polite か question',
+          explanation: 'Close casual speech can signal the question through context and a rising tone, whereas polite speech normally keeps the polite predicate and final か.',
+        },
         examples: [
           example('もう ばんごはんを たべた？', 'もう ばんごはんを たべた？', 'Have you eaten dinner already?'),
           example('あした だれが くる？', 'あした だれが くる？', 'Who is coming tomorrow?'),
@@ -663,6 +1049,22 @@ export const lessons18to25: Lesson[] = ([
         explanation: 'よ presents information the speaker wants the listener to register. ね seeks shared alignment, recognition, or gentle agreement. Context can carry either stance without a final particle, and tone still shapes how each ending sounds.',
         whyItWorks: 'English spreads this work across intonation and tags such as “you know” or “right?” Japanese places a small stance marker at the end. Listen for whether information is being delivered (よ) or shared (ね).',
         usageBoundary: 'Add よ to present information or ね to invite alignment only when that stance is useful; either may be omitted when context is enough. This lesson does not introduce a broad inventory of slang or final particles.',
+        formation: [
+          {
+            label: 'Present information',
+            formula: 'complete plain sentence + よ',
+            explanation: 'Attach よ after the finished statement when the speaker wants the listener to take in that information.',
+          },
+          {
+            label: 'Invite alignment',
+            formula: 'complete plain sentence + ね',
+            explanation: 'Attach ね when the speaker treats the statement as something to recognize or share with the listener.',
+          },
+        ],
+        contrast: {
+          with: 'よ compared with ね',
+          explanation: 'よ pushes information toward the listener, while ね opens space for shared recognition or agreement.',
+        },
         examples: [
           example('その ゲームは かんたんだよ。', 'その ゲームは かんたんだよ。', 'That game is easy, you know.'),
           example('きょうは さむいね。', 'きょうは さむいね。', 'It is cold today, isn’t it?'),
@@ -688,12 +1090,27 @@ export const lessons18to25: Lesson[] = ([
       ['ざんねん', 'ざんねん', 'unfortunate; a pity', 'な-adjective'],
     ]),
     dialogue: makeDialogue(20, [
-      ['Riku', 'あしたの よる、ひま？', 'あしたの よる、ひま？', 'Are you free tomorrow evening?', ['l20-casual-questions', 'l20-plain-descriptions']],
-      ['Nora', 'うん、ひまだよ。どうしたの？', 'うん、ひまだよ。どうしたの？', 'Yeah, I’m free. What’s up?', ['l20-final-particles']],
-      ['Riku', 'うちで ボードゲームを する。ノラも くる？', 'うちで ボードゲームを する。ノラも くる？', 'We’re playing board games at my place. Are you coming too?', ['l20-plain-verbs', 'l20-casual-questions']],
-      ['Nora', 'いく！ だれが くる？', 'いく！ だれが くる？', 'I’ll come! Who’s coming?', ['l20-casual-questions']],
-      ['Riku', 'ユウと メイが くるよ。ゲームは むずかしくないよ。', 'ユウと メイが くるよ。ゲームは むずかしくないよ。', 'Yu and Mei are coming. The games aren’t difficult, you know.', ['l20-plain-descriptions', 'l20-final-particles']],
-      ['Nora', 'よかった。じゃ、おかしを もっていくね。', 'よかった。じゃ、おかしを もっていくね。', 'Great. Then I’ll bring snacks, okay?', ['l20-final-particles']],
+      ['Riku', 'あしたの よる、ひま？', 'あしたの よる、ひま？', 'Are you free tomorrow evening?', ['l20-casual-questions', 'l20-plain-descriptions'], [
+        { grammarId: 'l20-casual-questions', explanation: 'Riku omits polite ですか and uses the short な-adjective stem ひま with question intonation.' },
+        { grammarId: 'l20-plain-descriptions', explanation: 'Because this is a casual な-adjective question, the positive statement ending だ is omitted rather than pronounced before the rise.' },
+      ]],
+      ['Nora', 'うん、ひまだよ。どうしたの？', 'うん、ひまだよ。どうしたの？', 'Yeah, I’m free. What’s up?', ['l20-final-particles'], [
+        { grammarId: 'l20-final-particles', explanation: 'Nora’s よ presents her availability as the information Riku needs; どうしたの？ remains the lesson’s fixed receptive phrase.' },
+      ]],
+      ['Riku', 'うちで ボードゲームを する。ノラも くる？', 'うちで ボードゲームを する。ノラも くる？', 'We’re playing board games at my place. Are you coming too?', ['l20-plain-verbs', 'l20-casual-questions'], [
+        { grammarId: 'l20-plain-verbs', explanation: 'する and くる are both positive nonpast plain verbs, with context supplying the planned future reading.' },
+        { grammarId: 'l20-casual-questions', explanation: 'The first する is a statement, while rising intonation makes the otherwise identical plain ending くる into a question.' },
+      ]],
+      ['Nora', 'いく！ だれが くる？', 'いく！ だれが くる？', 'I’ll come! Who’s coming?', ['l20-casual-questions'], [
+        { grammarId: 'l20-casual-questions', explanation: 'だれ marks the unknown attendee and the plain くる closes Nora’s relaxed question without か.' },
+      ]],
+      ['Riku', 'ユウと メイが くるよ。ゲームは むずかしくないよ。', 'ユウと メイが くるよ。ゲームは むずかしくないよ。', 'Yu and Mei are coming. The games aren’t difficult, you know.', ['l20-plain-descriptions', 'l20-final-particles'], [
+        { grammarId: 'l20-plain-descriptions', explanation: 'むずかしい becomes the plain negative むずかしくない, denying difficulty without です.' },
+        { grammarId: 'l20-final-particles', explanation: 'Both よ endings deliver reassuring information: who will attend and that the games are not difficult.' },
+      ]],
+      ['Nora', 'よかった。じゃ、おかしを もっていくね。', 'よかった。じゃ、おかしを もっていくね。', 'Great. Then I’ll bring snacks, okay?', ['l20-final-particles'], [
+        { grammarId: 'l20-final-particles', explanation: 'ね makes Nora’s plan to bring snacks something she presents for friendly shared acknowledgment.' },
+      ]],
     ]),
     exercises: [
       {
@@ -758,6 +1175,22 @@ export const lessons18to25: Lesson[] = ([
         explanation: 'Put the interpreted content of a thought in a complete plain clause before と思います. Nouns and な-adjectives keep だ inside that clause: べんりだと思います. The outside 思います carries the sentence politeness.',
         whyItWorks: 'English can open interpreted content with “that.” Japanese presents the thought first and uses と to close its boundary before 思います. Build the inner plain clause independently, then attach the thinking verb.',
         usageBoundary: 'Use a plain clause for the interpreted thought and keep politeness on 思います, not inside the quotation. Casual quotation って and formal reporting patterns remain outside this beginner lesson.',
+        formation: [
+          {
+            label: 'Verb or い-adjective thought',
+            formula: 'plain verb／い-adjective clause + と + 思います',
+            explanation: 'Complete the thought content in plain form, close it with と, and put politeness on the outside verb 思います.',
+          },
+          {
+            label: 'Noun or な-adjective thought',
+            formula: 'noun／な-adjective + だ + と + 思います',
+            explanation: 'Keep だ inside a positive nonpast noun or な-adjective clause before the quotation particle と.',
+          },
+        ],
+        contrast: {
+          with: 'opinion with と思います compared with a direct assertion',
+          explanation: 'と思います explicitly frames the preceding plain clause as the speaker’s assessment, while stating that clause alone presents it more directly.',
+        },
         examples: [
           example('この けいかくは いいと おもいます。', 'この けいかくは いいと おもいます。', 'I think this plan is good.'),
           example('らいねん、この イベントは もっと にぎやかに なると おもいます。', 'らいねん、この イベントは もっと にぎやかに なると おもいます。', 'I think this event will become livelier next year.'),
@@ -771,6 +1204,22 @@ export const lessons18to25: Lesson[] = ([
         explanation: 'と closes either a direct quote or interpreted content. Put exact wording inside Japanese quotation marks, as in 「いきます」と言いました. Without those marks, a complete plain clause can report the message from the current speaker’s interpretation.',
         whyItWorks: 'English reshapes pronouns and tense when reporting speech. Japanese first packages the message, then attaches と言いました. Decide whether you are reproducing the speaker’s wording or interpreting the content before choosing direct quotation marks.',
         usageBoundary: 'Use 「…」と言いました only for presented wording and plain clause + と言いました for interpreted content. Casual って and more formal reporting conventions remain deferred.',
+        formation: [
+          {
+            label: 'Presented wording',
+            formula: 'speaker は + 「quoted words」 + と + 言います／言いました',
+            explanation: 'Put the wording you present between Japanese quotation marks, then close its boundary with と before the saying verb.',
+          },
+          {
+            label: 'Interpreted report',
+            formula: 'speaker は + plain content clause + と + 言いました',
+            explanation: 'Build the reported message as a complete plain clause and attach と言いました without claiming that every word is reproduced exactly.',
+          },
+        ],
+        contrast: {
+          with: 'direct quotation compared with interpreted report',
+          explanation: 'Quotation marks present wording as spoken, whereas an unmarked plain clause before と reports the message from the current speaker’s perspective.',
+        },
         examples: [
           example('スタッフは「ごみを へらしましょう」と いいました。', 'スタッフは「ごみを へらしましょう」と いいました。', 'The staff said, “Let’s reduce waste.”'),
           example('マヤさんは あした くると いいました。', 'マヤさんは あした くると いいました。', 'Maya said that she would come tomorrow.'),
@@ -784,6 +1233,27 @@ export const lessons18to25: Lesson[] = ([
         explanation: 'でしょう after a plain form expresses a calibrated likelihood; rising intonation can instead request confirmation. A noun or な-adjective normally connects without だ: にぎやかでしょう, あめでしょう. The ending is polite-neutral, while だろう is its plainer counterpart.',
         whyItWorks: 'English uses separate phrases such as “probably,” “I expect,” and “right?” Japanese でしょう lets evidence, context, intonation, and register set the force. It offers an assessment rather than guaranteeing a fact.',
         usageBoundary: 'Use falling でしょう for a considered prediction and rising でしょう for confirmation in appropriate polite-neutral speech. Do not treat it as certainty, and do not substitute the more casual だろう without matching the relationship and register.',
+        formation: [
+          {
+            label: 'Verb or い-adjective prediction',
+            formula: 'plain verb／い-adjective + でしょう',
+            explanation: 'Attach でしょう to the plain predicate to offer a reasoned but unproven assessment.',
+          },
+          {
+            label: 'Noun or な-adjective prediction',
+            formula: 'noun／な-adjective stem + でしょう',
+            explanation: 'Attach でしょう directly and omit positive nonpast だ before it.',
+          },
+          {
+            label: 'Confirmation reading',
+            formula: 'plain form + でしょう + rising intonation',
+            explanation: 'Use a rising contour when asking the listener to confirm an assessment rather than simply predicting.',
+          },
+        ],
+        contrast: {
+          with: 'falling prediction でしょう compared with rising confirmation でしょう',
+          explanation: 'A falling ending offers the speaker’s likelihood judgment, while a rising ending asks the listener to align with or confirm it.',
+        },
         examples: [
           example('どようびは はれるでしょう。', 'どようびは はれるでしょう。', 'It will probably be sunny on Saturday.'),
           example('この ポスターは わかりやすいでしょう？', 'この ポスターは わかりやすいでしょう？', 'This poster is easy to understand, right?'),
@@ -797,6 +1267,17 @@ export const lessons18to25: Lesson[] = ([
         explanation: 'について marks a subject being discussed, researched, written about, or asked about. It often appears before verbs such as はなします, しらべます, or かきます.',
         whyItWorks: 'English “about” has many uses, including approximation and physical position. Japanese について is narrower: it labels an information topic. Use it when speech, writing, questions, or research is directed toward a subject.',
         usageBoundary: 'Use Nについて for an information topic, not for a physical location and not for approximate quantity. Pair it with communication or investigation rather than translating every English “about” mechanically.',
+        formation: [
+          {
+            label: 'Information topic',
+            formula: 'topic noun + について + communication／research verb',
+            explanation: 'Place the subject matter before について, then use a verb of speaking, writing, asking, or investigating to say what happens concerning it.',
+          },
+        ],
+        contrast: {
+          with: 'information-topic について compared with general English “about”',
+          explanation: 'について labels the subject of communication or inquiry; it does not express approximate amount or physical position just because English uses “about.”',
+        },
         examples: [
           example('リサイクルについて はなしましょう。', 'リサイクルについて はなしましょう。', 'Let’s talk about recycling.'),
           example('まちの こうつうについて しらべました。', 'まちの こうつうについて しらべました。', 'I researched the town’s transportation.'),
@@ -822,12 +1303,25 @@ export const lessons18to25: Lesson[] = ([
       ['わかりやすい', 'わかりやすい', 'easy to understand', 'い-adjective'],
     ]),
     dialogue: makeDialogue(21, [
-      ['Emi', 'こんどの エコフェアについて、どう おもいますか。', 'こんどの エコフェアについて、どう おもいますか。', 'What do you think about the upcoming eco-fair?', ['l21-topic-about', 'l21-think']],
-      ['Jon', 'おもしろい けいかくだと おもいます。', 'おもしろい けいかくだと おもいます。', 'I think it is an interesting plan.', ['l21-think']],
-      ['Emi', 'てんきよほうで、どようびは はれると いっていました。', 'てんきよほうで、どようびは はれると いっていました。', 'The weather forecast said it would be sunny on Saturday.', ['l21-say']],
-      ['Jon', 'じゃあ、たくさんの ひとが くるでしょう。', 'じゃあ、たくさんの ひとが くるでしょう。', 'Then a lot of people will probably come.', ['l21-probability']],
-      ['Emi', 'スタッフは「マイボトルを もってきてください」と いいました。', 'スタッフは「マイボトルを もってきてください」と いいました。', 'The staff said, “Please bring your own bottle.”', ['l21-say']],
-      ['Jon', 'いいですね。ごみを へらすことが できると おもいます。', 'いいですね。ごみを へらすことが できると おもいます。', 'Good idea. I think we can reduce waste.', ['l21-think']],
+      ['Emi', 'こんどの エコフェアについて、どう おもいますか。', 'こんどの エコフェアについて、どう おもいますか。', 'What do you think about the upcoming eco-fair?', ['l21-topic-about', 'l21-think'], [
+        { grammarId: 'l21-topic-about', explanation: 'エコフェアについて marks the upcoming fair as the subject toward which Emi directs her question.' },
+        { grammarId: 'l21-think', explanation: 'どう leaves the content of the requested opinion open while おもいますか politely asks Jon to supply it.' },
+      ]],
+      ['Jon', 'おもしろい けいかくだと おもいます。', 'おもしろい けいかくだと おもいます。', 'I think it is an interesting plan.', ['l21-think'], [
+        { grammarId: 'l21-think', explanation: 'Because けいかく is a noun, Jon keeps だ inside the plain thought clause before とおもいます.' },
+      ]],
+      ['Emi', 'てんきよほうで、どようびは はれると いっていました。', 'てんきよほうで、どようびは はれると いっていました。', 'The weather forecast said it would be sunny on Saturday.', ['l21-say'], [
+        { grammarId: 'l21-say', explanation: 'どようびははれる is the interpreted forecast content, and と closes it before the continuing report いっていました.' },
+      ]],
+      ['Jon', 'じゃあ、たくさんの ひとが くるでしょう。', 'じゃあ、たくさんの ひとが くるでしょう。', 'Then a lot of people will probably come.', ['l21-probability'], [
+        { grammarId: 'l21-probability', explanation: 'Jon attaches falling でしょう to plain くる and offers likely attendance as an inference from the sunny forecast.' },
+      ]],
+      ['Emi', 'スタッフは「マイボトルを もってきてください」と いいました。', 'スタッフは「マイボトルを もってきてください」と いいました。', 'The staff said, “Please bring your own bottle.”', ['l21-say'], [
+        { grammarId: 'l21-say', explanation: 'The brackets present the staff’s request as quoted wording, and the following と marks exactly where that quotation ends.' },
+      ]],
+      ['Jon', 'いいですね。ごみを へらすことが できると おもいます。', 'いいですね。ごみを へらすことが できると おもいます。', 'Good idea. I think we can reduce waste.', ['l21-think'], [
+        { grammarId: 'l21-think', explanation: 'The entire ability clause ごみをへらすことができる becomes Jon’s thought content before とおもいます.' },
+      ]],
     ]),
     exercises: [
       {
@@ -894,6 +1388,17 @@ export const lessons18to25: Lesson[] = ([
         whyItWorks: 'English adds “for you” after an action. Japanese attaches the giving verb あげる to the て-form, treating the helpful action itself like something transferred outward. The viewpoint starts at the helper.',
         usageBoundary: 'Use this giver-oriented camera for a friendly favor directed outward. Avoid advertising your own generosity or imposing a favor, especially upward in status; low-register やる is not required output in this course.',
         notes: ['Saying てあげました about your own favor can sound self-congratulatory; context and relationship matter.', 'Use it naturally for friendly offers or when objectively describing help between other people.'],
+        formation: [
+          {
+            label: 'Favor viewed from the helper',
+            formula: 'giver は／が + beneficiary に + action Vて + あげます',
+            explanation: 'Make the helpful action a て-form, keep the giver as subject, and mark the person who benefits with に before あげます.',
+          },
+        ],
+        contrast: {
+          with: 'てあげます compared with てくれます',
+          explanation: 'てあげます follows help outward from the giver toward someone else and can overemphasize generosity, while てくれます presents another person’s action as a welcome favor toward the speaker’s side.',
+        },
         examples: [
           example('わたしは いもうとに かんじを おしえてあげました。', 'わたしは いもうとに かんじを おしえてあげました。', 'I helped my younger sister by teaching her kanji.'),
           example('その はこは わたしが はこんであげます。', 'その はこは わたしが はこんであげます。', 'I’ll carry that box for you.'),
@@ -907,6 +1412,17 @@ export const lessons18to25: Lesson[] = ([
         explanation: 'てもらいます tells the event from the receiver’s viewpoint. The receiver is the topic or subject, and the person performing the helpful action is marked with に; から can mark the source when it makes the direction of receipt clearer. It often implies appreciation or arranged help.',
         whyItWorks: 'English “have someone do” can sound like an order, while Japanese てもらう foregrounds receiving a favor. Mentally read it as “receive the action of V from the helper.”',
         usageBoundary: 'Use に for the helper in the core pattern and allow から when presenting that person or organization as the source of the received favor. Keep the sentence camera on the recipient rather than treating てもらう as a bare command.',
+        formation: [
+          {
+            label: 'Favor viewed from the receiver',
+            formula: 'receiver は + helper に／から + action Vて + もらいます',
+            explanation: 'Make the received action a て-form, center the recipient as topic, and mark the person who performs it with に or as its source with から.',
+          },
+        ],
+        contrast: {
+          with: 'てもらいます compared with てくれます',
+          explanation: 'てもらいます centers what the receiver obtained and marks the helper with に, while てくれます keeps the helper as subject and points that favor toward the beneficiary.',
+        },
         examples: [
           example('わたしは アヤさんに うえかたを おしえてもらいました。', 'わたしは アヤさんに うえかたを おしえてもらいました。', 'I had Aya show me how to plant.'),
           example('ちちに えきまで おくってもらいました。', 'ちちに えきまで おくってもらいました。', 'I had my father take me to the station.'),
@@ -920,6 +1436,22 @@ export const lessons18to25: Lesson[] = ([
         explanation: 'てくれます keeps the helper as the grammatical subject but presents the action as coming toward the speaker or someone in the speaker’s circle. The beneficiary is often omitted because “me/us” is understood.',
         whyItWorks: 'English usually needs “for me” to show the benefit. Japanese くれる already points the favor inward toward the speaker’s side, so it combines factual information with a quiet note of gratitude.',
         usageBoundary: 'Use てくれます only when the helpful action points toward the speaker or the speaker’s in-group. Mark the benefactor with が or は; do not use it for a favor whose beneficiary lies outside that viewpoint.',
+        formation: [
+          {
+            label: 'Favor coming toward the speaker’s side',
+            formula: 'helper が／は + speaker-side beneficiary に + action Vて + くれます',
+            explanation: 'Keep the helper as subject, place the action in て-form, and use くれます when its benefit comes to the speaker or the speaker’s group.',
+          },
+          {
+            label: 'Understood beneficiary',
+            formula: 'helper が／は + action Vて + くれます',
+            explanation: 'Omit “me/us” when the context already makes the inward beneficiary clear; くれます still preserves that direction.',
+          },
+        ],
+        contrast: {
+          with: 'helper-subject てくれます compared with receiver-subject てもらいます',
+          explanation: 'Both can describe appreciated help, but てくれます spotlights what the helper did and てもらいます spotlights what the receiver obtained.',
+        },
         examples: [
           example('ソウタさんが どうぐを もってきてくれました。', 'ソウタさんが どうぐを もってきてくれました。', 'Sota brought the tools for us.'),
           example('ともだちが おとうとの しゅくだいを みてくれました。', 'ともだちが おとうとの しゅくだいを みてくれました。', 'My friend looked over my younger brother’s homework for him.'),
@@ -933,6 +1465,22 @@ export const lessons18to25: Lesson[] = ([
         explanation: 'The same helpful event can be framed around what the receiver obtained with てもらう or what the helper kindly gave with てくれる. Switching viewpoint also switches A from に to が or は. Before making a request, decide whether its camera should center the requested benefit or the helper’s action.',
         whyItWorks: 'English often describes both as “A did it for me.” Japanese makes you choose the camera position. If the sentence camera is on the receiver, use もらう; if it is on the helper whose action comes toward you, use くれる.',
         usageBoundary: 'Choose from the beneficiary camera before assigning particles, especially in requests: recipient-centered もらう versus benefactor-centered くれる. Do not mix に for the helper with a くれる sentence whose helper must be the subject.',
+        formation: [
+          {
+            label: 'Receiver-centered camera',
+            formula: 'receiver は + helper に + Vて + もらいます',
+            explanation: 'Begin with the person who receives help and mark the helper with に.',
+          },
+          {
+            label: 'Helper-centered camera',
+            formula: 'helper が／は + receiver に + Vて + くれます',
+            explanation: 'Begin with the person who performs the favor and let くれます show that its benefit comes toward the receiver’s side.',
+          },
+        ],
+        contrast: {
+          with: 'receiver-centered てもらいます compared with helper-centered てくれます',
+          explanation: 'The underlying favor can stay the same, but switching the camera changes which participant is subject and whether the helper takes に or が／は.',
+        },
         examples: [
           example('わたしは ケンさんに いすを なおしてもらいました。', 'わたしは ケンさんに いすを なおしてもらいました。', 'I had Ken repair the chair for me.'),
           example('ケンさんが いすを なおしてくれました。', 'ケンさんが いすを なおしてくれました。', 'Ken repaired the chair for me.'),
@@ -961,11 +1509,21 @@ export const lessons18to25: Lesson[] = ([
     ]),
     dialogue: makeDialogue(24, [
       ['Kei', 'にわの じゅんびは もう できましたか。', 'にわの じゅんびは もう できましたか。', 'Are the preparations for the garden done yet?'],
-      ['Mina', 'だいたい できました。ソウタさんが どうぐを もってきてくれました。', 'だいたい できました。ソウタさんが どうぐを もってきてくれました。', 'It is mostly done. Sota brought the tools for us.', ['l24-te-kureru']],
-      ['Kei', 'よかった。わたしは アヤさんに やさいの うえかたを おしえてもらいました。', 'よかった。わたしは アヤさんに やさいの うえかたを おしえてもらいました。', 'Great. I had Aya teach me how to plant vegetables.', ['l24-te-morau']],
-      ['Mina', 'その おおきい はこは、わたしが はこんであげます。', 'その おおきい はこは、わたしが はこんであげます。', 'I’ll carry that large box for you.', ['l24-te-ageru']],
-      ['Kei', 'ありがとう。じゃあ、わたしは ミナさんの かんばんを つけてあげます。', 'ありがとう。じゃあ、わたしは ミナさんの かんばんを つけてあげます。', 'Thanks. Then I’ll put up your sign for you.', ['l24-te-ageru']],
-      ['Mina', 'たすかります。きんじょの かたも ベンチを なおしてくれました。みんなに おれいを いいましょう。', 'たすかります。きんじょの かたも ベンチを なおしてくれました。みんなに おれいを いいましょう。', 'That helps. A neighbor repaired the bench for us too. Let’s thank everyone.', ['l24-te-kureru']],
+      ['Mina', 'だいたい できました。ソウタさんが どうぐを もってきてくれました。', 'だいたい できました。ソウタさんが どうぐを もってきてくれました。', 'It is mostly done. Sota brought the tools for us.', ['l24-te-kureru'], [
+        { grammarId: 'l24-te-kureru', explanation: 'ソウタさんが remains the helper-subject, while くれました frames bringing the tools as help received by Mina’s group.' },
+      ]],
+      ['Kei', 'よかった。わたしは アヤさんに やさいの うえかたを おしえてもらいました。', 'よかった。わたしは アヤさんに やさいの うえかたを おしえてもらいました。', 'Great. I had Aya teach me how to plant vegetables.', ['l24-te-morau'], [
+        { grammarId: 'l24-te-morau', explanation: 'Kei is the receiver-topic, アヤさんに marks the helper, and てもらいました centers the planting lesson Kei obtained.' },
+      ]],
+      ['Mina', 'その おおきい はこは、わたしが はこんであげます。', 'その おおきい はこは、わたしが はこんであげます。', 'I’ll carry that large box for you.', ['l24-te-ageru'], [
+        { grammarId: 'l24-te-ageru', explanation: 'Mina makes herself the helper with わたしが and offers the outward favor of carrying this particular large box.' },
+      ]],
+      ['Kei', 'ありがとう。じゃあ、わたしは ミナさんの かんばんを つけてあげます。', 'ありがとう。じゃあ、わたしは ミナさんの かんばんを つけてあげます。', 'Thanks. Then I’ll put up your sign for you.', ['l24-te-ageru'], [
+        { grammarId: 'l24-te-ageru', explanation: 'Kei reciprocates from the giver’s viewpoint: つけて names the helpful action and あげます directs its benefit to Mina.' },
+      ]],
+      ['Mina', 'たすかります。きんじょの かたも ベンチを なおしてくれました。みんなに おれいを いいましょう。', 'たすかります。きんじょの かたも ベンチを なおしてくれました。みんなに おれいを いいましょう。', 'That helps. A neighbor repaired the bench for us too. Let’s thank everyone.', ['l24-te-kureru'], [
+        { grammarId: 'l24-te-kureru', explanation: 'The neighbor is the benefactor marked with も, and なおしてくれました acknowledges that the bench repair helped the group.' },
+      ]],
     ]),
     exercises: [
       {
@@ -1039,6 +1597,32 @@ export const lessons18to25: Lesson[] = ([
         explanation: 'Start from the plain past form and add ら: いったら, たべなかったら, たかかったら, ひまだったら. For a negative な-adjective or noun, use じゃなかったら. The form looks past but the condition can concern the future.',
         whyItWorks: 'English uses a separate word “if,” while Japanese adds ら to a completed-form checkpoint. That completed viewpoint does not automatically locate the condition in past time; once the condition is met, the result can be a fact, decision, invitation, command, or request.',
         usageBoundary: 'Use completed form + ら for the taught condition, including speaker-controlled or intentional results. Lesson 23 と is only a brief contrast for automatic results; do not build a full comparison grid or produce なら and ば here.',
+        formation: [
+          {
+            label: 'Verb condition',
+            formula: 'Vた-form + ら + result',
+            explanation: 'Build the verb’s plain completed form and attach ら; the result can then be a fact, plan, request, command, or invitation.',
+          },
+          {
+            label: 'い-adjective condition',
+            formula: 'い-adjective minus final い + かったら + result',
+            explanation: 'Change final い to かった and add ら, even when the condition concerns the future.',
+          },
+          {
+            label: 'な-adjective or noun condition',
+            formula: 'な-adjective／noun + だったら + result',
+            explanation: 'Attach だったら to the な-adjective stem or noun for a positive condition.',
+          },
+          {
+            label: 'Negative condition',
+            formula: 'V／いA／なA／N plain negative past + ら + result',
+            explanation: 'Build the matching なかった or じゃなかった form first, then add ら to make the negative condition.',
+          },
+        ],
+        contrast: {
+          with: 'たら compared with automatic-result と',
+          explanation: 'たら sets a completed condition and freely allows the speaker’s plan, request, invitation, or command afterward, while と presents a result as automatic or reliably recurring.',
+        },
         examples: [
           example('じかんが あったら、あたらしい まちを あるきます。', 'じかんが あったら、あたらしい まちを あるきます。', 'If I have time, I will walk around the new city.'),
           example('ひまだったら、ビデオで はなしませんか。', 'ひまだったら、ビデオで はなしませんか。', 'If you are free, shall we talk by video?'),
@@ -1052,6 +1636,22 @@ export const lessons18to25: Lesson[] = ([
         explanation: 'When the first event is expected, たら can mean “when” or “after.” The main clause can contain an intention, request, command, or invitation, unlike the automatic-result と pattern.',
         whyItWorks: 'English distinguishes “if” and “when,” but Japanese たら lets context show how certain the condition is. Its key idea is order: event A reaches completion, then event B becomes relevant.',
         usageBoundary: 'Use this sequence when a discovery or next event follows the completed viewpoint of the first event. It does not say both actions are simultaneous, and this lesson does not extend the contrast into productive なら or ば.',
+        formation: [
+          {
+            label: 'Next action after completion',
+            formula: 'first Vた-form + ら + later request／plan／action',
+            explanation: 'Attach ら to the completed form of the first event, then state the action that becomes relevant only afterward.',
+          },
+          {
+            label: 'Discovery after an event',
+            formula: 'first Vた-form + ら + discovered situation',
+            explanation: 'Use the same completed checkpoint when the second clause reports what the speaker found or noticed after the first event occurred.',
+          },
+        ],
+        contrast: {
+          with: 'sequencing たら compared with hypothetical たら',
+          explanation: 'The form is identical, but an expected first event makes たら read as “once/when,” whereas uncertainty in context makes it an “if” condition.',
+        },
         examples: [
           example('おおさかに ついたら、れんらくしてください。', 'おおさかに ついたら、れんらくしてください。', 'Please contact me when you arrive in Osaka.'),
           example('まどを あけたら、ゆきが ふっていました。', 'まどを あけたら、ゆきが ふっていました。', 'When I opened the window, I found it was snowing.'),
@@ -1065,6 +1665,32 @@ export const lessons18to25: Lesson[] = ([
         explanation: 'Use a て-form plus も to show that the following result is unchanged. An い-adjective uses くても; a な-adjective or noun uses でも. Negative verbs use なくても.',
         whyItWorks: 'English puts “even if” at the start. Japanese marks the condition with its normal linking form and adds も, the particle of inclusion: “even including this case, the result still applies.”',
         usageBoundary: 'Use ても when the following result remains true despite the condition, not merely when one event follows another. Keep the taught verb and adjective connections distinct rather than treating でも as universal.',
+        formation: [
+          {
+            label: 'Verb concession',
+            formula: 'Vて-form + も + unchanged result',
+            explanation: 'Put the verb in て-form, add も, and state what still holds even under that condition.',
+          },
+          {
+            label: 'い-adjective concession',
+            formula: 'い-adjective minus final い + くても + unchanged result',
+            explanation: 'Change final い to くて before adding も.',
+          },
+          {
+            label: 'な-adjective or noun concession',
+            formula: 'な-adjective／noun + でも + unchanged result',
+            explanation: 'Use the linking で plus も after a な-adjective stem or noun.',
+          },
+          {
+            label: 'Negative concession',
+            formula: 'Vない／negative adjective minus final い + くても + unchanged result',
+            explanation: 'Treat the negative ない ending like an い-adjective, changing it to なくても before the result that still applies.',
+          },
+        ],
+        contrast: {
+          with: 'ても compared with たら',
+          explanation: 'ても says the following result survives despite the condition, whereas たら makes meeting the condition the checkpoint that activates the result.',
+        },
         examples: [
           example('いそがしくても、まいしゅう れんらくします。', 'いそがしくても、まいしゅう れんらくします。', 'Even if I am busy, I will contact you every week.'),
           example('あめでも、ひっこしは します。', 'あめでも、ひっこしは します。', 'Even if it rains, we will move.'),
@@ -1079,6 +1705,17 @@ export const lessons18to25: Lesson[] = ([
         explanation: 'もし is an optional adverb that makes the hypothetical nature of a たら condition explicit. It does not replace たら; it works with it. Use it when considering uncertainty, imagining a different future, or reassuring someone.',
         whyItWorks: 'English “if” alone opens the condition. Japanese usually marks the predicate with たら, while もし acts as an early warning that a hypothetical is coming. Hearing もし lets you hold the first clause open until its condition ending.',
         usageBoundary: 'Use もし to foreground uncertainty, but keep たら on the predicate because もし does not create a conditional by itself. Productive なら and ば and a full four-conditional grid remain deferred.',
+        formation: [
+          {
+            label: 'Explicit hypothetical',
+            formula: 'もし + completed-form predicate + ら + result',
+            explanation: 'Place もし before the conditional clause as an early hypothetical signal, while still forming the predicate with たら or its adjective or noun equivalent.',
+          },
+        ],
+        contrast: {
+          with: 'もし〜たら compared with たら alone',
+          explanation: 'Both are complete conditions because たら carries the grammar; optional もし simply foregrounds uncertainty and helps steer the listener toward an “if” reading.',
+        },
         examples: [
           example('もし こまったら、いつでも わたしに そうだんしてください。', 'もし こまったら、いつでも わたしに そうだんしてください。', 'If you run into trouble, please talk to me anytime.'),
           example('もし らいねん りゅうがくしたら、まいにち にっきを かきます。', 'もし らいねん りゅうがくしたら、まいにち にっきを かきます。', 'If I study abroad next year, I will write a diary every day.'),
@@ -1106,11 +1743,22 @@ export const lessons18to25: Lesson[] = ([
     ]),
     dialogue: makeDialogue(25, [
       ['Aya', 'らいげつ、おおさかへ てんきんします。', 'らいげつ、おおさかへ てんきんします。', 'I’m transferring to Osaka next month.'],
-      ['Ben', 'そうですか。おおさかに ついたら、まず なにを しますか。', 'そうですか。おおさかに ついたら、まず なにを しますか。', 'I see. When you arrive in Osaka, what will you do first?', ['l25-after-tara']],
-      ['Aya', 'ひっこしが おわったら、ちかくを あるきます。', 'ひっこしが おわったら、ちかくを あるきます。', 'Once the move is finished, I’ll walk around the neighborhood.', ['l25-after-tara']],
-      ['Ben', 'しごとが いそがしくても、しゃしんを おくってくださいね。', 'しごとが いそがしくても、しゃしんを おくってくださいね。', 'Even if work is busy, please send photos.', ['l25-even-if']],
-      ['Aya', 'もちろん。もし しゅうまつ ひまだったら、あそびに きてください。', 'もちろん。もし しゅうまつ ひまだったら、あそびに きてください。', 'Of course. If you happen to be free on a weekend, please come visit.', ['l25-moshi', 'l25-tara-condition']],
-      ['Ben', 'はい。べつべつの まちに すんでも、かならず れんらくします。', 'はい。べつべつの まちに すんでも、かならず れんらくします。', 'Yes. Even if we live in different cities, I’ll definitely stay in touch.', ['l25-even-if']],
+      ['Ben', 'そうですか。おおさかに ついたら、まず なにを しますか。', 'そうですか。おおさかに ついたら、まず なにを しますか。', 'I see. When you arrive in Osaka, what will you do first?', ['l25-after-tara'], [
+        { grammarId: 'l25-after-tara', explanation: 'ついたら treats arrival in Osaka as the completed checkpoint before Ben asks about Aya’s first later action.' },
+      ]],
+      ['Aya', 'ひっこしが おわったら、ちかくを あるきます。', 'ひっこしが おわったら、ちかくを あるきます。', 'Once the move is finished, I’ll walk around the neighborhood.', ['l25-after-tara'], [
+        { grammarId: 'l25-after-tara', explanation: 'おわったら orders the events: the move reaches completion first, and Aya’s planned neighborhood walk follows.' },
+      ]],
+      ['Ben', 'しごとが いそがしくても、しゃしんを おくってくださいね。', 'しごとが いそがしくても、しゃしんを おくってくださいね。', 'Even if work is busy, please send photos.', ['l25-even-if'], [
+        { grammarId: 'l25-even-if', explanation: 'いそがしい changes to いそがしくても, and Ben asks for photos to remain the result despite a busy schedule.' },
+      ]],
+      ['Aya', 'もちろん。もし しゅうまつ ひまだったら、あそびに きてください。', 'もちろん。もし しゅうまつ ひまだったら、あそびに きてください。', 'Of course. If you happen to be free on a weekend, please come visit.', ['l25-moshi', 'l25-tara-condition'], [
+        { grammarId: 'l25-moshi', explanation: 'もし signals from the start that Aya is imagining the uncertain case of Ben being free on a weekend.' },
+        { grammarId: 'l25-tara-condition', explanation: 'The な-adjective ひま takes だったら, and this flexible condition allows Aya’s request きてください in the result.' },
+      ]],
+      ['Ben', 'はい。べつべつの まちに すんでも、かならず れんらくします。', 'はい。べつべつの まちに すんでも、かならず れんらくします。', 'Yes. Even if we live in different cities, I’ll definitely stay in touch.', ['l25-even-if'], [
+        { grammarId: 'l25-even-if', explanation: 'すんでも concedes living in separate cities, while かならず reinforces that continued contact will not change.' },
+      ]],
     ]),
     exercises: [
       {
