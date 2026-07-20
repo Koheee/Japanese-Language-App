@@ -48,6 +48,49 @@ const expressionAttribute = (element: JsxElementWithAttributes, name: string) =>
   return attribute.initializer.expression;
 };
 
+const styleObject = (name: string) => {
+  const createCall = collect(screen, (node): node is ts.CallExpression =>
+    ts.isCallExpression(node)
+    && ts.isPropertyAccessExpression(node.expression)
+    && node.expression.expression.getText(screen) === 'StyleSheet'
+    && node.expression.name.text === 'create')[0];
+  expect(createCall).toBeDefined();
+  const stylesArgument = createCall?.arguments[0];
+  if (stylesArgument === undefined || !ts.isObjectLiteralExpression(stylesArgument)) {
+    throw new Error('StyleSheet.create must receive an object literal');
+  }
+  const style = stylesArgument.properties.find((property): property is ts.PropertyAssignment =>
+    ts.isPropertyAssignment(property) && property.name.getText(screen) === name);
+  expect(style).toBeDefined();
+  if (style === undefined || !ts.isObjectLiteralExpression(style.initializer)) {
+    throw new Error(`${name} must be an object-literal style`);
+  }
+  return style.initializer;
+};
+
+const styleProperty = (style: ts.ObjectLiteralExpression, name: string) => {
+  const property = style.properties.find((candidate): candidate is ts.PropertyAssignment =>
+    ts.isPropertyAssignment(candidate) && candidate.name.getText(screen) === name);
+  expect(property).toBeDefined();
+  return property!.initializer;
+};
+
+const activeTabBranch = (tab: 'grammar' | 'dialogue') => {
+  const branches = collect(component!, ts.isConditionalExpression).filter((branch) =>
+    branch.condition.getText(screen) === `activeTab === '${tab}'`);
+  expect(branches).toHaveLength(1);
+  return branches[0]!;
+};
+
+const mapCall = (root: ts.Node, collection: string) => {
+  const maps = collect(root, ts.isCallExpression).filter((call) =>
+    ts.isPropertyAccessExpression(call.expression)
+    && call.expression.expression.getText(screen) === collection
+    && call.expression.name.text === 'map');
+  expect(maps).toHaveLength(1);
+  return maps[0]!;
+};
+
 const component = screen.statements.find((statement): statement is ts.FunctionDeclaration =>
   ts.isFunctionDeclaration(statement) && statement.name?.text === 'LessonDetailScreen');
 
@@ -168,6 +211,28 @@ describe('grammar reader lesson detail', () => {
       .toContain('Open grammar');
     expect(expressionAttribute(grammarRow, 'onPress').getText(screen))
       .toContain("setActiveTab('grammar')");
+    expect(expressionAttribute(grammarRow, 'onFocus').getText(screen))
+      .toBe('() => setFocusedGrammarId(point.id)');
+    expect(expressionAttribute(grammarRow, 'onBlur').getText(screen))
+      .toBe('() => setFocusedGrammarId((current) => current === point.id ? null : current)');
+    const grammarRowStyle = expressionAttribute(grammarRow, 'style');
+    expect(ts.isArrayLiteralExpression(grammarRowStyle)).toBe(true);
+    expect((grammarRowStyle as ts.ArrayLiteralExpression).elements.map((element) => element.getText(screen)))
+      .toEqual([
+        'styles.grammarMapRow',
+        'focusedGrammarId === point.id && styles.grammarMapRowFocused',
+      ]);
+
+    const baseStyle = styleObject('grammarMapRow');
+    const minHeight = styleProperty(baseStyle, 'minHeight');
+    expect(ts.isNumericLiteral(minHeight)).toBe(true);
+    expect(Number((minHeight as ts.NumericLiteral).text)).toBeGreaterThanOrEqual(44);
+    const borderWidth = styleProperty(baseStyle, 'borderWidth');
+    expect(ts.isNumericLiteral(borderWidth)).toBe(true);
+    expect(Number((borderWidth as ts.NumericLiteral).text)).toBeGreaterThan(0);
+    expect(styleProperty(styleObject('grammarMapRowFocused'), 'borderColor').getText(screen))
+      .toBe('colors.gold');
+
     const grammarMapFields = collect(grammarMap!, ts.isPropertyAccessExpression)
       .filter((access) => access.expression.getText(screen) === 'point')
       .map((access) => access.name.text);
@@ -180,5 +245,21 @@ describe('grammar reader lesson detail', () => {
       .toEqual(['patterns', 'dialogue lines', 'scenario']);
     expect(stats.map((stat) => expressionAttribute(stat, 'value').getText(screen)))
       .toEqual(['lesson.grammar.length', 'lesson.dialogue.length', 'lesson.theme']);
+  });
+
+  it('renders live Grammar and Dialogue collections in their matching branches', () => {
+    const grammarMap = mapCall(activeTabBranch('grammar').whenTrue, 'lesson.grammar');
+    const grammarCards = collect(grammarMap, (node): node is ts.JsxSelfClosingElement =>
+      ts.isJsxSelfClosingElement(node) && node.tagName.getText(screen) === 'GrammarCard');
+    expect(grammarCards).toHaveLength(1);
+    expect(expressionAttribute(grammarCards[0]!, 'point').getText(screen)).toBe('point');
+    expect(expressionAttribute(grammarCards[0]!, 'key').getText(screen)).toBe('point.id');
+
+    const dialogueMap = mapCall(activeTabBranch('dialogue').whenTrue, 'lesson.dialogue');
+    const dialogueBubbles = collect(dialogueMap, (node): node is ts.JsxSelfClosingElement =>
+      ts.isJsxSelfClosingElement(node) && node.tagName.getText(screen) === 'DialogueBubble');
+    expect(dialogueBubbles).toHaveLength(1);
+    expect(expressionAttribute(dialogueBubbles[0]!, 'turn').getText(screen)).toBe('turn');
+    expect(expressionAttribute(dialogueBubbles[0]!, 'key').getText(screen)).toBe('turn.id');
   });
 });

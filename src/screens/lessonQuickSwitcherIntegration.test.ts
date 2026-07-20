@@ -33,6 +33,20 @@ const attributeNames = (element: ts.JsxSelfClosingElement) =>
   element.attributes.properties.map((attribute) =>
     ts.isJsxAttribute(attribute) ? attribute.name.getText(screen) : 'spread');
 
+const expressionAttribute = (element: ts.JsxSelfClosingElement, name: string) => {
+  const attribute = element.attributes.properties.find((candidate): candidate is ts.JsxAttribute =>
+    ts.isJsxAttribute(candidate) && candidate.name.getText(screen) === name);
+  expect(attribute).toBeDefined();
+  if (
+    attribute?.initializer === undefined
+    || !ts.isJsxExpression(attribute.initializer)
+    || attribute.initializer.expression === undefined
+  ) {
+    throw new Error(`${name} must be a JSX expression`);
+  }
+  return attribute.initializer.expression;
+};
+
 describe('LessonDetail lesson quick-switch integration', () => {
   it('renders the switcher from the lesson header for every detail section', () => {
     expect(source).toContain("import { LessonQuickSwitcher } from '../components/LessonQuickSwitcher';");
@@ -46,6 +60,9 @@ describe('LessonDetail lesson quick-switch integration', () => {
       'onSelect',
     ]));
     expect(attributeNames(switcher)).not.toContain('disabled');
+    expect(expressionAttribute(switcher, 'currentLessonId').getText(screen)).toBe('lesson.id');
+    expect(expressionAttribute(switcher, 'lessons').getText(screen)).toBe('lessons');
+    expect(expressionAttribute(switcher, 'onSelect').getText(screen)).toBe('handleLessonSelect');
   });
 
   it('updates the current route parameter while preserving the active section', () => {
