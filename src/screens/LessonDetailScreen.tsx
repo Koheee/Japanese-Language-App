@@ -7,6 +7,7 @@ import { GrammarCard } from '../components/GrammarCard';
 import { LessonQuickSwitcher } from '../components/LessonQuickSwitcher';
 import { LessonReferenceSection } from '../components/LessonReferenceSection';
 import { Screen } from '../components/Screen';
+import { SearchButton } from '../components/SearchButton';
 import { SectionTitle } from '../components/SectionTitle';
 import { getLesson, lessons } from '../data/lessons';
 import { LearnStackParamList } from '../navigation/types';
@@ -79,6 +80,8 @@ export function LessonDetailScreen({ navigation, route }: Props) {
         }}
         onSelect={handleLessonSelect}
       />
+
+      <SearchButton onPress={() => navigation.navigate('Search')} />
 
       <View accessibilityRole="tablist" style={styles.tabs}>
         {tabs.map((tab) => (

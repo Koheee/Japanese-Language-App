@@ -125,6 +125,7 @@ vi.mock('../screens/ImportPreviewScreen', () => {
 
 vi.mock('../screens/LessonListScreen', () => ({ LessonListScreen: () => null }));
 vi.mock('../screens/LessonDetailScreen', () => ({ LessonDetailScreen: () => null }));
+vi.mock('../screens/SearchScreen', () => ({ SearchScreen: () => null }));
 
 let App: ComponentType;
 
@@ -181,13 +182,13 @@ describe('live grammar reader navigation', () => {
     expect(forbiddenImportsInAppNavigator()).toEqual([]);
   });
 
-  it('renders exactly one navigator with only Lessons then LessonDetail', () => {
+  it('renders exactly one navigator with Lessons, LessonDetail, then Search', () => {
     const markup = renderApp();
     const routes = [...markup.matchAll(/<registered-route data-route="([^"]+)"/g)]
       .map((match) => match[1]);
 
     expectSingleNestedChain(markup, ['navigation-container', 'stack-navigator']);
-    expect(routes).toEqual(['Lessons', 'LessonDetail']);
+    expect(routes).toEqual(['Lessons', 'LessonDetail', 'Search']);
   });
 
   it('renders StudyProvider above HydrationGate above NavigationContainer', () => {

@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { LessonDetailScreen } from '../screens/LessonDetailScreen';
 import { LessonListScreen } from '../screens/LessonListScreen';
+import { SearchScreen } from '../screens/SearchScreen';
 import { colors } from '../theme/tokens';
 import { LearnStackParamList } from './types';
 
@@ -33,6 +34,7 @@ export function AppNavigator() {
       >
         <LearnStack.Screen name="Lessons" component={LessonListScreen} />
         <LearnStack.Screen name="LessonDetail" component={LessonDetailScreen} />
+        <LearnStack.Screen name="Search" component={SearchScreen} />
       </LearnStack.Navigator>
     </NavigationContainer>
   );

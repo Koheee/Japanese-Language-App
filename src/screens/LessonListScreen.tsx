@@ -4,6 +4,7 @@ import { FlatList, Platform, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LessonCard } from '../components/LessonCard';
+import { SearchButton } from '../components/SearchButton';
 import { curriculum } from '../data/curriculum';
 import { LearnStackParamList } from '../navigation/types';
 import { colors, radii, spacing, typography } from '../theme/tokens';
@@ -71,6 +72,8 @@ export function LessonListScreen({ navigation }: Props) {
                 </View>
               </View>
             ) : null}
+
+            <SearchButton onPress={() => navigation.navigate('Search')} />
 
             <View style={styles.sectionRow}>
               <Text style={styles.sectionTitle}>Lesson map</Text>
