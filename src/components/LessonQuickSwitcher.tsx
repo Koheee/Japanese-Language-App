@@ -63,7 +63,7 @@ export function LessonQuickSwitcher({
   const close = () => {
     setOpen(false);
     setFocusedLessonId(null);
-    restoreTriggerFocus();
+    if (Platform.OS !== 'ios') restoreTriggerFocus();
   };
 
   const choose = (selectedLessonId: string) => {
@@ -119,6 +119,7 @@ export function LessonQuickSwitcher({
 
       <Modal
         animationType="fade"
+        onDismiss={Platform.OS === 'ios' ? restoreTriggerFocus : undefined}
         onRequestClose={close}
         statusBarTranslucent
         transparent

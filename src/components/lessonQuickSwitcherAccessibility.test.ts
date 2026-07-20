@@ -39,10 +39,15 @@ describe('LessonQuickSwitcher accessibility contract', () => {
     expect(source).toContain('const ROW_HEIGHT = 72;');
   });
 
-  it('restores focus to the trigger after closing', () => {
+  it('restores focus after iOS modal dismissal and immediately on other platforms', () => {
+    const close = source.match(/const close = \(\) => \{[\s\S]*?\n  \};/)?.[0] ?? '';
+    const modal = source.match(/<Modal[\s\S]*?visible=\{open\}[\s\S]*?>/)?.[0] ?? '';
+
     expect(source).toContain('const restoreTriggerFocus = () =>');
     expect(source).toContain('AccessibilityInfo.setAccessibilityFocus(handle)');
     expect(source).toContain("Platform.OS === 'web'");
     expect(source).toContain('focus?.()');
+    expect(close).toContain("if (Platform.OS !== 'ios') restoreTriggerFocus();");
+    expect(modal).toContain("onDismiss={Platform.OS === 'ios' ? restoreTriggerFocus : undefined}");
   });
 });
