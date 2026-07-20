@@ -125,9 +125,42 @@ describe('grammar enrichment for Lessons 1-9', () => {
       formula: 'topic + は + identity/category + です',
       explanation: 'Choose what the conversation is about, then finish with the noun that identifies or classifies it.',
     });
+    expect(points.get('l1-topic-copula')?.contrast).toEqual({
+      with: 'は compared with が',
+      explanation: 'Use は to choose or contrast a topic as the message frame; が can single out which person or thing fits an identity, a role only previewed here.',
+    });
     expect(points.get('l5-destination')?.contrast?.with).toBe('へ compared with に');
     expect(points.get('l6-object')?.contrast?.with).toBe('を compared with は');
     expect(points.get('l9-preference')?.contrast?.with).toBe('好きです compared with an English action verb');
+  });
+
+  it('separates polite direction statements from questions in the formation', () => {
+    const point = lessons
+      .find(({ number }) => number === 3)
+      ?.grammar.find(({ id }) => id === 'l3-polite-direction');
+
+    expect(point?.formation).toEqual([
+      {
+        label: 'Polite direction statement',
+        formula: 'こちら／そちら／あちら + です',
+        explanation: 'Choose the polite direction matching the speaker, listener, or distant zone, then add です to guide or identify courteously.',
+      },
+      {
+        label: 'Polite direction question',
+        formula: 'どちら + ですか',
+        explanation: 'Use どちら in the unknown direction slot and add ですか to ask courteously where or which way.',
+      },
+    ]);
+  });
+
+  it('keeps an unstated comparison partner unstated in the Lesson 1 inclusion note', () => {
+    const note = lessons[0]?.dialogue
+      .find(({ id }) => id === 'l1-d07')
+      ?.grammarNotes?.find(({ grammarId }) => grammarId === 'l1-also');
+
+    expect(note?.explanation).toBe(
+      'Emma uses も to compare Noah with an unstated Canadian person supplied by the wider context, not by the visible exchange.',
+    );
   });
 
   it('translates the Lesson 4 work-schedule question naturally', () => {

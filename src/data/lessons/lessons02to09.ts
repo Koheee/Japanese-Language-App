@@ -313,9 +313,14 @@ const lesson03: Lesson = {
       usageBoundary: 'Do not translate こちら only as a map coordinate: context may make it “this way,” “here,” or a polite reference to this person.',
       formation: [
         {
-          label: 'Polite directional set',
-          formula: 'こちら / そちら / あちら / どちら + です',
-          explanation: 'Select the polite direction matching the speaker, listener, distant, or unknown zone and use context to supply place, way, or person.',
+          label: 'Polite direction statement',
+          formula: 'こちら／そちら／あちら + です',
+          explanation: 'Choose the polite direction matching the speaker, listener, or distant zone, then add です to guide or identify courteously.',
+        },
+        {
+          label: 'Polite direction question',
+          formula: 'どちら + ですか',
+          explanation: 'Use どちら in the unknown direction slot and add ですか to ask courteously where or which way.',
         },
       ],
       contrast: {

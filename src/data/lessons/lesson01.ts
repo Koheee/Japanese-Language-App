@@ -36,7 +36,7 @@ export const lesson01: Lesson = {
       ],
       contrast: {
         with: 'は compared with が',
-        explanation: 'Use は to frame a topic already available in the conversation; が can single out which person or thing fits an identity, a role only previewed here.',
+        explanation: 'Use は to choose or contrast a topic as the message frame; が can single out which person or thing fits an identity, a role only previewed here.',
       },
       notes: [
         'Literal frame: “As for A, B.”',
@@ -214,7 +214,7 @@ export const lesson01: Lesson = {
       { grammarId: 'l1-also', explanation: 'Noah uses わたしも to join Emma under the researcher description she has just established.' },
     ] },
     { id: 'l1-d07', speaker: 'Emma', japanese: 'ノアさんも カナダじんですか。', reading: 'ノアさんも カナダじんですか。', english: 'Are you Canadian too, Noah?', grammarIds: ['l1-also', 'l1-question'], grammarNotes: [
-      { grammarId: 'l1-also', explanation: 'Emma’s も tests whether Noah joins another Canadian person already understood in the conversation.' },
+      { grammarId: 'l1-also', explanation: 'Emma uses も to compare Noah with an unstated Canadian person supplied by the wider context, not by the visible exchange.' },
       { grammarId: 'l1-question', explanation: 'Final か turns the proposed shared nationality into a polite confirmation question.' },
     ] },
     { id: 'l1-d08', speaker: 'Noah', japanese: 'はい、カナダじんです。よろしく おねがいします。', reading: 'はい、カナダじんです。よろしく おねがいします。', english: 'Yes, I’m Canadian. I look forward to working with you.' },
