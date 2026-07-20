@@ -1,6 +1,9 @@
 import { createRequire } from 'node:module';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import * as React from 'react';
 import type { ComponentType, PropsWithChildren } from 'react';
+import ts from 'typescript';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
 
 const { renderToStaticMarkup } = createRequire(import.meta.url)('react-dom/server') as {
@@ -8,6 +11,16 @@ const { renderToStaticMarkup } = createRequire(import.meta.url)('react-dom/serve
 };
 
 type BoundaryProps = PropsWithChildren<Record<string, unknown>>;
+
+const forbiddenModules = new Set([
+  '@react-navigation/bottom-tabs',
+  '../screens/ExerciseScreen',
+  '../screens/ReviewScreen',
+  '../screens/ProgressScreen',
+  '../screens/VocabularyManagerScreen',
+  '../screens/WordEditorScreen',
+  '../screens/ImportPreviewScreen',
+]);
 
 vi.mock('react-native', async () => {
   const React = await vi.importActual<typeof import('react')>('react');
@@ -64,16 +77,50 @@ vi.mock('@react-navigation/native', async () => {
 
 vi.mock('@react-navigation/native-stack', async () => {
   const React = await vi.importActual<typeof import('react')>('react');
+  type ScreenProps = { name: string };
+  const Screen = (_props: ScreenProps) => null;
+  const Navigator = ({ children }: BoundaryProps) => {
+    const registeredRoutes = React.Children.toArray(children).flatMap((child, index) => (
+      React.isValidElement<ScreenProps>(child) && child.type === Screen
+        ? [React.createElement('registered-route', {
+            'data-route': child.props.name,
+            key: index,
+          })]
+        : []
+    ));
+
+    return React.createElement('stack-navigator', null, registeredRoutes);
+  };
+
   return {
     createNativeStackNavigator: () => ({
-      Navigator: ({ children }: BoundaryProps) => (
-        React.createElement('stack-navigator', null, children)
-      ),
-      Screen: ({ name }: { name: string }) => (
-        React.createElement('stack-screen', { 'data-route': name })
-      ),
+      Navigator,
+      Screen,
     }),
   };
+});
+
+vi.mock('@react-navigation/bottom-tabs', () => {
+  throw new Error('Forbidden grammar-reader import: @react-navigation/bottom-tabs');
+});
+
+vi.mock('../screens/ExerciseScreen', () => {
+  throw new Error('Forbidden grammar-reader import: ExerciseScreen');
+});
+vi.mock('../screens/ReviewScreen', () => {
+  throw new Error('Forbidden grammar-reader import: ReviewScreen');
+});
+vi.mock('../screens/ProgressScreen', () => {
+  throw new Error('Forbidden grammar-reader import: ProgressScreen');
+});
+vi.mock('../screens/VocabularyManagerScreen', () => {
+  throw new Error('Forbidden grammar-reader import: VocabularyManagerScreen');
+});
+vi.mock('../screens/WordEditorScreen', () => {
+  throw new Error('Forbidden grammar-reader import: WordEditorScreen');
+});
+vi.mock('../screens/ImportPreviewScreen', () => {
+  throw new Error('Forbidden grammar-reader import: ImportPreviewScreen');
 });
 
 vi.mock('../screens/LessonListScreen', () => ({ LessonListScreen: () => null }));
@@ -94,6 +141,25 @@ function countOpeningTags(markup: string, tag: string): number {
   return [...markup.matchAll(new RegExp(`<${tag}(?:>|\\s)`, 'g'))].length;
 }
 
+function forbiddenImportsInAppNavigator(): string[] {
+  const path = join(import.meta.dirname, 'AppNavigator.tsx');
+  const sourceFile = ts.createSourceFile(
+    path,
+    readFileSync(path, 'utf8'),
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TSX,
+  );
+
+  return sourceFile.statements.flatMap((statement) => (
+    ts.isImportDeclaration(statement)
+    && ts.isStringLiteral(statement.moduleSpecifier)
+    && forbiddenModules.has(statement.moduleSpecifier.text)
+      ? [statement.moduleSpecifier.text]
+      : []
+  ));
+}
+
 function expectSingleNestedChain(markup: string, tags: readonly string[]): void {
   let ancestorOpen = -1;
   let ancestorClose = markup.length;
@@ -111,13 +177,16 @@ function expectSingleNestedChain(markup: string, tags: readonly string[]): void 
 }
 
 describe('live grammar reader navigation', () => {
+  it('does not import forbidden navigation or screen modules', () => {
+    expect(forbiddenImportsInAppNavigator()).toEqual([]);
+  });
+
   it('renders exactly one navigator with only Lessons then LessonDetail', () => {
     const markup = renderApp();
-    const routes = [...markup.matchAll(/<stack-screen data-route="([^"]+)"/g)]
+    const routes = [...markup.matchAll(/<registered-route data-route="([^"]+)"/g)]
       .map((match) => match[1]);
 
-    expect(countOpeningTags(markup, 'navigation-container')).toBe(1);
-    expect(countOpeningTags(markup, 'stack-navigator')).toBe(1);
+    expectSingleNestedChain(markup, ['navigation-container', 'stack-navigator']);
     expect(routes).toEqual(['Lessons', 'LessonDetail']);
   });
 
