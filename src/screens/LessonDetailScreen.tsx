@@ -7,12 +7,13 @@ import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { CompositionAwareTextInput } from '../components/CompositionAwareTextInput';
 import { DialogueBubble } from '../components/DialogueBubble';
 import { GrammarCard } from '../components/GrammarCard';
+import { LessonQuickSwitcher } from '../components/LessonQuickSwitcher';
 import { PrimaryButton } from '../components/PrimaryButton';
 import { ProgressBar } from '../components/ProgressBar';
 import { Screen } from '../components/Screen';
 import { SectionTitle } from '../components/SectionTitle';
 import { getLessonOutline } from '../data/curriculum';
-import { getLesson } from '../data/lessons';
+import { getLesson, lessons } from '../data/lessons';
 import {
   LearnStackParamList,
   RootStackParamList,
@@ -126,6 +127,12 @@ export function LessonDetailScreen({ navigation, route }: Props) {
     if (work) await work;
   };
 
+  const handleLessonSelect = (lessonId: string) => {
+    setDraftQuery('');
+    setCommittedQuery('');
+    navigation.setParams({ lessonId });
+  };
+
   const lessonHeader = (
     <>
       <Pressable
@@ -153,6 +160,13 @@ export function LessonDetailScreen({ navigation, route }: Props) {
           <Text style={styles.heroProgressText}>{completion ? `${Math.round(completion * 100)}% practised` : 'A clean page — begin when ready'}</Text>
         </View>
       </View>
+
+      <LessonQuickSwitcher
+        currentLessonId={lesson.id}
+        disabled={isStarting}
+        lessons={lessons}
+        onSelect={handleLessonSelect}
+      />
 
       <View accessibilityRole="tablist" style={styles.tabs}>
         {tabs.map((tab) => (
@@ -191,7 +205,7 @@ export function LessonDetailScreen({ navigation, route }: Props) {
     const lessonNumber = String(lesson.number).padStart(2, '0');
 
     return (
-      <Screen contentStyle={styles.wordsScreen}>
+      <Screen key={lesson.id} contentStyle={styles.wordsScreen}>
         <FlatList
           contentContainerStyle={styles.wordsListContent}
           data={wordsView.filtered}
@@ -268,7 +282,7 @@ export function LessonDetailScreen({ navigation, route }: Props) {
   }
 
   return (
-    <Screen scroll contentStyle={styles.page}>
+    <Screen key={lesson.id} scroll contentStyle={styles.page}>
       {lessonHeader}
 
       {activeTab === 'overview' ? (
