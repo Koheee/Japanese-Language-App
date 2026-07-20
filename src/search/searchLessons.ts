@@ -63,6 +63,18 @@ const createExcerpt = (source: string, query: string): { excerpt: string; segmen
   return { excerpt: segments.map((segment) => segment.text).join(''), segments };
 };
 
+export function highlightSearchText(source: string, query: string): HighlightSegment[] {
+  const normalizedQuery = normalizeSearchText(query);
+  if (!normalizedQuery) return [{ text: source, highlighted: false }];
+  const match = findOriginalMatchRange(source, normalizedQuery);
+  if (!match) return [{ text: source, highlighted: false }];
+  const segments: HighlightSegment[] = [];
+  if (match.start > 0) segments.push({ text: source.slice(0, match.start), highlighted: false });
+  segments.push({ text: source.slice(match.start, match.end), highlighted: true });
+  if (match.end < source.length) segments.push({ text: source.slice(match.end), highlighted: false });
+  return segments;
+}
+
 const searchCorpus = (query: string, corpus: readonly SearchDocument[]): SearchResult[] => {
   const normalizedQuery = normalizeSearchText(query);
   if (!normalizedQuery) return [];

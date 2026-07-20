@@ -1,22 +1,42 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import type { DialogueTurn, GrammarPoint } from '../models/content';
+import { highlightSearchText } from '../search/searchLessons';
 import { colors, radii, spacing, typography } from '../theme/tokens';
+import { HighlightedText } from './HighlightedText';
 import {
   createDialogueGrammarNoteItems,
+  resolveDialogueGrammarLanding,
   toggleDialogueGrammarNote,
 } from './dialogueGrammarNotesModel';
 
 interface Props {
   turn: DialogueTurn;
   grammar: readonly GrammarPoint[];
+  highlightQuery?: string;
+  initialGrammarId?: string;
+  landingRequestToken?: string;
 }
 
-export function DialogueGrammarNotes({ turn, grammar }: Props) {
+export function DialogueGrammarNotes({
+  turn,
+  grammar,
+  highlightQuery,
+  initialGrammarId,
+  landingRequestToken,
+}: Props) {
   const [activeGrammarId, setActiveGrammarId] = useState<string | null>(null);
   const [focusedGrammarId, setFocusedGrammarId] = useState<string | null>(null);
   const items = createDialogueGrammarNoteItems(turn, grammar);
+
+  useEffect(() => {
+    if (!landingRequestToken) return;
+    setActiveGrammarId(resolveDialogueGrammarLanding(
+      initialGrammarId,
+      Array.from(items, (item) => item.grammarId),
+    ));
+  }, [initialGrammarId, landingRequestToken, turn.id]);
 
   if (items.length === 0) return null;
 
@@ -53,7 +73,14 @@ export function DialogueGrammarNotes({ turn, grammar }: Props) {
             {activeGrammarId === item.grammarId ? (
               <View style={styles.explanation}>
                 <Text style={styles.explanationTitle}>{item.title}</Text>
-                <Text style={styles.explanationBody}>{item.explanation}</Text>
+                {highlightQuery && initialGrammarId === item.grammarId ? (
+                  <HighlightedText
+                    segments={highlightSearchText(item.explanation, highlightQuery)}
+                    style={styles.explanationBody}
+                  />
+                ) : (
+                  <Text style={styles.explanationBody}>{item.explanation}</Text>
+                )}
               </View>
             ) : null}
           </View>

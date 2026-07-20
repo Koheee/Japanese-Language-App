@@ -1,4 +1,5 @@
 import type { GrammarPoint } from '../models/content';
+import type { SearchSubsection } from '../search/types';
 
 export type GrammarCardSection = 'insight' | 'deeper';
 
@@ -20,6 +21,15 @@ export const createGrammarCardState = (): GrammarCardState => ({
   insightExpanded: false,
   deeperExpanded: false,
   focusedToggle: null,
+});
+
+export const applyGrammarSearchLanding = (
+  state: GrammarCardState,
+  subsection: SearchSubsection,
+): GrammarCardState => ({
+  ...state,
+  insightExpanded: state.insightExpanded || subsection === 'insight',
+  deeperExpanded: state.deeperExpanded || subsection === 'deeper',
 });
 
 export const toggleGrammarCardSection = (

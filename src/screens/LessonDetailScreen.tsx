@@ -1,6 +1,14 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useRef, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import {
+  AccessibilityInfo,
+  findNodeHandle,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 
 import { DialogueBubble } from '../components/DialogueBubble';
 import { GrammarCard } from '../components/GrammarCard';
@@ -8,9 +16,15 @@ import { LessonQuickSwitcher } from '../components/LessonQuickSwitcher';
 import { LessonReferenceSection } from '../components/LessonReferenceSection';
 import { Screen } from '../components/Screen';
 import { SearchButton } from '../components/SearchButton';
+import { SearchTargetAnchor } from '../components/SearchTargetAnchor';
 import { SectionTitle } from '../components/SectionTitle';
 import { getLesson, lessons } from '../data/lessons';
 import { LearnStackParamList } from '../navigation/types';
+import {
+  calculateSearchTargetY,
+  resolveSearchLanding,
+  shouldRunSearchLanding,
+} from '../search/searchLandingController';
 import { colors, radii, spacing, typography } from '../theme/tokens';
 
 type Props = NativeStackScreenProps<LearnStackParamList, 'LessonDetail'>;
@@ -23,12 +37,67 @@ const tabs: { id: Tab; label: string }[] = [
 ];
 
 export function LessonDetailScreen({ navigation, route }: Props) {
-  const [activeTab, setActiveTab] = useState<Tab>('overview');
+  const searchTarget = route.params.searchTarget;
+  const [activeTab, setActiveTab] = useState<Tab>(searchTarget?.tab ?? 'overview');
   const [focusedTab, setFocusedTab] = useState<Tab | null>(null);
   const [focusedGrammarId, setFocusedGrammarId] = useState<string | null>(null);
+  const [tabTop, setTabTop] = useState<number | null>(null);
+  const [dialogueListTop, setDialogueListTop] = useState<number | null>(null);
+  const [searchTargetTop, setSearchTargetTop] = useState<number | null>(null);
+  const [highlightedRequestToken, setHighlightedRequestToken] = useState<string | null>(null);
   const screenScrollRef = useRef<ScrollView>(null);
+  const targetAnchorRef = useRef<View>(null);
+  const consumedRequestTokenRef = useRef<string | null>(null);
   const lessonSwitcherFocusTargetRef = useRef<string | null>(null);
   const lesson = getLesson(route.params.lessonId);
+  const landing = lesson && searchTarget ? resolveSearchLanding(lesson, searchTarget) : null;
+  const targetY = searchTargetTop !== null && tabTop !== null
+    && (searchTarget?.tab !== 'dialogue' || dialogueListTop !== null)
+    ? calculateSearchTargetY({
+        tabTop,
+        listTop: searchTarget?.tab === 'dialogue' ? dialogueListTop ?? 0 : 0,
+        targetTop: searchTargetTop,
+      })
+    : null;
+
+  useEffect(() => {
+    if (!shouldRunSearchLanding(consumedRequestTokenRef.current, searchTarget)) return;
+
+    setActiveTab(searchTarget!.tab);
+    setTabTop(null);
+    setDialogueListTop(null);
+    setSearchTargetTop(null);
+    setHighlightedRequestToken(null);
+
+    const fallbackTimer = setTimeout(() => {
+      if (!shouldRunSearchLanding(consumedRequestTokenRef.current, searchTarget)) return;
+      consumedRequestTokenRef.current = searchTarget!.requestToken;
+      screenScrollRef.current?.scrollTo({ y: 0, animated: true });
+    }, 650);
+
+    return () => clearTimeout(fallbackTimer);
+  }, [route.params.lessonId, searchTarget?.requestToken]);
+
+  useEffect(() => {
+    if (targetY === null || !shouldRunSearchLanding(consumedRequestTokenRef.current, searchTarget)) return;
+
+    consumedRequestTokenRef.current = searchTarget!.requestToken;
+    screenScrollRef.current?.scrollTo({ y: targetY, animated: true });
+    setHighlightedRequestToken(searchTarget!.requestToken);
+
+    const focusTimer = setTimeout(() => {
+      const targetHandle = findNodeHandle(targetAnchorRef.current);
+      if (targetHandle) AccessibilityInfo.setAccessibilityFocus(targetHandle);
+    }, 350);
+    const highlightTimer = setTimeout(() => {
+      setHighlightedRequestToken((current) => current === searchTarget!.requestToken ? null : current);
+    }, 2_500);
+
+    return () => {
+      clearTimeout(focusTimer);
+      clearTimeout(highlightTimer);
+    };
+  }, [searchTarget?.requestToken, targetY]);
 
   if (!lesson) return null;
 
@@ -166,7 +235,7 @@ export function LessonDetailScreen({ navigation, route }: Props) {
       ) : null}
 
       {activeTab === 'grammar' ? (
-        <View style={styles.tabContent}>
+        <View onLayout={(event) => setTabTop(event.nativeEvent.layout.y)} style={styles.tabContent}>
           <SectionTitle
             eyebrow="Meaning before memorising"
             title="Grammar lab"
@@ -176,29 +245,65 @@ export function LessonDetailScreen({ navigation, route }: Props) {
             Each pattern includes the English-speaker trap to watch for. Read the idea, say the examples,
             then compare the word order.
           </Text>
-          {lesson.grammar.map((point, index) => (
-            <GrammarCard key={point.id} point={point} index={index} />
-          ))}
+          {lesson.grammar.map((point, index) => {
+            const isSearchTarget = Boolean(
+              landing?.valid && searchTarget?.tab === 'grammar' && searchTarget.contentId === point.id,
+            );
+            return (
+              <SearchTargetAnchor
+                accessibilityLabel={`Search match in ${point.title}`}
+                highlighted={isSearchTarget && highlightedRequestToken === searchTarget?.requestToken}
+                key={point.id}
+                onLayout={isSearchTarget
+                  ? (event) => setSearchTargetTop(event.nativeEvent.layout.y)
+                  : undefined}
+                ref={isSearchTarget ? targetAnchorRef : undefined}
+              >
+                <GrammarCard
+                  index={index}
+                  key={point.id}
+                  point={point}
+                  searchLanding={isSearchTarget ? searchTarget : undefined}
+                />
+              </SearchTargetAnchor>
+            );
+          })}
           <LessonReferenceSection points={lesson.grammar} />
         </View>
       ) : null}
 
       {activeTab === 'dialogue' ? (
-        <View style={styles.tabContent}>
+        <View onLayout={(event) => setTabTop(event.nativeEvent.layout.y)} style={styles.tabContent}>
           <SectionTitle eyebrow={lesson.theme} title="Dialogue in context" detail="Original dialogue" />
           <Text style={styles.sectionIntro}>
             Read the Japanese aloud once without the English. On the second pass, notice how the topic
             disappears when everyone already knows it.
           </Text>
-          <View style={styles.dialogueList}>
-            {lesson.dialogue.map((turn, index) => (
-              <DialogueBubble
-                alignRight={index % 2 === 1}
-                grammar={lesson.grammar}
-                key={turn.id}
-                turn={turn}
-              />
-            ))}
+          <View onLayout={(event) => setDialogueListTop(event.nativeEvent.layout.y)} style={styles.dialogueList}>
+            {lesson.dialogue.map((turn, index) => {
+              const isSearchTarget = Boolean(
+                landing?.valid && searchTarget?.tab === 'dialogue' && searchTarget.contentId === turn.id,
+              );
+              return (
+                <SearchTargetAnchor
+                  accessibilityLabel={`Search match in ${turn.speaker}'s dialogue line`}
+                  highlighted={isSearchTarget && highlightedRequestToken === searchTarget?.requestToken}
+                  key={turn.id}
+                  onLayout={isSearchTarget
+                    ? (event) => setSearchTargetTop(event.nativeEvent.layout.y)
+                    : undefined}
+                  ref={isSearchTarget ? targetAnchorRef : undefined}
+                >
+                  <DialogueBubble
+                    alignRight={index % 2 === 1}
+                    grammar={lesson.grammar}
+                    key={turn.id}
+                    searchLanding={isSearchTarget ? searchTarget : undefined}
+                    turn={turn}
+                  />
+                </SearchTargetAnchor>
+              );
+            })}
           </View>
         </View>
       ) : null}

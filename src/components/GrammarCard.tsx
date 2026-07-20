@@ -1,16 +1,46 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import type { GrammarPoint } from '../models/content';
+import { highlightSearchText } from '../search/searchLessons';
+import type { SearchSubsection } from '../search/types';
 import { colors, radii, spacing, typography } from '../theme/tokens';
 import { GrammarFormationList } from './GrammarFormationList';
+import { HighlightedText } from './HighlightedText';
 import {
+  applyGrammarSearchLanding,
   createGrammarCardState,
   projectGrammarCard,
   setGrammarCardToggleFocused,
   toggleGrammarCardSection,
   type GrammarCardTogglePresentation,
 } from './grammarCardPresentation';
+
+interface GrammarSearchLanding {
+  query: string;
+  subsection: SearchSubsection;
+  requestToken: string;
+}
+
+interface GrammarCardProps {
+  point: GrammarPoint;
+  index: number;
+  searchLanding?: GrammarSearchLanding;
+}
+
+function SearchableText({
+  query,
+  style,
+  text,
+}: {
+  query?: string;
+  style: Parameters<typeof HighlightedText>[0]['style'];
+  text: string;
+}) {
+  return query
+    ? <HighlightedText segments={highlightSearchText(text, query)} style={style} />
+    : <Text style={style}>{text}</Text>;
+}
 
 interface GrammarSectionToggleProps {
   expanded: boolean;
@@ -61,9 +91,17 @@ function GrammarSectionToggle({
   );
 }
 
-export function GrammarCard({ point, index }: { point: GrammarPoint; index: number }) {
+export function GrammarCard({ point, index, searchLanding }: GrammarCardProps) {
   const [cardState, setCardState] = useState(createGrammarCardState);
   const presentation = projectGrammarCard(point, cardState);
+
+  useEffect(() => {
+    if (!searchLanding) return;
+    setCardState((current) => applyGrammarSearchLanding(current, searchLanding.subsection));
+  }, [searchLanding?.requestToken, searchLanding?.subsection]);
+
+  const queryFor = (subsection: SearchSubsection) =>
+    searchLanding?.subsection === subsection ? searchLanding.query : undefined;
 
   const toggle = (section: 'insight' | 'deeper') => {
     setCardState((current) => toggleGrammarCardSection(current, section));
@@ -77,23 +115,23 @@ export function GrammarCard({ point, index }: { point: GrammarPoint; index: numb
       <View style={styles.headingRow}>
         <View style={styles.index}><Text style={styles.indexText}>{index + 1}</Text></View>
         <View style={styles.headingCopy}>
-          <Text style={styles.title}>{point.title}</Text>
-          <Text style={styles.pattern}>{point.pattern}</Text>
+          <SearchableText query={queryFor('header')} style={styles.title} text={point.title} />
+          <SearchableText query={queryFor('header')} style={styles.pattern} text={point.pattern} />
         </View>
       </View>
 
       <View style={styles.translation}>
-        <Text style={styles.translationText}>{point.plainEnglish}</Text>
+        <SearchableText query={queryFor('header')} style={styles.translationText} text={point.plainEnglish} />
       </View>
 
       <View style={styles.section}>
         <Text style={styles.sectionLabel}>THE BASICS</Text>
-        <Text style={styles.body}>{point.explanation}</Text>
+        <SearchableText query={queryFor('basics')} style={styles.body} text={point.explanation} />
       </View>
 
       <View style={styles.section}>
         <Text style={styles.sectionLabel}>BUILD THE FORM</Text>
-        <GrammarFormationList formation={point.formation} />
+        <GrammarFormationList formation={point.formation} highlightQuery={queryFor('formation')} />
       </View>
 
       <View style={styles.section}>
@@ -108,23 +146,29 @@ export function GrammarCard({ point, index }: { point: GrammarPoint; index: numb
         />
         {presentation.insight ? (
           <View style={styles.insightBox}>
-            <Text style={styles.insightText}>{presentation.insight.whyItWorks}</Text>
+            <SearchableText
+              query={queryFor('insight')}
+              style={styles.insightText}
+              text={presentation.insight.whyItWorks}
+            />
           </View>
         ) : null}
         <View style={styles.boundarySection}>
           <Text style={styles.sectionLabel}>WHEN IT FITS</Text>
-          <Text style={styles.body}>
-            {presentation.insight
+          <SearchableText
+            query={queryFor('boundary')}
+            style={styles.body}
+            text={presentation.insight
               ? presentation.insight.usageBoundary
               : point.usageBoundary}
-          </Text>
+          />
         </View>
       </View>
 
       <View style={styles.compareBox}>
         <Text style={styles.sectionLabel}>COMPARE IT</Text>
-        <Text style={styles.compareWith}>{point.contrast.with}</Text>
-        <Text style={styles.body}>{point.contrast.explanation}</Text>
+        <SearchableText query={queryFor('contrast')} style={styles.compareWith} text={point.contrast.with} />
+        <SearchableText query={queryFor('contrast')} style={styles.body} text={point.contrast.explanation} />
       </View>
 
       <View style={styles.section}>
@@ -132,9 +176,11 @@ export function GrammarCard({ point, index }: { point: GrammarPoint; index: numb
         <View style={styles.examples}>
           {point.examples.map((example, exampleIndex) => (
             <View key={`${example.japanese}-${exampleIndex}`} style={styles.example}>
-              <Text style={styles.japanese}>{example.japanese}</Text>
-              {example.reading ? <Text style={styles.reading}>{example.reading}</Text> : null}
-              <Text style={styles.english}>{example.english}</Text>
+              <SearchableText query={queryFor('examples')} style={styles.japanese} text={example.japanese} />
+              {example.reading ? (
+                <SearchableText query={queryFor('examples')} style={styles.reading} text={example.reading} />
+              ) : null}
+              <SearchableText query={queryFor('examples')} style={styles.english} text={example.english} />
             </View>
           ))}
         </View>
@@ -143,9 +189,13 @@ export function GrammarCard({ point, index }: { point: GrammarPoint; index: numb
       {point.commonMistake ? (
         <View style={styles.mistake}>
           <Text style={styles.sectionLabel}>COMMON TURN</Text>
-          <Text style={styles.avoid}>×  {point.commonMistake.avoid}</Text>
-          <Text style={styles.prefer}>○  {point.commonMistake.prefer}</Text>
-          <Text style={styles.mistakeReason}>{point.commonMistake.reason}</Text>
+          <Text style={styles.avoid}>×  {queryFor('mistake')
+            ? <HighlightedText segments={highlightSearchText(point.commonMistake.avoid, queryFor('mistake')!)} />
+            : point.commonMistake.avoid}</Text>
+          <Text style={styles.prefer}>○  {queryFor('mistake')
+            ? <HighlightedText segments={highlightSearchText(point.commonMistake.prefer, queryFor('mistake')!)} />
+            : point.commonMistake.prefer}</Text>
+          <SearchableText query={queryFor('mistake')} style={styles.mistakeReason} text={point.commonMistake.reason} />
         </View>
       ) : null}
 
@@ -163,10 +213,14 @@ export function GrammarCard({ point, index }: { point: GrammarPoint; index: numb
           {presentation.deeper ? (
             <View style={styles.deeperBox}>
               {presentation.deeper.notes?.map((note, noteIndex) => (
-                <Text key={`note-${noteIndex}`} style={styles.note}>•  {note}</Text>
+                <Text key={`note-${noteIndex}`} style={styles.note}>•  {queryFor('deeper')
+                  ? <HighlightedText segments={highlightSearchText(note, queryFor('deeper')!)} />
+                  : note}</Text>
               ))}
               {presentation.deeper.beyondBasics?.map((note, noteIndex) => (
-                <Text key={`beyond-${noteIndex}`} style={styles.note}>•  {note}</Text>
+                <Text key={`beyond-${noteIndex}`} style={styles.note}>•  {queryFor('deeper')
+                  ? <HighlightedText segments={highlightSearchText(note, queryFor('deeper')!)} />
+                  : note}</Text>
               ))}
             </View>
           ) : null}

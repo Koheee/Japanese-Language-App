@@ -35,3 +35,10 @@ export const toggleDialogueGrammarNote = (
   activeGrammarId: string | null,
   selectedGrammarId: string,
 ): string | null => activeGrammarId === selectedGrammarId ? null : selectedGrammarId;
+
+export const resolveDialogueGrammarLanding = (
+  requestedGrammarId: string | undefined,
+  availableGrammarIds: readonly string[],
+): string | null => requestedGrammarId && availableGrammarIds.includes(requestedGrammarId)
+  ? requestedGrammarId
+  : null;
