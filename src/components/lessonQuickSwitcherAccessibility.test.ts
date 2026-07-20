@@ -39,15 +39,26 @@ describe('LessonQuickSwitcher accessibility contract', () => {
     expect(source).toContain('const ROW_HEIGHT = 72;');
   });
 
-  it('restores focus after iOS modal dismissal and immediately on other platforms', () => {
+  it('restores focus after animated modal dismissal on web and iOS', () => {
     const close = source.match(/const close = \(\) => \{[\s\S]*?\n  \};/)?.[0] ?? '';
     const modal = source.match(/<Modal[\s\S]*?visible=\{open\}[\s\S]*?>/)?.[0] ?? '';
 
-    expect(source).toContain('const restoreTriggerFocus = () =>');
+    expect(source).toContain('const restoreTriggerFocus = useCallback(() =>');
     expect(source).toContain('AccessibilityInfo.setAccessibilityFocus(handle)');
     expect(source).toContain("Platform.OS === 'web'");
     expect(source).toContain('focus?.()');
-    expect(close).toContain("if (Platform.OS !== 'ios') restoreTriggerFocus();");
-    expect(modal).toContain("onDismiss={Platform.OS === 'ios' ? restoreTriggerFocus : undefined}");
+    expect(source).toContain("const restoresFocusAfterDismiss = Platform.OS === 'ios' || Platform.OS === 'web';");
+    expect(close).toContain('if (!restoresFocusAfterDismiss) restoreTriggerFocus();');
+    expect(modal).toContain('onDismiss={restoresFocusAfterDismiss ? restoreTriggerFocus : undefined}');
+  });
+
+  it('supports a one-shot focus handoff to a newly mounted trigger', () => {
+    const mountFocusEffect = source.match(/useEffect\(\(\) => \{[\s\S]*?\n  \}, \[focusOnMount, onMountFocusHandled, restoreTriggerFocus\]\);/)?.[0] ?? '';
+
+    expect(source).toContain('focusOnMount?: boolean;');
+    expect(source).toContain('onMountFocusHandled?: () => void;');
+    expect(mountFocusEffect).toContain('if (!focusOnMount) return;');
+    expect(mountFocusEffect).toContain('restoreTriggerFocus();');
+    expect(mountFocusEffect).toContain('onMountFocusHandled?.();');
   });
 });

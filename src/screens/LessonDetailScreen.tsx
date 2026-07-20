@@ -47,6 +47,7 @@ export function LessonDetailScreen({ navigation, route }: Props) {
   const [draftQuery, setDraftQuery] = useState('');
   const [committedQuery, setCommittedQuery] = useState('');
   const [isStarting, setIsStarting] = useState(false);
+  const lessonSwitcherFocusTargetRef = useRef<string | null>(null);
   const startLockRef = useRef<ReturnType<typeof createActionLock> | null>(null);
   const startLock = startLockRef.current ??= createActionLock();
   const routeUiLifecycle = useRouteUiLifecycle(navigation);
@@ -128,6 +129,7 @@ export function LessonDetailScreen({ navigation, route }: Props) {
   };
 
   const handleLessonSelect = (lessonId: string) => {
+    lessonSwitcherFocusTargetRef.current = lessonId;
     setDraftQuery('');
     setCommittedQuery('');
     navigation.setParams({ lessonId });
@@ -164,7 +166,11 @@ export function LessonDetailScreen({ navigation, route }: Props) {
       <LessonQuickSwitcher
         currentLessonId={lesson.id}
         disabled={isStarting}
+        focusOnMount={lessonSwitcherFocusTargetRef.current === lesson.id}
         lessons={lessons}
+        onMountFocusHandled={() => {
+          lessonSwitcherFocusTargetRef.current = null;
+        }}
         onSelect={handleLessonSelect}
       />
 

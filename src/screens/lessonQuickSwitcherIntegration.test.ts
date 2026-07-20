@@ -28,6 +28,17 @@ describe('LessonDetail lesson quick-switch integration', () => {
     expect(handler).not.toContain("navigate('LessonDetail'");
   });
 
+  it('hands focus to the newly mounted trigger after a real lesson switch', () => {
+    const handler = source.match(/const handleLessonSelect = \(lessonId: string\) => \{[\s\S]*?\n  \};/)?.[0] ?? '';
+    const header = source.match(/const lessonHeader = \([\s\S]*?\n  \);/)?.[0] ?? '';
+
+    expect(source).toContain('const lessonSwitcherFocusTargetRef = useRef<string | null>(null);');
+    expect(handler).toContain('lessonSwitcherFocusTargetRef.current = lessonId;');
+    expect(header).toContain('focusOnMount={lessonSwitcherFocusTargetRef.current === lesson.id}');
+    expect(header).toContain('onMountFocusHandled={() => {');
+    expect(header).toContain('lessonSwitcherFocusTargetRef.current = null;');
+  });
+
   it('keys both scroll containers by lesson so the selected section starts at the top', () => {
     expect(source.match(/<Screen\s+key=\{lesson\.id\}/g)).toHaveLength(2);
   });

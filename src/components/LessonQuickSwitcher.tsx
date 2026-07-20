@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   AccessibilityInfo,
   findNodeHandle,
@@ -24,14 +24,18 @@ const ROW_HEIGHT = 72;
 interface LessonQuickSwitcherProps {
   currentLessonId: string;
   disabled?: boolean;
+  focusOnMount?: boolean;
   lessons: LessonQuickSwitchLesson[];
+  onMountFocusHandled?: () => void;
   onSelect: (lessonId: string) => void;
 }
 
 export function LessonQuickSwitcher({
   currentLessonId,
   disabled = false,
+  focusOnMount = false,
   lessons,
+  onMountFocusHandled,
   onSelect,
 }: LessonQuickSwitcherProps) {
   const [open, setOpen] = useState(false);
@@ -48,8 +52,9 @@ export function LessonQuickSwitcher({
   const triggerAccessibilityLabel = currentOption
     ? `Choose another lesson; current ${currentOption.accessibilityLabel}`
     : 'Choose a lesson';
+  const restoresFocusAfterDismiss = Platform.OS === 'ios' || Platform.OS === 'web';
 
-  const restoreTriggerFocus = () => {
+  const restoreTriggerFocus = useCallback(() => {
     requestAnimationFrame(() => {
       if (Platform.OS === 'web') {
         (triggerRef.current as unknown as { focus?: () => void } | null)?.focus?.();
@@ -58,12 +63,18 @@ export function LessonQuickSwitcher({
       const handle = findNodeHandle(triggerRef.current);
       if (handle) AccessibilityInfo.setAccessibilityFocus(handle);
     });
-  };
+  }, []);
+
+  useEffect(() => {
+    if (!focusOnMount) return;
+    restoreTriggerFocus();
+    onMountFocusHandled?.();
+  }, [focusOnMount, onMountFocusHandled, restoreTriggerFocus]);
 
   const close = () => {
     setOpen(false);
     setFocusedLessonId(null);
-    if (Platform.OS !== 'ios') restoreTriggerFocus();
+    if (!restoresFocusAfterDismiss) restoreTriggerFocus();
   };
 
   const choose = (selectedLessonId: string) => {
@@ -119,7 +130,7 @@ export function LessonQuickSwitcher({
 
       <Modal
         animationType="fade"
-        onDismiss={Platform.OS === 'ios' ? restoreTriggerFocus : undefined}
+        onDismiss={restoresFocusAfterDismiss ? restoreTriggerFocus : undefined}
         onRequestClose={close}
         statusBarTranslucent
         transparent
