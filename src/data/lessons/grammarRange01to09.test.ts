@@ -116,6 +116,20 @@ describe('grammar enrichment for Lessons 1-9', () => {
     expect(points.get('l9-reason')?.title).toBe('State a reason before its conclusion');
   });
 
+  it('teaches early particles with distinct, progression-safe mental models', () => {
+    const points = new Map(lessons.slice(0, 9).flatMap(({ grammar }) =>
+      grammar.map((point) => [point.id, point] as const)));
+
+    expect(points.get('l1-topic-copula')?.formation).toContainEqual({
+      label: 'Polite noun sentence',
+      formula: 'topic + は + identity/category + です',
+      explanation: 'Choose what the conversation is about, then finish with the noun that identifies or classifies it.',
+    });
+    expect(points.get('l5-destination')?.contrast?.with).toBe('へ compared with に');
+    expect(points.get('l6-object')?.contrast?.with).toBe('を compared with は');
+    expect(points.get('l9-preference')?.contrast?.with).toBe('好きです compared with an English action verb');
+  });
+
   it('translates the Lesson 4 work-schedule question naturally', () => {
     const question = lessons
       .find(({ number }) => number === 4)
