@@ -32,6 +32,44 @@ describe('grammar enrichment for Lessons 1-9', () => {
     }
   });
 
+  it('requires formation, contrast, and one contextual note per tagged dialogue use', () => {
+    const point = lessons[0]!.grammar[0]!;
+    const turn = lessons[0]!.dialogue.find(({ grammarIds }) => grammarIds?.includes(point.id))!;
+    const formation = point.formation;
+    const contrast = point.contrast;
+    const grammarNotes = turn.grammarNotes;
+
+    try {
+      point.formation = [];
+      point.contrast = undefined;
+      turn.grammarNotes = [];
+      const errors = collectGrammarRangeErrors(rangeExpectation);
+      expect(errors).toContain(`${point.id}: formation is missing`);
+      expect(errors).toContain(`${point.id}: contrast is missing`);
+      expect(errors).toContain(`${turn.id}: needs one note for ${point.id}`);
+    } finally {
+      point.formation = formation;
+      point.contrast = contrast;
+      turn.grammarNotes = grammarNotes;
+    }
+  });
+
+  it('rejects a same-lesson grammar note that is not tagged on its dialogue turn', () => {
+    const point = lessons[0]!.grammar[0]!;
+    const otherPoint = lessons[0]!.grammar.find(({ id }) => id !== point.id)!;
+    const turn = lessons[0]!.dialogue.find(({ grammarIds }) => grammarIds?.includes(point.id))!;
+    const grammarNotes = turn.grammarNotes;
+
+    try {
+      turn.grammarNotes = [{ grammarId: otherPoint.id, explanation: 'This note is deliberately extra.' }];
+      expect(collectGrammarRangeErrors(rangeExpectation)).toContain(
+        `${turn.id}: untagged note ID ${otherPoint.id}`,
+      );
+    } finally {
+      turn.grammarNotes = grammarNotes;
+    }
+  });
+
   it('keeps the Lesson 6 invitation reply within the taught progression', () => {
     const reply = lessons
       .find(({ number }) => number === 6)

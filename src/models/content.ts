@@ -11,6 +11,17 @@ export interface FurtherReading {
   url: string;
 }
 
+export interface GrammarFormation {
+  label: string;
+  formula: string;
+  explanation: string;
+}
+
+export interface GrammarContrast {
+  with: string;
+  explanation: string;
+}
+
 export interface GrammarPoint {
   id: string;
   title: string;
@@ -19,6 +30,9 @@ export interface GrammarPoint {
   explanation: string;
   whyItWorks: string;
   usageBoundary: string;
+  formation?: GrammarFormation[];
+  contrast?: GrammarContrast;
+  beyondBasics?: string[];
   notes?: string[];
   examples: JapaneseExample[];
   furtherReading?: FurtherReading[];
@@ -44,6 +58,11 @@ export interface VocabularyItem {
   sourceId?: string;
 }
 
+export interface DialogueGrammarNote {
+  grammarId: string;
+  explanation: string;
+}
+
 export interface DialogueTurn {
   id: string;
   speaker: string;
@@ -51,6 +70,7 @@ export interface DialogueTurn {
   reading: string;
   english: string;
   grammarIds?: string[];
+  grammarNotes?: DialogueGrammarNote[];
 }
 
 interface BaseExercise {

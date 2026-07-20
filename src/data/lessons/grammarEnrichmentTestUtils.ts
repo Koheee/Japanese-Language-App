@@ -57,6 +57,21 @@ export const collectGrammarRangeErrors = (expectation: GrammarRangeExpectation):
       for (const grammarId of turn.grammarIds ?? []) {
         if (!grammarIds.has(grammarId)) errors.push(`${turn.id}: unresolved grammar ID ${grammarId}`);
       }
+      const notes = turn.grammarNotes ?? [];
+      const turnGrammarIds = new Set(turn.grammarIds ?? []);
+      for (const grammarId of turn.grammarIds ?? []) {
+        if (notes.filter((note) => note.grammarId === grammarId).length !== 1) {
+          errors.push(`${turn.id}: needs one note for ${grammarId}`);
+        }
+      }
+      for (const note of notes) {
+        if (!grammarIds.has(note.grammarId)) errors.push(`${turn.id}: unresolved note ID ${note.grammarId}`);
+        if (grammarIds.has(note.grammarId) && !turnGrammarIds.has(note.grammarId)) {
+          errors.push(`${turn.id}: untagged note ID ${note.grammarId}`);
+        }
+        if (!nonEmpty(note.explanation)) errors.push(`${turn.id}: empty note for ${note.grammarId}`);
+        if (/https?:\/\//i.test(note.explanation)) errors.push(`${turn.id}: note contains a URL`);
+      }
     }
   }
 
@@ -69,6 +84,21 @@ export const collectGrammarRangeErrors = (expectation: GrammarRangeExpectation):
     }
     if (!nonEmpty(point.usageBoundary) || (point.usageBoundary?.trim().length ?? 0) <= 20) {
       errors.push(`${point.id}: usageBoundary is missing or vague`);
+    }
+    if (!point.formation?.length) {
+      errors.push(`${point.id}: formation is missing`);
+    } else {
+      point.formation.forEach((step, index) => {
+        if (![step.label, step.formula, step.explanation].every(nonEmpty)) {
+          errors.push(`${point.id}: formation ${index + 1} is incomplete`);
+        }
+      });
+    }
+    if (!point.contrast || ![point.contrast.with, point.contrast.explanation].every(nonEmpty)) {
+      errors.push(`${point.id}: contrast is missing`);
+    }
+    if (point.beyondBasics?.some((note) => !nonEmpty(note))) {
+      errors.push(`${point.id}: beyondBasics contains an empty note`);
     }
     if (point.examples.length !== 2) errors.push(`${point.id}: expected exactly two examples`);
     const manifestReferences = getGrammarReferences(point.id);
