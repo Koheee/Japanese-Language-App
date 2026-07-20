@@ -1,63 +1,69 @@
 # Publish Nihongo Path as an iPhone home-screen app
 
-The project includes a GitHub Actions workflow that tests the code, exports the Expo web app, and publishes it to GitHub Pages. The deployed site includes iPhone home-screen metadata, an app icon, and a conservative offline cache.
+The GitHub Actions workflow tests the project, exports the Expo web app, and publishes it to GitHub Pages. The deployed reader includes iPhone home-screen metadata, an app icon, safe-area-aware layouts, and an offline fallback.
 
-## 1. Create the repository
+The visible product flow is **Lesson list â†’ Lesson Detail**. Lesson Detail contains only **Overview, Grammar, and Dialogue**; no exercise, review, progress, Words, vocabulary-management, import, or editor route is visible.
 
-Create a new repository on GitHub, for example `nihongo-path`. A public repository works with GitHub Pages on a free GitHub account.
+## 1. Create or connect the repository
 
-Push this project to the repository's `main` branch. GitHub Desktop is the simplest option on Windows, but command-line Git works too:
+Create a GitHub repository, then push this project to its `main` branch. GitHub Desktop is convenient on Windows; command-line Git also works:
 
 ```powershell
 git init
 git add .
-git commit -m "Build complete Nihongo Path course"
+git commit -m "Publish Nihongo Path reader"
 git branch -M main
-git remote add origin https://github.com/YOUR-USERNAME/nihongo-path.git
+git remote add origin https://github.com/YOUR-USERNAME/Japanese-Language-App.git
 git push -u origin main
 ```
 
-Replace `YOUR-USERNAME` and the repository name with your own values. Never commit account passwords or access tokens.
+Replace the account and repository names with your own. Never commit a password, access token, private deck, or generated personal-vocabulary file.
 
 ## 2. Enable GitHub Pages
 
 In the repository on GitHub:
 
 1. Open **Settings**.
-2. Choose **Pages** in the left sidebar.
+2. Choose **Pages**.
 3. Under **Build and deployment**, set **Source** to **GitHub Actions**.
-4. Open the repository's **Actions** tab and wait for “Test and deploy Nihongo Path” to finish.
+4. Open **Actions** and wait for **Test and deploy Nihongo Path** to succeed.
 
-The workflow automatically handles the `/repository-name` base path required by project Pages sites. It also handles a special `username.github.io` repository, which is served from `/`.
-
-Your URL will normally be:
+The workflow handles both a project path such as `/Japanese-Language-App/` and a root `username.github.io` repository. A project URL normally looks like:
 
 ```text
-https://YOUR-USERNAME.github.io/nihongo-path/
+https://YOUR-USERNAME.github.io/Japanese-Language-App/
 ```
 
-## 3. Install it on iPhone
+## 3. Install on iPhone
 
-1. Open the published URL in **Safari** on the iPhone.
-2. Tap Safari's **Share** button.
-3. Scroll and choose **Add to Home Screen**.
-4. Keep the name “Nihongo Path” and tap **Add**.
+1. Open the published URL in **Safari**.
+2. Tap **Share**.
+3. Choose **Add to Home Screen**.
+4. Keep the name **Nihongo Path** and tap **Add**.
 
-Launch it from the new icon. In standalone mode it opens without Safari's usual address bar.
+Launch the reader from its icon to use standalone mode.
 
-## Updating the app
+## Updating the installed reader
 
-Commit and push changes to `main`. The workflow validates and republishes the app automatically. The service worker retrieves a fresh page when online while keeping previously loaded assets available as a fallback.
+Pushing a commit to `main` triggers validation and republishing. After the workflow succeeds, update the existing iPhone installation without destroying its browser storage:
 
-## Where progress is stored
+1. Do not uninstall the home-screen app and do not clear Safari website data.
+2. Open the installed app online and wait for the deployment to load; close it fully and reopen it.
+3. Test Overview, Grammar, and Dialogue and use the lesson quick-switcher from all three sections.
+4. Check portrait and landscape safe areas. With VoiceOver, confirm the selected tab, expanded grammar areas, optional references, and dialogue-note labels are announced clearly.
+5. After the successful online load, enable airplane mode and reopen the app once. Core lesson reading should remain available offline.
 
-Study progress and review schedules remain in that browser installation's local storage. They are not committed to GitHub and do not automatically sync between Windows and iPhone. Clearing Safari website data or removing the installed web app may remove local progress.
+The old device-local study, review, and vocabulary data remains preserved in dormant storage with **no visible management UI**. It **does not sync** between Windows and iPhone. Do not treat the absence of the old controls as data deletion.
 
-## Private vocabulary and manual backup transfer
+## Visible reader and dormant source
 
-The public site ships the vocabulary manager, backup schema, and kana-authored course baseline, but no private deck record, source identifier, source package, or deck media. `.apkg` parsing is a local development operation and is never performed by the deployed app. The only generated local file is `.local/vocabulary/personal-vocabulary-v1.json`, which remains gitignored.
+The deployed interface is the two-screen reader only. Exercise, review, progress, vocabulary manager, word editor, import, backup, scheduling, and persistence source modules remain dormant in the repository for compatibility. They are not reachable from the app's navigation.
 
-Enter the private package location only in an interactive PowerShell prompt:
+There is no visible backup import/export workflow in this reader release. Clearing site data or removing the PWA may remove device-local state, which is why the update procedure explicitly avoids both actions.
+
+### Development-only private-vocabulary boundary
+
+Local `.apkg` parsing and privacy auditing are dormant developer tools, not public app features. Keep the package outside the repository and provide its path only at the PowerShell prompt:
 
 ```powershell
 $privateApkg = Read-Host 'Absolute path to the private APKG'
@@ -65,29 +71,16 @@ pnpm.cmd vocabulary:generate -- --source $privateApkg --output '.local/vocabular
 pnpm.cmd vocabulary:verify -- --source $privateApkg --output '.local/vocabulary/personal-vocabulary-v1.json'
 ```
 
-Import is an explicit replacement with a preview and confirmation step. Backups do not sync automatically: export from Progress on Windows to download JSON, transfer it manually, then select it with the iPhone file picker. On iPhone, export uses Web Share when available so you can save the backup to Files or another chosen destination. **Undo last import** persists across reloads, but a later vocabulary change or review of an affected card invalidates it.
-
-Keep a current exported backup because clearing site data or removing the PWA can remove device-local changes. Redistributing generated vocabulary requires separately documented permission or a license covering the text, glosses, categories, and arrangement.
+The generated file remains gitignored. Never publish it unless you hold a license covering its content and arrangement.
 
 ## Local production check
 
 ```powershell
-pnpm typecheck
-pnpm test
-pnpm export:web
-pnpm audit:public -- --tracked --dist dist
+pnpm.cmd typecheck
+pnpm.cmd test
+$env:EXPO_BASE_URL = '/Japanese-Language-App'
+pnpm.cmd export:web
+pnpm.cmd audit:public -- --tracked --dist dist
 ```
 
-The exported site is written to `dist/`.
-
-## Grammar enrichment rollout and rollback
-
-Before deployment, export a vocabulary backup from Progress on each device with device-local personal data. Do not remove the iPhone PWA or clear site data during an update; either action can remove device-local progress, vocabulary, and schedules.
-
-Tag the completed vocabulary V2 foundation as `grammar-enrichment-base-2026-07-18`. Run the complete clean verification gate, push the tag, then push the reviewed vocabulary-plus-grammar commits to `main`. Wait for the GitHub Pages workflow to finish successfully before opening the production URL.
-
-On Windows, open the production URL online and verify Lesson 1 and Lesson 25 grammar cards, independent collapsed insight toggles, current review-card text, Progress attribution, and external links. Export a vocabulary backup, cancel and repeat the picker once, and confirm device-local words and hidden state survived the update. Then disable network access, reload the already-loaded PWA, and verify every in-app explanation, expanded insight, personal word, and vocabulary manager remains available; external links may be unavailable offline.
-
-On iPhone, launch the installed PWA online without uninstalling it, leave it open long enough to receive the new deployment, close it fully, and reopen it. Verify portrait/landscape/notch safe areas, readable line lengths, 44-pixel controls, VoiceOver labels and expanded state, keyboard focus when a hardware keyboard is available, and independent grammar-card expansion. Use the Japanese keyboard in lesson search and the word editor; composition must not filter, submit, or show a duplicate before it ends. Transfer the Windows JSON through Files, select that same file twice, import it, and confirm personal/custom/hidden words plus their schedules. Verify Web Share when `canShare({ files })` succeeds, and confirm cancelling share/pick is not reported as an error. Review one existing grammar card and one affected vocabulary card, confirming history is preserved and import-recovery invalidation follows the documented affected-card rule. Reopen once in airplane mode and verify core grammar content, imported vocabulary, and the manager remain available.
-
-Never roll production back to a pre-V2 build after production has written V2 state. A pre-V2 deployment can diverge from the V2 envelope and device-owned vocabulary. For a grammar content or presentation defect, revert only commits after `grammar-enrichment-base-2026-07-18` and redeploy the still-V2-compatible result. For any persistence or hydration defect, stop rollout and fix forward on the V2 foundation. A rollback must never delete the V2 key, rewrite the untouched V1 fallback, clear browser storage, uninstall the PWA, or discard a user's backup.
+The exported site is written to `dist/`. Verify that the reader opens at the repository base path before pushing to `main`.

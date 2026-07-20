@@ -1,162 +1,86 @@
 # Nihongo Path
 
-An original, mobile-first Japanese course with a 25-lesson beginner path. The progression is informed by common classroom sequencing, while all explanations, scenarios, examples, vocabulary curation, and exercises are newly written.
+Nihongo Path is an original, mobile-first Japanese grammar reader. It follows a 25-lesson beginner sequence while using independently written explanations, examples, and dialogues.
 
-## What is implemented
+## Shipped reader experience
 
-- Twenty-five fully authored sequential lessons
-- At least four grammar modules, 15 themed words, and six original dialogue turns per lesson
-- Exactly eight exercises per lesson: two fill-in-the-blank, two translation, two multiple-choice, and two listening placeholders
-- Fill-in-the-blank, translation, multiple-choice, and listening-placeholder exercise renderers
-- Lenient answer normalization for spacing, punctuation, and accepted translations
-- Persistent lesson progress and accuracy
-- An offline spaced-repetition deck for vocabulary and grammar
-- Learn, Review, and Progress navigation tabs
-- Responsive, accessible React Native components with a shared visual-token system
-- An installable iPhone web app manifest, home-screen icon, safe-area layout, and offline fallback
-- Automated GitHub Pages testing and deployment
+The visible flow is **Lesson list â†’ Lesson Detail**. The lesson list covers all 25 lessons and 101 grammar points. Each Lesson Detail page contains only **Overview, Grammar, and Dialogue**:
 
-Every explanation, scenario, example, dialogue, and exercise is original. The course follows a familiar beginner progression without copying textbook prose or page design.
+- **Overview** introduces the lesson goals, central mental shift, and grammar map.
+- **Grammar** teaches the basics, form-building, Japanese-first reasoning, contrasts, examples, common mistakes, and optional deeper notes.
+- **Dialogue** shows the grammar in original conversations with line-specific internal explanations.
 
-## Reference influences
+The lesson quick-switcher is available on every lesson page and preserves the current section while moving between lessons. Optional Tae Kim and Tofugu links are grouped after the grammar cards; the lessons do not require those links.
 
-[Tae Kim's Guide to Japanese Grammar](https://guidetojapanese.org/learn/grammar/) informed this course's Japanese-first coverage review. The guide identifies its content as CC BY-NC-SA 3.0 US.
+There is no visible exercise, review, progress, Words, vocabulary-management, import, or editing route in the shipped reader.
 
-The [Saeris guide-to-japanese port](https://github.com/Saeris/guide-to-japanese) was used as a structured review aid. Nihongo Path's explanations, examples, dialogues, and exercises are independently written. Neither Tae Kim nor the Saeris project endorses Nihongo Path. No source prose, examples, media, or website code is included.
+## Device-local data and dormant modules
 
-## Learning flow
+Older study progress, review schedules, custom vocabulary, and hidden-word state remain preserved in the existing device-local storage. That dormant data has **no visible management UI** in this reader release and **does not sync** between Windows and iPhone.
 
-Each complete lesson follows one predictable loop:
+The repository still contains dormant exercise, review, progress, vocabulary, import, editor, persistence, and scheduling modules. They remain compilable for storage compatibility and possible future work, but they are not registered in the visible navigation. Do not uninstall the PWA or clear site data to update the reader; either action can remove device-owned browser storage.
 
-1. **Orient** — see communicative goals and the real-world situation.
-2. **Understand** — learn each grammar pattern, its use, and why it differs from English.
-3. **Notice** — meet the pattern in curated vocabulary and an original dialogue.
-4. **Retrieve** — answer mixed exercise types with immediate explanatory feedback.
-5. **Revisit** — rate grammar and vocabulary cards in spaced review.
+## Grammar sources and originality
 
-## Lesson path
+[Tae Kim's Guide to Japanese Grammar](https://guidetojapanese.org/learn/grammar/), the [Saeris guide-to-japanese port](https://github.com/Saeris/guide-to-japanese), and selected [Tofugu grammar articles](https://www.tofugu.com/japanese-grammar/) were used only as editorial cross-checks. Nihongo Path's teaching prose, mental models, examples, and dialogues are independently written. These resources do not endorse or sponsor the app.
 
-| # | Lesson | Main language target | Vocabulary field |
-|---|---|---|---|
-| 1 | A first introduction | Topic + noun sentences, negatives, questions, も, の | People, roles, countries |
-| 2 | Whose is this? | Demonstratives and ownership | Objects and belongings |
-| 3 | Finding your way | Place words and location questions | Buildings and facilities |
-| 4 | A day in motion | Polite verbs, tense, time, ranges | Schedules and routines |
-| 5 | Going places | Destinations, transport, companions | Travel and dates |
-| 6 | Plans after work | Objects, action locations, invitations | Food and leisure |
-| 7 | Gifts and helpful tools | Means, giving, receiving | Tools, languages, gifts |
-| 8 | What is it like? | い- and な-adjectives | Appearance and places |
-| 9 | Things I enjoy | Likes, strengths, understanding, reasons | Hobbies and skills |
-| 10 | What is where? | Existence and position | Rooms and furniture |
-| 11 | How many, how often? | Counters, duration, frequency | Quantities and postage |
-| 12 | Looking back, comparing | Past descriptions and comparison | Trips and seasons |
-| 13 | What do you want? | Wants and purpose of movement | Shopping and outings |
-| 14 | Requests in the moment | て-form, requests, actions in progress | Immediate actions |
-| 15 | Rules and ongoing states | Permission, prohibition, states | Public rules and work |
-| 16 | First this, then that | Sequencing and linked descriptions | Procedures and directions |
-| 17 | What must be done | ない-form, warnings, obligation | Health and responsibilities |
-| 18 | Skills and hobbies | Dictionary form, ability, “before” | Hobbies and preparation |
-| 19 | Experiences and changes | た-form, experience, representative lists | Experience and change |
-| 20 | Talking with friends | Plain forms and casual interaction | Friendship and opinions |
-| 21 | Thoughts and reports | Thoughts, reported speech, agreement | News and society |
-| 22 | The person who… | Relative clauses before nouns | People, clothes, homes |
-| 23 | When this happens | Time clauses and automatic results | Machines and roads |
-| 24 | Kind things people do | Giving and receiving helpful actions | Favors and assistance |
-| 25 | If plans change | Conditions and concessive results | Decisions and uncertainty |
-
-## Architecture
+## Project structure
 
 ```text
 App.tsx
 src/
-  components/       Reusable presentation components
-  data/
-    curriculum.ts   Course metadata for all 25 lessons
-    lessons/        Fully authored Lesson 1 plus three lesson batches
-  models/           Content and review domain types
-  navigation/       Typed stack and tab navigation
-  screens/          Lesson list/detail, exercises, review, progress
-  services/         Pure answer-checking and SRS scheduling logic
-  state/            Persistent study state and actions
-  theme/            Color, spacing, radius, and type tokens
+  components/       Reader UI and dormant reusable components
+  data/              Curriculum and all 25 authored lessons
+  models/            Content plus preserved study-data types
+  navigation/        Visible two-screen reader stack
+  screens/           Visible reader screens plus dormant study screens
+  services/          Preserved answer and scheduling services
+  state/             Preserved device-local persistence
+  theme/             Shared visual tokens
 ```
 
-Content is plain typed data rather than JSX, so it can later come from bundled JSON or a CMS. Exercise checking and scheduling are pure services and can be tested without rendering React Native. `StudyContext` owns the small offline application state; a larger release could replace it with Zustand/Redux without changing content models.
-
-## Data contracts
-
-`Lesson` composes `GrammarPoint[]`, `VocabularyItem[]`, `DialogueTurn[]`, and a discriminated `Exercise[]`. Exercise variants carry only the fields their renderer needs. `ReviewCard` stores due time, interval, repetitions, and ease so the queue remains durable across launches.
-
-The source definitions live in:
-
-- `src/models/content.ts`
-- `src/models/review.ts`
-- `src/data/lessons/lesson01.ts`
-- `src/data/lessons/lessons02to09.ts`
-- `src/data/lessons/lessons10to17.ts`
-- `src/data/lessons/lessons18to25.ts`
-
-## Spaced review
-
-Beginning practice adds one card per vocabulary item and grammar point. Ratings schedule the next appearance as follows:
-
-- **Again:** 10 minutes and reset the repetition count
-- **Hard:** at least 1 day, with a small ease reduction
-- **Good:** 1 day, then 3 days, then the current interval × ease
-- **Easy:** 4 days initially, then a larger ease-based jump
-
-This is a compact SM-2-inspired scheduler, not a claim of optimal memory prediction. The service is isolated so FSRS or a server-synced scheduler can replace it later.
+The visible navigation is intentionally smaller than the source tree. Vocabulary and exercise arrays also remain in lesson data so existing storage and backup shapes are not destructively rewritten.
 
 ## Run locally
 
-```bash
-pnpm install
-pnpm web
+```powershell
+pnpm.cmd install
+pnpm.cmd web
 ```
 
-The browser build opens at `http://localhost:8081`. The React Native targets remain available as well:
+Open `http://localhost:8081`. Production checks are:
 
-```bash
-pnpm typecheck
-pnpm test
-pnpm android
-pnpm ios
-pnpm export:web
+```powershell
+pnpm.cmd typecheck
+pnpm.cmd test
+$env:EXPO_BASE_URL = '/Japanese-Language-App'
+pnpm.cmd export:web
+pnpm.cmd audit:public -- --tracked --dist dist
 ```
 
-## Personal vocabulary and the public boundary
+## Publish and update on iPhone
 
-The public app includes the vocabulary manager, backup schema, and kana-authored course baseline. It does not include any private deck record, source identifier, source package, or deck media. Parsing an `.apkg` is a local development operation and is never part of the shipped app.
+The workflow in `.github/workflows/deploy-pages.yml` validates and publishes `main` to GitHub Pages. See [GITHUB_PAGES.md](./GITHUB_PAGES.md) for repository setup and installation.
 
-To prepare a private deck locally, keep the source package outside the repository and enter its location only at the PowerShell prompt:
+For a non-destructive installed-app update:
+
+1. Do not uninstall the home-screen app and do not clear Safari website data.
+2. Open the installed app online, allow the new deployment to load, then close it fully and reopen it.
+3. Test Overview, Grammar, and Dialogue, then use the lesson quick-switcher from each section.
+4. Check portrait and landscape safe areas and the tab, expanded-state, and dialogue-note labels with VoiceOver.
+5. After that successful online load, enable airplane mode and reopen the app once to confirm the offline fallback.
+
+This checklist verifies the reader UI. Old device-local study and vocabulary data remains preserved in dormant storage, has no visible management UI, and does not sync to another device.
+
+## Dormant development-only vocabulary tooling
+
+The commands below are for a developer auditing a private local `.apkg`; they are not a feature of the public reader. Keep the source package outside the repository. The generated `.local/vocabulary/personal-vocabulary-v1.json` file is gitignored and must never be published.
 
 ```powershell
 $privateApkg = Read-Host 'Absolute path to the private APKG'
 pnpm.cmd vocabulary:generate -- --source $privateApkg --output '.local/vocabulary/personal-vocabulary-v1.json'
 pnpm.cmd vocabulary:verify -- --source $privateApkg --output '.local/vocabulary/personal-vocabulary-v1.json'
-```
-
-The generated output is exactly `.local/vocabulary/personal-vocabulary-v1.json`. It remains gitignored and is read only when you explicitly run the local privacy audit:
-
-```powershell
-pnpm.cmd export:web
 pnpm.cmd audit:public:local
 ```
 
-Redistributing a generated vocabulary file requires separately documented permission or a license covering its text, glosses, categories, and arrangement. Personal use alone does not grant redistribution rights.
-
-Vocabulary import is an explicit replacement: inspect the preview, then confirm before any device-local vocabulary is replaced. Backup transfer between devices is manual. In Progress, Windows export downloads a JSON file; move that file to the iPhone with a method you trust, then choose it with the iPhone file picker. On iPhone, export uses Web Share when available so the backup can be saved to Files or sent through another chosen destination. **Undo last import** survives reload, but a later vocabulary change or review of an affected card invalidates it.
-
-Personal vocabulary, review schedules, and progress stay in that browser installation. Clearing browser data or removing the installed PWA can remove those local changes, so keep a current exported backup.
-
-## Host on GitHub Pages and install on iPhone
-
-The workflow in `.github/workflows/deploy-pages.yml` validates and publishes the app whenever `main` is pushed. Follow [GITHUB_PAGES.md](./GITHUB_PAGES.md) to create the repository, enable Pages, and add the deployed app to an iPhone home screen from Safari.
-
-Progress is stored locally in each browser installation. GitHub hosts only the static app code; study history is not uploaded to the repository.
-
-The listening exercises currently point to placeholder paths such as `assets/audio/lesson-01/emma-job.mp3`. Add licensed or self-recorded audio at those paths and connect the play control to `expo-audio` when moving beyond the content prototype.
-
-## Production continuation
-
-Before a store release, add real audio and playback, error reporting, analytics with consent, font assets, end-to-end tests, content accessibility review, and cloud sync only if multi-device study is needed. Keep textbook brand names, copied explanations, example sentences, exercise prompts, and page layouts out of the content pipeline.
+There is no visible import/export workflow in the current reader. Personal use does not grant redistribution rights for a third-party deck.

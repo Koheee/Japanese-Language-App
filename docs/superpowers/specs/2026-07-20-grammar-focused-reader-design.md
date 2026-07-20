@@ -1,7 +1,7 @@
 # Grammar-Focused Reader Design
 
-**Date:** 2026-07-20  
-**Status:** Approved for planning  
+**Date:** 2026-07-20
+**Status:** Approved for planning
 **Scope:** Refocus the 25-lesson app on self-contained grammar reading and contextual dialogue
 
 ## Context

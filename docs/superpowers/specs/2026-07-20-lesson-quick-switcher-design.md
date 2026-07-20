@@ -1,7 +1,7 @@
 # Lesson quick-switcher design
 
-**Date:** 2026-07-20  
-**Status:** Approved for planning  
+**Date:** 2026-07-20
+**Status:** Approved for planning
 **Scope:** Faster navigation between the 25 lesson-detail pages on desktop and iPhone
 
 ## Context

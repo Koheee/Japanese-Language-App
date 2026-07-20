@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useRef, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { DialogueBubble } from '../components/DialogueBubble';
 import { GrammarCard } from '../components/GrammarCard';
@@ -25,6 +25,7 @@ export function LessonDetailScreen({ navigation, route }: Props) {
   const [activeTab, setActiveTab] = useState<Tab>('overview');
   const [focusedTab, setFocusedTab] = useState<Tab | null>(null);
   const [focusedGrammarId, setFocusedGrammarId] = useState<string | null>(null);
+  const screenScrollRef = useRef<ScrollView>(null);
   const lessonSwitcherFocusTargetRef = useRef<string | null>(null);
   const lesson = getLesson(route.params.lessonId);
 
@@ -35,8 +36,13 @@ export function LessonDetailScreen({ navigation, route }: Props) {
     navigation.setParams({ lessonId });
   };
 
+  const handleGrammarMapActivate = () => {
+    setActiveTab('grammar');
+    screenScrollRef.current?.scrollTo({ y: 0, animated: true });
+  };
+
   return (
-    <Screen key={lesson.id} scroll contentStyle={styles.page}>
+    <Screen key={lesson.id} scroll contentStyle={styles.page} scrollRef={screenScrollRef}>
       <Pressable
         accessibilityHint="Returns to the list of lessons"
         accessibilityLabel="Back to all lessons"
@@ -132,7 +138,7 @@ export function LessonDetailScreen({ navigation, route }: Props) {
                   key={point.id}
                   onBlur={() => setFocusedGrammarId((current) => current === point.id ? null : current)}
                   onFocus={() => setFocusedGrammarId(point.id)}
-                  onPress={() => setActiveTab('grammar')}
+                  onPress={handleGrammarMapActivate}
                   style={[
                     styles.grammarMapRow,
                     focusedGrammarId === point.id && styles.grammarMapRowFocused,

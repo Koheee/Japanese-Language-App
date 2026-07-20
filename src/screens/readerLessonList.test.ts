@@ -195,6 +195,44 @@ const expectCardAffordances = (root: ts.SourceFile) => {
 };
 
 describe('grammar reader lesson list', () => {
+  it('adds all four safe-area insets to the FlatList base content spacing', () => {
+    const safeAreaImport = screen.statements.find((statement): statement is ts.ImportDeclaration =>
+      ts.isImportDeclaration(statement)
+      && ts.isStringLiteral(statement.moduleSpecifier)
+      && statement.moduleSpecifier.text === 'react-native-safe-area-context');
+    expect(safeAreaImport).toBeDefined();
+    expect(safeAreaImport?.importClause?.namedBindings && ts.isNamedImports(safeAreaImport.importClause.namedBindings))
+      .toBe(true);
+    expect((safeAreaImport!.importClause!.namedBindings as ts.NamedImports).elements
+      .map((element) => element.name.text))
+      .toContain('useSafeAreaInsets');
+
+    const insetsDeclaration = collect(screen, ts.isVariableDeclaration)
+      .find((declaration) => declaration.name.getText(screen) === 'insets');
+    expect(insetsDeclaration?.initializer?.getText(screen)).toBe('useSafeAreaInsets()');
+
+    const flatList = collect(screen, (node): node is ts.JsxSelfClosingElement =>
+      ts.isJsxSelfClosingElement(node) && node.tagName.getText(screen) === 'FlatList')[0]!;
+    const contentStyle = expressionAttribute(flatList, 'contentContainerStyle');
+    expect(ts.isObjectLiteralExpression(contentStyle)).toBe(true);
+
+    const padding = Object.fromEntries((contentStyle as ts.ObjectLiteralExpression).properties.map((property) => {
+      expect(ts.isPropertyAssignment(property)).toBe(true);
+      const assignment = property as ts.PropertyAssignment;
+      return [assignment.name.getText(screen), assignment.initializer.getText(screen)];
+    }));
+    expect(padding).toEqual({
+      paddingTop: '58 + insets.top',
+      paddingBottom: 'spacing.huge + insets.bottom',
+      paddingLeft: 'spacing.lg + insets.left',
+      paddingRight: 'spacing.lg + insets.right',
+    });
+
+    expect(collect(screen, (node): node is ts.JsxOpeningElement | ts.JsxSelfClosingElement =>
+      (ts.isJsxOpeningElement(node) || ts.isJsxSelfClosingElement(node))
+      && node.tagName.getText(screen) === 'SafeAreaView')).toHaveLength(0);
+  });
+
   it('presents the frozen curriculum totals instead of study activity', () => {
     expect(importPaths(screen)).not.toContain('../state/StudyContext');
     expect(importPaths(screen)).not.toContain('../data/lessons');

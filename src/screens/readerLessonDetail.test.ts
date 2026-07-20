@@ -6,6 +6,15 @@ import { describe, expect, it } from 'vitest';
 const path = join(import.meta.dirname, 'LessonDetailScreen.tsx');
 const source = readFileSync(path, 'utf8');
 const screen = ts.createSourceFile(path, source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+const screenComponentPath = join(import.meta.dirname, '..', 'components', 'Screen.tsx');
+const screenComponentSource = readFileSync(screenComponentPath, 'utf8');
+const screenComponent = ts.createSourceFile(
+  screenComponentPath,
+  screenComponentSource,
+  ts.ScriptTarget.Latest,
+  true,
+  ts.ScriptKind.TSX,
+);
 
 const collect = <T extends ts.Node>(
   root: ts.Node,
@@ -192,6 +201,64 @@ describe('grammar reader lesson detail', () => {
     expect(nullGuards).toHaveLength(1);
   });
 
+  it('forwards a live ScrollView ref through Screen', () => {
+    const screenProps = screenComponent.statements.find((statement): statement is ts.InterfaceDeclaration =>
+      ts.isInterfaceDeclaration(statement) && statement.name.text === 'ScreenProps');
+    expect(screenProps).toBeDefined();
+    const scrollRefMember = screenProps!.members.find((member): member is ts.PropertySignature =>
+      ts.isPropertySignature(member) && member.name.getText(screenComponent) === 'scrollRef');
+    expect(scrollRefMember?.type?.getText(screenComponent)).toBe('Ref<ScrollView>');
+
+    const screenFunction = screenComponent.statements.find((statement): statement is ts.FunctionDeclaration =>
+      ts.isFunctionDeclaration(statement) && statement.name?.text === 'Screen');
+    expect(screenFunction).toBeDefined();
+    const parameter = screenFunction!.parameters[0]!;
+    expect(ts.isObjectBindingPattern(parameter.name)).toBe(true);
+    expect((parameter.name as ts.ObjectBindingPattern).elements.map((element) =>
+      element.name.getText(screenComponent))).toContain('scrollRef');
+
+    const scrollView = collect(screenFunction!, (node): node is ts.JsxOpeningElement =>
+      ts.isJsxOpeningElement(node) && node.tagName.getText(screenComponent) === 'ScrollView')[0]!;
+    const refAttribute = scrollView.attributes.properties.find((attribute): attribute is ts.JsxAttribute =>
+      ts.isJsxAttribute(attribute) && attribute.name.getText(screenComponent) === 'ref');
+    expect(refAttribute?.initializer && ts.isJsxExpression(refAttribute.initializer)).toBe(true);
+    expect((refAttribute!.initializer as ts.JsxExpression).expression?.getText(screenComponent))
+      .toBe('scrollRef');
+
+    const readerScreen = collect(component!, (node): node is ts.JsxOpeningElement =>
+      ts.isJsxOpeningElement(node) && node.tagName.getText(screen) === 'Screen')[0]!;
+    expect(expressionAttribute(readerScreen, 'scrollRef').getText(screen)).toBe('screenScrollRef');
+  });
+
+  it('switches grammar-map selections to Grammar and scrolls the shared Screen to the top', () => {
+    const scrollRef = collect(component!, ts.isVariableDeclaration)
+      .find((declaration) => declaration.name.getText(screen) === 'screenScrollRef');
+    expect(scrollRef?.initializer?.getText(screen)).toBe('useRef<ScrollView>(null)');
+
+    const handler = collect(component!, ts.isVariableDeclaration)
+      .find((declaration) => declaration.name.getText(screen) === 'handleGrammarMapActivate');
+    expect(handler?.initializer && ts.isArrowFunction(handler.initializer)).toBe(true);
+    const handlerCalls = collect(handler!.initializer!, ts.isCallExpression);
+    const tabCall = handlerCalls.find((call) => call.expression.getText(screen) === 'setActiveTab');
+    expect(tabCall?.arguments[0]?.getText(screen)).toBe("'grammar'");
+    const scrollCall = handlerCalls.find((call) => call.expression.getText(screen)
+      === 'screenScrollRef.current?.scrollTo');
+    expect(scrollCall).toBeDefined();
+    expect(scrollCall!.arguments).toHaveLength(1);
+    expect(scrollCall!.arguments[0]!.getText(screen)).toBe('{ y: 0, animated: true }');
+
+    const grammarMap = collect(component!, ts.isCallExpression).find((call) =>
+      ts.isPropertyAccessExpression(call.expression)
+      && call.expression.expression.getText(screen) === 'lesson.grammar'
+      && call.expression.name.text === 'map'
+      && collect(call, (node): node is ts.JsxOpeningElement =>
+        ts.isJsxOpeningElement(node) && node.tagName.getText(screen) === 'Pressable').length > 0)!;
+    const grammarRow = collect(grammarMap, (node): node is ts.JsxOpeningElement =>
+      ts.isJsxOpeningElement(node) && node.tagName.getText(screen) === 'Pressable')[0]!;
+    expect(expressionAttribute(grammarRow, 'onPress').getText(screen))
+      .toBe('handleGrammarMapActivate');
+  });
+
   it('builds Overview from goals, the central mental shift, a grammar map, and static context', () => {
     expect(source).toContain('lesson.goals.map');
     expect(source).toContain('lesson.grammar[0]?.whyItWorks');
@@ -210,7 +277,7 @@ describe('grammar reader lesson detail', () => {
     expect(expressionAttribute(grammarRow, 'accessibilityLabel').getText(screen))
       .toContain('Open grammar');
     expect(expressionAttribute(grammarRow, 'onPress').getText(screen))
-      .toContain("setActiveTab('grammar')");
+      .toBe('handleGrammarMapActivate');
     expect(expressionAttribute(grammarRow, 'onFocus').getText(screen))
       .toBe('() => setFocusedGrammarId(point.id)');
     expect(expressionAttribute(grammarRow, 'onBlur').getText(screen))

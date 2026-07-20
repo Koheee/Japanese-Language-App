@@ -1,6 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect, useState } from 'react';
 import { FlatList, Platform, StyleSheet, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LessonCard } from '../components/LessonCard';
 import { curriculum } from '../data/curriculum';
@@ -11,6 +12,7 @@ type Props = NativeStackScreenProps<LearnStackParamList, 'Lessons'>;
 
 export function LessonListScreen({ navigation }: Props) {
   const [isStandalone, setIsStandalone] = useState(false);
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     if (Platform.OS !== 'web' || typeof window === 'undefined') return;
@@ -29,7 +31,12 @@ export function LessonListScreen({ navigation }: Props) {
       <FlatList
         data={curriculum}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.list}
+        contentContainerStyle={{
+          paddingTop: 58 + insets.top,
+          paddingBottom: spacing.huge + insets.bottom,
+          paddingLeft: spacing.lg + insets.left,
+          paddingRight: spacing.lg + insets.right,
+        }}
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={
           <View style={styles.header}>
@@ -86,7 +93,6 @@ export function LessonListScreen({ navigation }: Props) {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.paper },
-  list: { paddingHorizontal: spacing.lg, paddingTop: 58, paddingBottom: spacing.huge },
   header: { marginBottom: spacing.lg },
   brand: { color: colors.coral, fontSize: typography.micro, fontWeight: '900', letterSpacing: 2.2 },
   kicker: { marginTop: spacing.xl, color: colors.forest, fontSize: typography.small, fontWeight: '700' },
