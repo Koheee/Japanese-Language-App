@@ -78,8 +78,8 @@ export const lessons18to25: Lesson[] = ([
           explanation: 'Dictionary form fits before こと and まえに in this lesson, while ます supplies a polite sentence ending; the dictionary form is not automatically impolite whenever it appears.',
         },
         examples: [
-          example('まいあさ こうえんを はしる。', 'まいあさ こうえんを はしる。', 'I run in the park every morning.'),
-          example('らいしゅう きょうとへ いく。', 'らいしゅう きょうとへ いく。', 'I will go to Kyoto next week.'),
+          example('こうりゅうかいで おりがみを おしえることが できます。', 'こうりゅうかいで おりがみを おしえることが できます。', 'I can teach origami at the exchange event.'),
+          example('うちを でるまえに、かさを かばんに いれます。', 'うちを でるまえに、かさを かばんに いれます。', 'Before leaving home, I put an umbrella in my bag.'),
         ],
         commonMistake: {
           avoid: 'およぎる',
@@ -1317,7 +1317,7 @@ export const lessons18to25: Lesson[] = ([
         { grammarId: 'l21-probability', explanation: 'Jon attaches falling でしょう to plain くる and offers likely attendance as an inference from the sunny forecast.' },
       ]],
       ['Emi', 'スタッフは「マイボトルを もってきてください」と いいました。', 'スタッフは「マイボトルを もってきてください」と いいました。', 'The staff said, “Please bring your own bottle.”', ['l21-say'], [
-        { grammarId: 'l21-say', explanation: 'The brackets present the staff’s request as quoted wording, and the following と marks exactly where that quotation ends.' },
+        { grammarId: 'l21-say', explanation: 'The quotation marks present the staff’s request as quoted wording, and the following と marks exactly where that quotation ends.' },
       ]],
       ['Jon', 'いいですね。ごみを へらすことが できると おもいます。', 'いいですね。ごみを へらすことが できると おもいます。', 'Good idea. I think we can reduce waste.', ['l21-think'], [
         { grammarId: 'l21-think', explanation: 'The entire ability clause ごみをへらすことができる becomes Jon’s thought content before とおもいます.' },
@@ -1683,8 +1683,8 @@ export const lessons18to25: Lesson[] = ([
           },
           {
             label: 'Negative concession',
-            formula: 'Vない／negative adjective minus final い + くても + unchanged result',
-            explanation: 'Treat the negative ない ending like an い-adjective, changing it to なくても before the result that still applies.',
+            formula: 'Vない → Vなくても ／ いAくない → いAくなくても ／ なAじゃない・Nじゃない → なA・Nじゃなくても',
+            explanation: 'In every negative pattern, change the final ない to なくても. That produces Vなくても and いAくなくても; after a な-adjective or noun, じゃない becomes じゃなくても before the result that still holds.',
           },
         ],
         contrast: {

@@ -48,6 +48,19 @@ describe('grammarReferences', () => {
       url === 'https://www.tofugu.com/japanese-grammar/te-form/')).toBe(true);
   });
 
+  it('freezes the approved Tofugu coverage in the mixed-source manifest', () => {
+    const tofuguByGrammarId = FROZEN_GRAMMAR_IDS.map((grammarId) => ({
+      grammarId,
+      references: getGrammarReferences(grammarId).filter(({ url }) =>
+        new URL(url).hostname === 'www.tofugu.com'),
+    }));
+    const tofuguReferences = tofuguByGrammarId.flatMap(({ references }) => references);
+
+    expect(tofuguReferences).toHaveLength(93);
+    expect(tofuguByGrammarId.filter(({ references }) => references.length > 0)).toHaveLength(82);
+    expect(new Set(tofuguReferences.map(({ url }) => url)).size).toBe(53);
+  });
+
   it('keeps the live verifier aligned with the complete mixed-source manifest', () => {
     const verifierSource = readFileSync(
       join(import.meta.dirname, '../../scripts/verify-grammar-links.mjs'),
